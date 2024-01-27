@@ -1,5 +1,4 @@
-import { Metadata } from "next";
-import Image from "next/image";
+"use client"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,14 +12,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDateRangePicker } from "@/app/_components/Dashboard/components/date-range-picker";
 import { Overview } from "@/app/_components/Dashboard/components/overview";
 import { RecentSales } from "@/app/_components/Dashboard/components/recent-sales";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Example dashboard app built using the components.",
-};
+
 
 export default function DashboardPage() {
+  useRequireAuth();
   return (
     <>
       {/* <div className="md:hidden dark:bg-black">

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "./_components/Sidebar/sidebar";
 import Header from "./_components/Header/header";
 import { ThemeProvider } from "@/providers/theme-provider";
+import ReduxProvider from "@/utils/ReduxProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +17,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+ 
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -27,6 +28,7 @@ export default function RootLayout({
         {/* <div className="flex flex-col w-full bg-gray-100 h-screen overflow-hidden">
            </div>  
             <Header/>  */}
+            <ReduxProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -41,6 +43,7 @@ export default function RootLayout({
             
           </div>
         </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
