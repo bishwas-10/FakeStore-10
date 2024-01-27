@@ -3,22 +3,31 @@ import http from 'http';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import connectDb from './utils/connectDb';
+
+
 //router
+import authRouter from "./routes/auth";
+
+
+
 
 const app = express();
 app.set("trust proxy", 1); // trust first proxy
-//http://localhost:3000,https://online-cv-builder.vercel.app
+//http://localhost:3000,
 app.use(cors({
-    origin:'https://online-cv-builder.vercel.app',
+    origin:'http://localhost:3000',
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ['Access-Control-Allow-Origin'],
 }));
+
+
+
 app.use(express.json({ limit: "30mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
-
+app.use("/api/users",authRouter);
 
 const server = http.createServer(app);
 
