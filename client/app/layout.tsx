@@ -4,7 +4,6 @@ import "./globals.css";
 import Header from "./_components/Header/header";
 import { ThemeProvider } from "@/providers/theme-provider";
 import ReduxProvider from "@/utils/ReduxProvider";
-import ProtectedRoute from "@/hooks/useRequireAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
      
         <ReduxProvider>
-          <ProtectedRoute>
+       
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -37,7 +36,6 @@ export default function RootLayout({
                 </div>
               </div>
             </ThemeProvider>
-          </ProtectedRoute>
         </ReduxProvider>
       </body>
     </html>
