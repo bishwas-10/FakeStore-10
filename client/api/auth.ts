@@ -1,7 +1,7 @@
 import axios from "axios";
-import { TSignInShema } from "../signpage/sign-component/signIn";
-import { TSignUpShema } from "../signpage/sign-component/signUp";
+
 import { instance } from "./instance";
+import { TSignInShema } from "@/app/signpage/sign-component/signIn";
 
 
 
@@ -27,33 +27,6 @@ export const userLogin = async (formData: TSignInShema) => {
    }
 };
 
-export const userSignUp = async (formData:TSignUpShema) => {
-  try {
-    const data = await instance.post("/signup", formData);
-    
-    return data;
-  } catch (error:any) {
-   return error.response.data;
-   
-  }
-};
-
-type GoogleProps ={
-  name:string,
-  picture:string,
-  sub:string,
-  email:string
-}
-export const userGoogleLogin= async (formData:GoogleProps) => {
-  try {
-    const { data } = await instance.post("/google", formData);
-    
-    return data;
-  } catch (error:any) {
-   return error.response.data;
-   
-  }
-};
 
 export const userLogOut = async () => {
   try {

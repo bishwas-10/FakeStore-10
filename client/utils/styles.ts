@@ -14,7 +14,8 @@ export const StyledInput = styled.input`
     outline:none ;
     border-bottom: 3px solid blue;
     
-  }
+  };
+ 
 `;
 export const StyledTextArea = styled.textarea`
   background-color: #e2e8f0;

@@ -12,13 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDateRangePicker } from "@/app/_components/Dashboard/components/date-range-picker";
 import { Overview } from "@/app/_components/Dashboard/components/overview";
 import { RecentSales } from "@/app/_components/Dashboard/components/recent-sales";
-import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 
 
 
 export default function DashboardPage() {
-  useRequireAuth();
   return (
     <>
       {/* <div className="md:hidden dark:bg-black">

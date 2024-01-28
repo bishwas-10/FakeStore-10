@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./_components/Header/header";
 import { ThemeProvider } from "@/providers/theme-provider";
 import ReduxProvider from "@/utils/ReduxProvider";
+import ProtectedRoute from "@/hooks/useRequireAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,32 +18,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <div className="bg-boxdark-2 text-bodydark w-full flex flex-row">
-         {/* <div className="w-2/12 bg-gray-300 p-2 text-black">
-         <Sidebar/>
-         </div> */}
-        {/* <div className="flex flex-col w-full bg-gray-100 h-screen overflow-hidden">
-           </div>  
-            <Header/>  */}
-            <ReduxProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="  bg-white dark:bg-black w-full flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            <div className="py-2 flex-col flex">
-              <Header/>
-              {children}
-            </div>
-            
-          </div>
-        </ThemeProvider>
+     
+        <ReduxProvider>
+          <ProtectedRoute>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="  bg-white dark:bg-black w-full flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+                <div className="py-2 flex-col flex">
+                  <Header />
+                  {children}
+                </div>
+              </div>
+            </ThemeProvider>
+          </ProtectedRoute>
         </ReduxProvider>
       </body>
     </html>

@@ -1,17 +1,15 @@
-// useRequireAuth.tsx
-
+"use client"
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { SignResultProps } from '@/store/userSlice';
 
-export const useRequireAuth = () => {
+ const ProtectedRoute = ({children}:{children:React.ReactNode}) => {
   const router = useRouter();
 const token = useSelector((state:RootState)=>state.token.token) ;
 const userDetails= useSelector((state:RootState)=>state.users.currentUser) ;
   useEffect(() => {
-   if(token && userDetails){
+   if(!token && !userDetails){
    
         router.push('/signpage'); // Redirect to the login page
       
@@ -20,9 +18,9 @@ const userDetails= useSelector((state:RootState)=>state.users.currentUser) ;
     
   }, []);
 
-  return null;
+  return <>{children}</>;
 };
-
+export default ProtectedRoute;
 // const checkIfLoggedIn = ({token,userDetails}:{token:string,userDetails:SignResultProps}) => {
 //   // Implement your logic to check if the user is logged in
 //   return true; // Placeholder, replace with your actual logic
