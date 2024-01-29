@@ -1,26 +1,26 @@
 import {model, Schema , Document} from "mongoose";
 
 export interface ProductProps extends Document {
-    id:number;
     title:string;
-    price:string;
+    price:number;
     category?:string;
     description?:string;
     image:string;
+    rating?:{
+        rate:string;
+        count?:number;
+    }
 }
 
 
 const productSchema = new Schema<ProductProps>({
-    id:{
-        type:Number,
-        required:true,
-    },
+
     title:{
         type:String,
         required:true,
     },
     price:{
-        type:String,
+        type:Number,
         required:true,
     },
     description:{
@@ -32,7 +32,16 @@ const productSchema = new Schema<ProductProps>({
     image:{
         type:String,
         required:true
+    },
+    rating:{
+        rate:String,
+        count:Number,
     }
+},
+{
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+  timestamps: true,
 })
 
 const Product = model<ProductProps>('product', productSchema);

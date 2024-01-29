@@ -58,6 +58,11 @@ const customerSchema = new Schema({
         type:String,
         required:true
     }
+},
+{
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+  timestamps: true,
 })
 
 const Customer = model<CustomerProps>('customers',customerSchema);
