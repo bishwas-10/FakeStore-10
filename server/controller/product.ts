@@ -27,8 +27,35 @@ export const getProduct = async (req: Request, res: Response) => {
 };
 
 
-export const getAllCategories = () => {};
-export const getCategoryProduct = () => {};
+export const getAllCategories = async(req:Request,res:Response) => {
+  try {
+    const categories = await Product.distinct('category');
+    if(categories.length===0){
+     return res.status(403).send({success:false,message:"failed to get your categories",categories:null})
+    }else{
+       return res.status(200).send({success:true,message:"got your categories",categories:categories});
+    }
+  } catch (error) {
+    return res.status(500).send({success:false,message:"internal server error"});
+  }
+};
+
+export const getCategoryProduct = async(req:Request,res:Response) => {
+try {
+  const category = req.params.category;
+
+  const categoryProduct = await Product.find({category:category});
+
+  if(categoryProduct.length===0){
+    return res.status(403).send({success:false, message:"couldnt find any product of your category"});
+  }
+
+  return res.status(200).send({succes:true, message:"got your category products", products:categoryProduct});
+} catch (error) {
+  return res.status(500).send({success:false,message:"inernal server error"});
+}
+};
+
 export const addProduct = async (req: Request, res: Response) => {
   try {
     const validation = productSchema.safeParse(req.body);
