@@ -8,7 +8,7 @@ import connectDb from './utils/connectDb';
 //router
 import authRouter from "./routes/auth";
 import productRouter from "./routes/product";
-
+import cartRouter from "./routes/cart"
 
 
 const app = express();
@@ -29,7 +29,7 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/api/users",authRouter);
 app.use("/api",productRouter)
-
+app.use("/api",cartRouter)
 const server = http.createServer(app);
 
 

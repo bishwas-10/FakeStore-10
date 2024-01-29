@@ -16,3 +16,17 @@ export const productSchema = z.object({
     .string({required_error:"image is required"})
     ,
 });
+
+
+
+export const CartPropsSchema = z.object({
+  customerId: z.number({required_error:"customerId is required"}),
+  products: z.array(
+    z.object({
+      productId: z.number({required_error:"productId is required"}),
+      quantity: z.number().default(0),
+    })
+  ),
+  status: z.string({required_error:"paid status is required"}),
+  addedDate: z.string({required_error:"added date is required"}),
+});

@@ -3,21 +3,17 @@ import User from "./users";
 import Product from "./product";
 
 export interface CartProps extends Document {
-  id: number;
   customerId: number;
   products: {
     productId: number;
     quantity: number;
   }[];
   status: string;
-  paidDate: Date;
+  addedDate: Date;
 }
 
 const cartSchema = new Schema<CartProps>({
-  id: {
-    type: Number,
-    required: true,
-  },
+ 
   customerId: {
     type: Schema.Types.Number,
     ref: User,
@@ -37,7 +33,7 @@ const cartSchema = new Schema<CartProps>({
       },
     },
   ],
-  paidDate: {
+  addedDate: {
     type: Date,
     required: true,
   },
