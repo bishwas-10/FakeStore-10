@@ -17,13 +17,13 @@ const userSchema = new Schema<UserProps>({
     },
     email:{
         type:String,
-        required:[true, 'is required feild'],
+        required:[true, 'is required field'],
         unique:true,
         lowercase:true
     },
     password:{
         type:String,
-        required:[true, 'is required feild']
+        required:[true, 'is required field']
     },
 
 },
