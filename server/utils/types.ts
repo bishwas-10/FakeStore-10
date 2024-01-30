@@ -20,13 +20,12 @@ export const productSchema = z.object({
 
 
 export const CartPropsSchema = z.object({
+  quantity:z.number().default(0),
   customerId: z.number({required_error:"customerId is required"}),
-  products: z.array(
-    z.object({
-      productId: z.number({required_error:"productId is required"}),
-      quantity: z.number().default(0),
-    })
-  ),
+  product:
+    z.string({required_error:"productId is required"}),
+    
+  
   status: z.string({required_error:"paid status is required"}),
   addedDate: z.string({required_error:"added date is required"}),
 });
