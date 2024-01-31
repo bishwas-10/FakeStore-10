@@ -17,6 +17,21 @@ export const productSchema = z.object({
     ,
 });
 
+export const customerSchema = z.object({
+  email:z.string({required_error:"email is required"}),
+  username:z.string({required_error:"username is required"}),
+  password:z.string(),
+  name: z.object({
+    firstName:z.string({required_error:"first name is required"}),
+    lastName:z.string({required_error:"last name is required"})
+  }),
+  address:z.object({
+    city:z.string({required_error:"city is required"}),
+    street:z.string().optional(),
+    zipcode:z.string().optional()
+  }),
+  phone:z.string({required_error:"phone number is required"}),
+})
 
 
 export const CartPropsSchema = z.object({

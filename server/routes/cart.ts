@@ -4,6 +4,8 @@ import {
   deleteCart,
   editCart,
   getAllCarts,
+  getCartByCustomerId,
+  
 
 } from "../controller/cart";
 
@@ -16,10 +18,10 @@ router.post("/carts", addCart);
 // //eachCArt
 // router.get("/products/:id", getProduct);
  router.put("/carts/:id", editCart);
-// router.delete("/products/:id", deleteProduct);
+ router.delete("/carts/:id", deleteCart);
 
-// //category
-// router.get("/products/categories", getAllCategories);
+// //customer
+router.get("/carts/customers/:id", getCartByCustomerId);
 // router.get("/products/category/:category", getCategoryProduct);
 
 export default router;

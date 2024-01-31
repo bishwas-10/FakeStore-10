@@ -1,0 +1,133 @@
+import { Request, Response } from "express";
+import Customer from "../models/customer";
+import { customerSchema} from "../utils/types";
+import { hashPassword } from "../utils/password";
+
+export const getAllCustomers=async(req:Request,res:Response)=>{
+    try {
+        const customer = await Customer.find();
+        if(!customer){
+          return res.status(403).send({success:false,message:"customers not found",customer:null})
+        }
+        return res.status(200).send({success:true,message:"customer found",customers:customer})
+      } catch (error) {
+        return res.status(500).send({success:false,message:"internal server error",customer:null});
+      }
+}
+
+export const getSpecificCustomer =async(req:Request,res:Response)=>{
+    try {
+        const existingCustomer = await Customer.findOne({_id: req.params.id});
+        if(!existingCustomer){
+          return res.status(403).send({success:false,message:"customer not found",customer:null})
+        }
+        const customerDetails = {
+          _id: existingCustomer._id,
+          email:existingCustomer.email,
+          username:existingCustomer.username,
+          
+          name:{
+            firstName:existingCustomer.name.firstName,
+            lastName:existingCustomer.name.lastName
+          },
+          address:{
+            city:existingCustomer.address.city,
+            street:existingCustomer.address?.street,
+            zipcode:existingCustomer.address?.zipcode
+          },
+          phone: existingCustomer.phone,
+        };
+        return res.status(200).send({success:true,message:"customer found",customer:customerDetails})
+      } catch (error) {
+        return res.status(500).send({success:false,message:"internal server error",customer:null});
+      }
+}
+export const addCustomer =async(req:Request,res:Response)=>{
+    try {
+        const validation = customerSchema.safeParse(req.body);
+        if (!validation.success) {
+          return res
+            .status(400)
+            .send({ sucess: false, message: validation.error.issues[0].message });
+        }
+       
+    
+        const existingCustomer = await Customer.findOne({email:req.body.email });
+        if (existingCustomer) {
+          return res
+            .status(400)
+            .send({ success: false, message: "this email customer id already exists" });
+        }
+     const hashedPassword =  await hashPassword(req.body.password);
+        const customer = await Customer.create({
+          
+          email: req.body.email,
+          username: req.body.username,
+          password: hashedPassword,
+          name:{
+            firstName:req.body.firstName,
+            lastName:req.body.lastName
+          },
+          address:{
+            city:req.body.city,
+            street:req.body.street,
+            zipcode:req.body.zipcode
+          },
+          phone: req.body.phone,
+        });
+        await customer.save();
+        res.status(200).send({success:true,message:"customer added"});
+      } catch (error) {
+        return res.status(500).send({success:false,message:"internal server error"})
+      }
+};
+
+
+export const updateCustomer =async(req:Request,res:Response)=>{
+  try {
+    const validation = customerSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res
+        .status(400)
+        .send({ sucess: false, message: validation.error.issues[0].message });
+    }
+    if (req.params.id == null) {
+     return res.status(403).send({
+        success: false,
+        message: 'customer id should be provided',
+        customer: null
+      })};
+    const existingCustomer = await Customer.findOne({ _id: req.params.id });
+    if (!existingCustomer) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Customer not found" });
+    };
+    const editedProduct = await Customer.findOneAndUpdate({_id:req.params.id},{
+      ...req.body
+    }, {
+      new: true,
+      runValidators: true,
+    });
+    
+     res.status(200).send({success:true,message:"edited successfully",customer:editedProduct})
+  } catch (error) {
+    return res.status(500).send({success:false,message:"internal server error"});
+  }
+};
+
+
+export const deleteCustomer =async(req:Request,res:Response)=>{
+  try {
+    if (req.params.id == null) {
+      return res.status(403).send({
+        success: false,
+        message: 'customer id should be provided',
+        customer: null
+      })};
+      await Customer.findOneAndDelete({_id:req.params.id});
+      res.status(200).send({success:true,message:"Customer deleted successfully"})
+  } catch (error) {
+    return res.status(500).send({success:false,message:"internal server error"});
+  }
+};

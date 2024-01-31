@@ -2,13 +2,12 @@ import {Schema, model, Document} from "mongoose";
 
 
 export interface CustomerProps extends Document{
-id:number;
 email:string;
 username:string;
 password:string;
 name:{
     firstName:string;
-    LastName:string;
+    lastName:string;
 };
 address:{
     city:string;
@@ -19,10 +18,7 @@ phone:string;
 }
 
 const customerSchema = new Schema({
-    id:{
-        type:Number,
-        required:true
-    },
+    
     email:{
         type:String,
         required:true
@@ -36,11 +32,11 @@ const customerSchema = new Schema({
         required:true
     },
     name:{
-        firstname:{
+        firstName:{
             type:String,
             required:true
         },
-        lastname:{
+        lastName:{
             type:String,
             required:true
         }

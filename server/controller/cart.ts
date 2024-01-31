@@ -21,12 +21,17 @@ export const getAllCarts = async (req: Request, res: Response) => {
   }
 };
 
-export const getCartByUserId = async (req: Request, res: Response) => {
+export const getCartByCustomerId = async (req: Request, res: Response) => {
+  const id = req.params.id;
   try {
-    const cart = await Cart.findOne({
-      customerId: req.body.customerId,
+    const cart = await Cart.find({
+      customerId: id,
     }).populate([{ path: "product", model: Product }]);
     console.log(cart);
+   if(cart.length===0){
+    return res.status(403).send({success:false,message:"couldn't find any cart"})
+   }
+   return res.status(200).send({success:true,message:"cart found",cart:cart})
   } catch (error) {
     return res
       .status(500)
@@ -94,7 +99,6 @@ export const addCart = async (req: Request, res: Response) => {
 };
 export const editCart = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(id);
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {
@@ -102,7 +106,6 @@ export const editCart = async (req: Request, res: Response) => {
         .status(400)
         .send({ sucess: false, message: validation.error.issues[0].message });
     }
-    console.log(req.body)
     const cart = await Cart.findOneAndUpdate(
       { _id: id },
       {
@@ -117,7 +120,6 @@ export const editCart = async (req: Request, res: Response) => {
         runValidators: true,
       }
     );
-    console.log(cart);
     if (cart) {
       const result = await cart.populate("product");
       return res
@@ -135,4 +137,12 @@ export const editCart = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteCart = async (req: Request, res: Response) => {};
+export const deleteCart = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+   await Cart.findByIdAndDelete({_id:id});
+   return res.status(200).json({success:true, message:"deleted successfully"})
+  } catch (error) {
+    return res.status(500).send({success:false, message:"internal server error"})
+  }
+};
