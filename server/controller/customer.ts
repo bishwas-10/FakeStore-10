@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Customer from "../models/customer";
 import { customerSchema} from "../utils/types";
-import { hashPassword } from "../utils/password";
+import { hashPassword, verifyPassword } from "../utils/password";
 
 export const getAllCustomers=async(req:Request,res:Response)=>{
     try {
@@ -59,30 +59,87 @@ export const addCustomer =async(req:Request,res:Response)=>{
             .send({ success: false, message: "this email customer id already exists" });
         }
      const hashedPassword =  await hashPassword(req.body.password);
+   
         const customer = await Customer.create({
           
           email: req.body.email,
           username: req.body.username,
           password: hashedPassword,
           name:{
-            firstName:req.body.firstName,
-            lastName:req.body.lastName
+            firstName:req.body.name.firstName,
+            lastName:req.body.name.lastName
           },
           address:{
-            city:req.body.city,
-            street:req.body.street,
-            zipcode:req.body.zipcode
+            city:req.body.address.city,
+            street:req.body.address.street,
+            zipcode:req.body.address.zipcode
           },
           phone: req.body.phone,
         });
+        console.log(customer)
         await customer.save();
         res.status(200).send({success:true,message:"customer added"});
       } catch (error) {
+        console.log(error)
         return res.status(500).send({success:false,message:"internal server error"})
       }
 };
 
+export const loginCustomer = async(req:Request, res:Response)=>{
+  try {
+      
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(403)
+        .send({ status: false, message: "all fields are mandatory" });
+    }
 
+    const existingCustomer = await Customer.findOne({ email:email });
+   
+    if (!existingCustomer) {
+      return res
+        .status(403)
+        .send({ status: false, message: "user doesnt exist" });
+    }
+
+    const isPasswordMatched = await verifyPassword(
+      password,
+      existingCustomer.password as string
+    );
+    
+    if (!isPasswordMatched) {
+      return res
+        .status(403)
+        .send({ status: false, message: "invalid credentials" });
+    }
+    
+    const user = {
+      _id: existingCustomer._id,
+          email:existingCustomer.email,
+          username:existingCustomer.username,
+          
+          name:{
+            firstName:existingCustomer.name.firstName,
+            lastName:existingCustomer.name.lastName
+          },
+          address:{
+            city:existingCustomer.address.city,
+            street:existingCustomer.address?.street,
+            zipcode:existingCustomer.address?.zipcode
+          },
+          phone: existingCustomer.phone
+        
+    }
+   
+
+    res
+      .status(200)
+      .send({ status: true, message: "user logged in successfully", user });
+  } catch (error) {
+    res.status(500).send({status:false, message:"internal server error"})
+  }
+}
 export const updateCustomer =async(req:Request,res:Response)=>{
   try {
     const validation = customerSchema.safeParse(req.body);

@@ -9,7 +9,7 @@ import connectDb from './utils/connectDb';
 import authRouter from "./routes/auth";
 import productRouter from "./routes/product";
 import cartRouter from "./routes/cart"
-
+import customerRouter from "./routes/customer";
 
 const app = express();
 app.set("trust proxy", 1); // trust first proxy
@@ -28,8 +28,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/api/users",authRouter);
-app.use("/api",productRouter)
-app.use("/api",cartRouter)
+app.use("/api",productRouter);
+app.use("/api",cartRouter);
+app.use("/api",customerRouter)
 const server = http.createServer(app);
 
 

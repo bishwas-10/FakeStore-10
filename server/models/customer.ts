@@ -34,7 +34,7 @@ const customerSchema = new Schema({
     name:{
         firstName:{
             type:String,
-            required:true
+            required:[true,"first name is required"]
         },
         lastName:{
             type:String,
