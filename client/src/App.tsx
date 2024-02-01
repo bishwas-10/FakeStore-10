@@ -2,11 +2,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
-import Customer from "./components/pages/Customer";
 import Navbar from "./components/Navbar";
 import { CssBaseline,ThemeProvider, createTheme } from "@mui/material";
 import { purple, teal } from "@mui/material/colors";
 import {  useTheme } from "./providers/theme-provider";
+import Order from "./components/pages/Orders";
+import Customers from "./components/pages/Customers";
 
 
 
@@ -32,8 +33,11 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/customers" element={<Customer />} />
+               <Route path="/customers" element={<Customers />} /> 
+               <Route path="/orders" element={<Order />} /> 
+               <Route path="/settings" element={<Settings />} />
+             
+            
             </Routes>
           </div>
         </BrowserRouter>
