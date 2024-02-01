@@ -1,4 +1,3 @@
-import  { createContext, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
@@ -7,37 +6,24 @@ import Customer from "./components/pages/Customer";
 import Navbar from "./components/Navbar";
 import { CssBaseline,ThemeProvider, createTheme } from "@mui/material";
 import { purple, teal } from "@mui/material/colors";
+import {  useTheme } from "./providers/theme-provider";
 
-interface ThemeContextType {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-}
 
-export const ThemeContext = createContext<ThemeContextType>({
-  darkMode: false,
-  toggleDarkMode: () => {},
-});
 
 function App() {
   // State to manage the current theme mode
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-
-  // Function to toggle between dark and light themes
-  const toggleDarkMode = () => {
-    setDarkMode((prevDarkMode) => !prevDarkMode);
-  };
-
+  const { theme } = useTheme();
   // Create custom theme based on the current mode
-  const theme = createTheme({
+  const themeUi = createTheme({
     palette: {
-      mode: darkMode ? 'dark' : 'light',
-      primary: darkMode ? purple : teal, // Customize primary color based on theme
+      mode: theme==="dark" ? 'dark' : 'light',
+      primary: theme==="dark" ? purple : teal, // Customize primary color based on theme
     },
   });
 
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
-      <ThemeProvider theme={theme}>
+  
+      <ThemeProvider theme={themeUi}>
         <CssBaseline />
         <BrowserRouter>
           <div>
@@ -52,7 +38,6 @@ function App() {
           </div>
         </BrowserRouter>
       </ThemeProvider>
-    </ThemeContext.Provider>
   );
 }
 

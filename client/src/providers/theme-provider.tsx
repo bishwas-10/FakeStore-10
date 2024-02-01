@@ -1,6 +1,42 @@
-// import { ThemeProvider as NextThemesProvider } from "next-themes"
-// import { type ThemeProviderProps } from "next-themes/dist/types"
+import React, { createContext, useEffect, useState } from "react";
 
-// export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-//   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
-// }
+
+interface ThemeContextType {
+    theme: "dark"| "light";
+    toggleDarkMode: (theme:"dark"|"light") => void;
+  }
+  
+  export const ThemeContext = createContext<ThemeContextType>({
+    theme: localStorage.getItem("ThemeMode") as "light" | "dark",
+    toggleDarkMode: () => {},
+  });
+export const ThemeModeProvider = ({children}:{children:React.ReactNode})=>{
+     // State to manage the current theme
+  const [theme, setTheme] = useState<"dark"|"light">(localStorage.getItem("ThemeMode") as "light" | "dark");
+
+  // Function to toggle between light and dark themes
+  const toggleDarkMode = (theme:"dark"|"light") => {
+   
+    
+    setTheme( theme);
+    localStorage.setItem("ThemeMode",theme);
+  };
+  useEffect(()=>{
+ const theme = localStorage.getItem("ThemeMode");
+ if(!theme){
+    localStorage.setItem("ThemeMode","light");
+ }else{
+    setTheme(theme as "light" | "dark");
+ }
+  },[])
+
+return (
+    <ThemeContext.Provider value={{ theme, toggleDarkMode }}>
+        {children}
+    </ThemeContext.Provider>
+)
+}
+
+export function useTheme() {
+    return React.useContext(ThemeContext);
+  }

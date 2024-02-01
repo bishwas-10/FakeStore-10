@@ -1,12 +1,11 @@
 import { FormControlLabel, Switch } from "@mui/material";
-import { useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { ThemeContext } from "../App";
+import { useTheme } from "../providers/theme-provider";
 
 const Navbar = () => {
   
       
-    const {darkMode, toggleDarkMode}= useContext(ThemeContext);
+    const {theme, toggleDarkMode}= useTheme();
       const {pathname} = useLocation();
       
     
@@ -53,7 +52,7 @@ const Navbar = () => {
         </nav>
         <div>
         <FormControlLabel
-              control={<Switch checked={darkMode} onChange={toggleDarkMode} />}
+              control={<Switch checked={theme==="dark"} onChange={()=>toggleDarkMode(theme==="dark"?"light":"dark")} />}
               label="Dark Mode"
             />
         </div>
