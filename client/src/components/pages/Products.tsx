@@ -1,9 +1,19 @@
+import { Button } from "@mui/material";
 import { PencilIcon } from "lucide-react";
 const Products = () => {
   return (
     <div className="px-4">
-      <a href="/products/addproducts">add products</a>
-      <div className=" flex items-center justify-center font-sans overflow-hidden">
+      <div className="h-20 w-full p-4 flex flex-row items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold tracking-wide uppercase">Product section</h1>
+          <p className="mt-2 ">WHere you can add the products and check all the products listed below
+            with pagination features
+          </p>
+        </div>
+       <Button variant="outlined"><a href="/products/addproducts">add  products</a></Button>  
+      </div>
+    
+      <div className=" flex items-center justify-center font-sans overflow-hidden p-3">
         <div className="w-full">
           <div className=" shadow-md rounded my-6">
             <table className="w-full table-auto">

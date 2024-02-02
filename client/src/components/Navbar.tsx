@@ -7,58 +7,58 @@ const Navbar = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className="border-b">
+    <div className="border-b p-2 ">
       <div className="flex h-16 items-center justify-between px-4 shadow-lg dark:bg-black dark:text-white">
-        <nav className={"flex items-center space-x-4 lg:space-x-6 "}>
+        <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
           <a
             href="/"
-            className={`text-sm   transition-colors hover:text-primary
-            ${pathname === "/" ? "font-medium" : "text-muted-foreground"}
+            className={`p-2 rounded-md transition-all  hover:text-primary
+            ${pathname === "/" ? "font-semibold text-gray-600 bg-gray-300" : "text-muted-foreground"}
             `}
           >
             Overview
           </a>
           <a
             href="/products"
-            className={`text-sm 
+            className={`p-2  
             ${
-              pathname === "/products"
-                ? "font-medium "
+              pathname === "/products" 
+                ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            transition-colors hover:text-primary`}
+            rounded-md transition-all hover:text-primary`}
           >
             Products
           </a>{" "}
           <a
             href="/customers"
-            className={`text-sm 
+            className={`p-2 
             ${
               pathname === "/customers"
-                ? "font-medium "
+                ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            transition-colors hover:text-primary`}
+            rounded-md transition-all hover:text-primary`}
           >
             Customers
           </a>
           <a
             href="/orders"
-            className={`text-sm 
-            ${pathname === "/orders" ? "font-medium " : "text-muted-foreground"}
-            transition-colors hover:text-primary`}
+            className={`p-2 
+            ${pathname === "/orders" ? "font-semibold text-gray-600 bg-gray-300" : "text-muted-foreground"}
+            rounded-md transition-all hover:text-primary`}
           >
             Orders
           </a>
           <a
             href="/settings"
-            className={`text-sm 
+            className={` p-2 
             ${
               pathname === "/settings"
-                ? "font-medium "
+                ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            transition-colors hover:text-primary`}
+            rounded-md transition-all hover:text-primary`}
           >
             Settings
           </a>
