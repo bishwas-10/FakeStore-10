@@ -1,119 +1,150 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormLabel } from "@mui/material";
+import { Button, FormLabel, TextField } from "@mui/material";
+import { Image, UploadIcon } from "lucide-react";
+import { styled } from "@mui/material/styles";
+import { useState } from "react";
+
+const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const ACCEPTED_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
+
 export const productSchema = z.object({
-  title: z.string({ required_error: "title is required" }),
-  price: z.string({ required_error: "price is required" }),
-  category: z.string().optional(),
-  description: z.string().optional(),
-//   image: z.object({
-//     url: z.string().url(),
-//     alt: z.string(),
-//     width: z.number().int(),
-//     height: z.number().int(),
-//   }),
+  title: z.string().min(1,"title is required"),
+  price: z.string().min(1,"title is required"),
+  category: z.string().min(1,"title is required"),
+  description: z.string().min(1,"title is required"),
+  image: z
+    .any()
+    .refine((files) => {
+      return files?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max image size is 5MB.`)
+    .refine(
+      (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
 });
 
 export type TProductSchema = z.infer<typeof productSchema>;
 
 const AddProducts = () => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+    setSelectedFile(file);
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<TProductSchema>({
     resolver: zodResolver(productSchema),
+    defaultValues: {
+      
+      image: selectedFile,
+    },
     reValidateMode: "onChange",
   });
-
+console.log(errors)
   const onSubmit = async (data: TProductSchema) => {
-    console.log("aayo")
+    console.log("aayo");
     console.log(data);
   };
 
   return (
-    <div>
+    <div className=" w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-y-2 mt-4 ease-in-out"
+        className="flex flex-col gap-4 mt-4 ease-in-out w-[50%]"
       >
-        <div className="flex flex-col gap-2 w-[100%]">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="title">title</FormLabel>
-            <input
-              type="text"
+            <TextField
               id="title"
-              className="px-4 py-2 rounded"
-              // onChange={(e) => handleInputChange("projectTitle", e.target.value)}
+              label="title"
+              variant="outlined"
+              error={!!errors.title} 
+              helperText={errors.title ? "title is required" : ""}
               {...register("title", { required: true })}
             />
-            {errors.title && (
-              <span className="text-red-500">{errors.title.message}</span>
-            )}
+
+           
           </div>
           <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="category">category</FormLabel>
-            <input
-              type="string"
+            <TextField
               id="category"
-              className="px-4 py-2 rounded"
-              // onChange={(e) => handleInputChange("projectTitle", e.target.value)}
+              label="category"
+              variant="outlined"
+              error={!!errors.category} 
+              helperText={errors.category ? "category is required" : ""}
               {...register("category", { required: true })}
             />
-            {errors.category && (
-              <span className="text-red-500">{errors.category.message}</span>
-            )}
+
+            
           </div>
-      
+
           <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="price">price</FormLabel>
-            <input
-              type="text"
+            <TextField
               id="price"
-              className="px-4 py-2 rounded"
-              // onChange={(e) => handleInputChange("projectTitle", e.target.value)}
+              label="price"
+              variant="outlined"
+              error={!!errors.price} 
+              helperText={errors.price ? "Price is required" : ""}
               {...register("price", { required: true })}
             />
-            {errors.price && (
-              <span className="text-red-500">{errors.price.message}</span>
-            )}
+
+           
           </div>
           <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="description">Description</FormLabel>
-            <textarea
+            <TextField
+           
               id="description"
-              rows={6}
-              cols={50}
-              placeholder="Enter description..."
-              className="w-full px-3 py-2 border rounded-md bg text-gray-700 
-              leading-tight focus:outline-none focus:shadow-outline"
-              //onChange={(e) => handleInputChange("description", e.target.value)}
-              {...register("description")}
-            ></textarea>
-            {errors.description && (
-              <span className="text-red-500">{errors.description.message}</span>
-            )}
-          </div>
-          {/* <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="image">Image</FormLabel>
-            <input
-              type="file"
-              id="image"
-              className="px-4 py-2 rounded"
-              // onChange={(e) => handleInputChange("projectTitle", e.target.value)}
-              {...register("image", { required: true })}
+              label="description"
+              variant="outlined"
+              multiline
+              maxRows={4}
+              error={!!errors.description} // Set error prop based on the presence of errors
+              helperText={errors.description ? "Description is required" : ""} // Display error message if there are errors
+              {...register("description", { required: true })}
+              
             />
-            {errors.image && (
-              <span className="text-red-500">{errors.image.message}</span>
-            )}
-          </div> */}
+
+          </div>
+          <div className="flex flex-col gap-1">
+            <div>
+              <Button variant="outlined">
+                <input
+                  type="file"
+                  className="hidden"
+                  id="fileInput"
+                  onChange={handleFileChange}
+                  
+                />
+                <FormLabel htmlFor="fileInput" className="flex flex-row gap-2 items-center">
+                  <UploadIcon />
+                  <span className="whitespace-nowrap text-sm">choose your image</span>
+                </FormLabel>
+              </Button>
+              {selectedFile && (
+        <div className="flex items-center gap-2">
+          <span>Selected file: {selectedFile.name}</span>
+          {/* You can add a button to remove the selected file if needed */}
         </div>
-
-        {/* Existing email, password, confirmPassword inputs */}
-        {/* ... */}
-
+      )}
+              {errors.image && (
+                <span className="text-red-500">error uploading file</span>
+              )}
+              
+            </div>
+          </div>
+        </div>
         <button
           type="submit"
           className="bg-blue-500 text-white disabled:bg-gray-500 py-2 rounded"
