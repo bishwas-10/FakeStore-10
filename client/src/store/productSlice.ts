@@ -2,12 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 import { TProductSchema } from "../components/pages/sub-components/add-products";
 
 
-const initialState:TProductSchema={
-    title: "",
-    price:"",
-    category:"",
-    description: "",
-    image:null,
+// const initialState:TProductSchema={
+//     title: "",
+//     price:"",
+//     category:"",
+//     description: "",
+//     image:null,
+// }
+
+interface ProductStateProps{
+    products:TProductSchema[];
+    status:'idle'|'loading'|'success'|'failed',
+    errorMessage:string | null;
+    newlyAddedProduct:TProductSchema | null;
+}
+
+const initialState:ProductStateProps={
+    products:[],
+    status:'idle'||'loading'||'success'||'failed',
+    errorMessage:null,
+    newlyAddedProduct:null
 }
 
 const productSlice = createSlice({
@@ -15,8 +29,8 @@ const productSlice = createSlice({
     initialState,
     reducers:{
         addProduct(state,action){
-            console.log(action.payload)
-           return {...state, ...action.payload}
+           console.log(action.payload)
+           state.newlyAddedProduct= { ...action.payload}
         }
     }
 
