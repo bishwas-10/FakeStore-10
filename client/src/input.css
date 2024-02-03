@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+th,td{
+    border:1px solid #695e5e;
+}
+
+.borders{
+    border:1px solid #464242;
+}
+

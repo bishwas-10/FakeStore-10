@@ -65,7 +65,6 @@ export const addProduct = async (req: Request, res: Response) => {
     //     .status(400)
     //     .send({ sucess: false, message: validation.error.issues[0].message });
     // }
-console.log(req.body.rating)
     const existingProduct = await Product.findOne({title:req.body.title });
     if (existingProduct) {
       return res
