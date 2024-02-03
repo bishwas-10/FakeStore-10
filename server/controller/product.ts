@@ -102,7 +102,7 @@ export const editProduct =async (req:Request, res:Response) => {
     if (req.params.id == null) {
      return res.status(403).send({
         success: false,
-        message: 'cart id should be provided',
+        message: 'product id should be provided',
         product: null
       })};
     const existingProduct = await Product.findOne({ _id: req.params.id });
@@ -111,13 +111,22 @@ export const editProduct =async (req:Request, res:Response) => {
         .status(400)
         .send({ success: false, message: "products not found" });
     };
+    console.log(req.body)
     const editedProduct = await Product.findOneAndUpdate({_id:req.params.id},{
-      ...req.body
+      title: req.body.title,
+      price: req.body.price,
+      category: req.body.category,
+      description: req.body.description,
+      image: req.body.image,
+      rating:{
+        rate:req.body.rating.rate,
+        count:req.body.rating.count
+      }
     }, {
       new: true,
       runValidators: true,
     });
-    
+    console.log(editedProduct?.title)
      res.status(200).send({success:true,message:"edited successfully",product:editedProduct})
   } catch (error) {
     return res.status(500).send({success:false,message:"internal server error"});

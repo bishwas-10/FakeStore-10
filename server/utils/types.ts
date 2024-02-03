@@ -9,7 +9,11 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 export const productSchema = z.object({
     title:z.string({required_error:"title is required"}),
-    price:z.number({required_error:"price is required"}),
+    price: z.string()
+    .min(1, "Price is required")
+    .refine((value) => /^\d+$/.test(value), {
+      message: "Price must contain only numeric characters",
+    }),
     category:z.string({required_error:"category is required"}),
     description:z.string({required_error:"description is required"}),
     image:z

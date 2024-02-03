@@ -25,33 +25,41 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 
 export const productSchema = z.object({
-  id:z.string().optional(),
-  updatedAt:z.string().optional(),
-  addedAt:z.string().optional(),
+  id: z.string().optional(),
+  updatedAt: z.string().optional(),
+  addedAt: z.string().optional(),
   title: z.string().min(1, "title is required"),
-  price: z.string().min(1, "title is required"),
-  category: z.string().min(1, "title is required"),
-  description: z.string().min(1, "title is required"),
+  price: z.string({ required_error: "Price is required" })
+  .min(1, "Price is required")
+  .refine((value) => /^\d+$/.test(value), {
+    message: "Price must contain only numeric characters",
+  }),
+  category: z.string().min(1, "category is required"),
+  description: z.string().min(1, "description is required"),
   image: z.any().refine((base64Data) => {
     // Check if the base64 data starts with 'data:image'
     return base64Data && base64Data.startsWith("data:image");
   }, "Only image files in base64 format are supported."),
   rating: z.object({
-    rate: z.string({required_error:"Rate is required"}).min(1, "Rate must be a number").refine((value) => /^\d+$/.test(value), {
-      message: "Rate must contain only numeric characters",
-    }), // Ensure "rate" is validated as a number
-    count: z.string({required_error:"Count is required"}).min(1, "Count must be a number").refine((value) => /^\d+$/.test(value), {
-      message: "Count must contain only numeric characters",
-    }) // Ensure "count" is validated as a number
+    rate: z
+      .string({ required_error: "Rate is required" })
+      .min(1, "Rate must be a number")
+      .refine((value) => /^\d+$/.test(value), {
+        message: "Rate must contain only numeric characters",
+      }), // Ensure "rate" is validated as a number
+    count: z
+      .string({ required_error: "Count is required" })
+      .min(1, "Count must be a number")
+      .refine((value) => /^\d+$/.test(value), {
+        message: "Count must contain only numeric characters",
+      }), // Ensure "count" is validated as a number
   }),
 });
 
 export type TProductSchema = z.infer<typeof productSchema>;
 
 const AddProducts = () => {
-  const [selectedFile, setSelectedFile] = useState<string>();
   const [imageName, setImageName] = useState<string>("");
-  console.log(imageName)
   const dispatch = useDispatch();
 
   const product = useSelector(
@@ -63,18 +71,19 @@ const AddProducts = () => {
     watch,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<TProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      title:product?.title,
-      price:product?.price,
+      title: product?.title,
+      price: product?.price,
       image: product?.image,
       description: product?.description,
-      category:product?.category,
-      rating:{
-        rate:product?.rating.rate,
-        count:product?.rating.count
-      }
+      category: product?.category,
+      rating: {
+        rate: product?.rating.rate,
+        count: product?.rating.count,
+      },
     },
     reValidateMode: "onChange",
   });
@@ -83,9 +92,7 @@ const AddProducts = () => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      
       setImageName(file.name);
-      setSelectedFile(reader.result?.toString());
       setValue("image", reader.result?.toString() as string);
     };
     reader.readAsDataURL(file);
@@ -96,26 +103,51 @@ const AddProducts = () => {
     convert2base64(file);
   };
   const onSubmit = async (data: TProductSchema) => {
-   
     const productData = await instance({
-      url:'/products',
-      method:'POST',
-      data:{
-        title:data.title,
-        category:data.category,
-        price:data.price,
-        image:data.image,
-        description:data.description,
-        rating:{
-          rate:data.rating.rate,
-          count:data.rating.count
-        }
-      }
-     
-    })
- console.log(productData)
+      url:  `/products`,
+      method:  "POST",
+      data: {
+        title: data.title,
+        category: data.category,
+        price: data.price,
+        image: data.image,
+        description: data.description,
+        rating: {
+          rate: data.rating.rate,
+          count: data.rating.count,
+        },
+      },
+    });
+    console.log(productData);
     dispatch(addProduct(data));
+    reset();
   };
+
+const editProduct = async(data:TProductSchema)=>{
+  console.log(data)
+  const productData = await instance({
+    url:`/products/${data.id}` ,
+    method:  "PUT" ,
+    data: {
+      title: data.title,
+      category: data.category,
+      price: data.price,
+      image: data.image,
+      description: data.description,
+      rating: {
+        rate: data.rating.rate,
+        count: data.rating.count,
+      },
+    },
+  });
+  if(productData.data.success){
+    console.log(productData.data.product)
+     dispatch(addProduct(productData.data.product));
+     reset();
+  }
+ 
+
+}
 
   return (
     <div className="w-full flex flex-row gap-2 p-4">
@@ -149,7 +181,7 @@ const AddProducts = () => {
               <TextField
                 id="price"
                 label="price"
-                type="number"
+                
                 variant="outlined"
                 error={!!errors.price}
                 helperText={errors.price ? "Price is required" : ""}
@@ -158,25 +190,24 @@ const AddProducts = () => {
             </div>
             <div className="flex flex-col gap-1">
               <div>
-              
-                  <Button variant="outlined">
-                    <input
-                      type="file"
-                      className="hidden"
-                      id="fileInput"
-                      onChange={handleFileChange}
-                    />
-                    <FormLabel
-                      htmlFor="fileInput"
-                      className="flex flex-row gap-2 items-center"
-                    >
-                      <UploadIcon />
-                      <span className="whitespace-nowrap text-sm">
-                        choose your image
-                      </span>
-                    </FormLabel>
-                  </Button>
-                  {watch("image") && watch("image").length !== 0 && (
+                <Button variant="outlined">
+                  <input
+                    type="file"
+                    className="hidden"
+                    id="fileInput"
+                    onChange={handleFileChange}
+                  />
+                  <FormLabel
+                    htmlFor="fileInput"
+                    className="flex flex-row gap-2 items-center"
+                  >
+                    <UploadIcon />
+                    <span className="whitespace-nowrap text-sm">
+                      choose your image
+                    </span>
+                  </FormLabel>
+                </Button>
+                {watch("image") && watch("image").length !== 0 && (
                   <strong>Selected file: {imageName}</strong>
                 )}
               </div>
@@ -191,7 +222,7 @@ const AddProducts = () => {
               <TextField
                 id="rate"
                 label="rate"
-                type="number"
+                
                 variant="outlined"
                 error={!!errors.rating?.rate} // Update error check to reflect nested structure
                 helperText={
@@ -203,7 +234,7 @@ const AddProducts = () => {
               <TextField
                 id="count"
                 label="count"
-                type="number"
+                
                 variant="outlined"
                 error={!!errors.rating?.count} // Update error check to reflect nested structure
                 helperText={
@@ -225,12 +256,14 @@ const AddProducts = () => {
               />
             </div>{" "}
           </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white disabled:bg-gray-500 py-2 rounded"
-          >
-            preview
-          </button>
+         
+            <Button
+              type="submit"
+              className="bg-blue-500 text-white disabled:bg-gray-500 py-2 rounded"
+            >
+              {product?.id ? "Edit":'Add'}
+            </Button>
+          
         </form>
       </div>
       <div className="w-1/2 p-4">
@@ -299,8 +332,13 @@ const AddProducts = () => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button variant="outlined" size="small" className="w-full">
-                  Add{" "}
+                <Button
+                  onClick={() => dispatch(addProduct(product))}
+                  variant="outlined"
+                  size="small"
+                  className="w-full"
+                >
+                  EDIT
                 </Button>
               </CardActions>
             </Card>

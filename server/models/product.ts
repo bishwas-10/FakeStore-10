@@ -2,7 +2,7 @@ import {model, Schema , Document} from "mongoose";
 
 export interface ProductProps extends Document {
     title:string;
-    price:number;
+    price:string;
     category:string;
     description:string;
     image:string;
@@ -20,7 +20,7 @@ const productSchema = new Schema<ProductProps>({
         required:true,
     },
     price:{
-        type:Number,
+        type:String,
         required:true,
     },
     description:{
