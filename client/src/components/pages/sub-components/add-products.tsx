@@ -25,6 +25,9 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 
 export const productSchema = z.object({
+  id:z.string().optional(),
+  updatedAt:z.string().optional(),
+  addedAt:z.string().optional(),
   title: z.string().min(1, "title is required"),
   price: z.string().min(1, "title is required"),
   category: z.string().min(1, "title is required"),
@@ -48,6 +51,7 @@ export type TProductSchema = z.infer<typeof productSchema>;
 const AddProducts = () => {
   const [selectedFile, setSelectedFile] = useState<string>();
   const [imageName, setImageName] = useState<string>("");
+  console.log(imageName)
   const dispatch = useDispatch();
 
   const product = useSelector(
@@ -62,7 +66,15 @@ const AddProducts = () => {
   } = useForm<TProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      image: selectedFile,
+      title:product?.title,
+      price:product?.price,
+      image: product?.image,
+      description: product?.description,
+      category:product?.category,
+      rating:{
+        rate:product?.rating.rate,
+        count:product?.rating.count
+      }
     },
     reValidateMode: "onChange",
   });
@@ -71,6 +83,7 @@ const AddProducts = () => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
+      
       setImageName(file.name);
       setSelectedFile(reader.result?.toString());
       setValue("image", reader.result?.toString() as string);
@@ -145,7 +158,7 @@ const AddProducts = () => {
             </div>
             <div className="flex flex-col gap-1">
               <div>
-                {!watch("image") || watch("image").length === 0 ? (
+              
                   <Button variant="outlined">
                     <input
                       type="file"
@@ -163,7 +176,7 @@ const AddProducts = () => {
                       </span>
                     </FormLabel>
                   </Button>
-                ) : (
+                  {watch("image") && watch("image").length !== 0 && (
                   <strong>Selected file: {imageName}</strong>
                 )}
               </div>

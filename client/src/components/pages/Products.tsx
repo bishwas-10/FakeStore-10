@@ -3,13 +3,34 @@ import { Button } from "@mui/material";
 import { PencilIcon, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { fetchProducts, removeProducts } from "../../store/productSlice";
+import {
+  addProduct,
+  fetchProducts,
+  removeProducts,
+} from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-
+import { instance } from "../../api/instance";
+import { TProductSchema } from "./sub-components/add-products";
+import { Link } from "react-router-dom";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
-  console.log(products[0])
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const deleteProduct = async (id: string) => {
+    const response = await instance({
+      url: `/products/${id}`,
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status) {
+      dispatch(fetchProducts());
+    }
+  };
+  const editProduct = (product: TProductSchema) => {
+    dispatch(addProduct(product));
+  };
+
   useEffect(() => {
     dispatch(fetchProducts());
     return () => {
@@ -48,9 +69,9 @@ const Products = () => {
                   <th className="py-3 px-0 text-center">
                     Rating
                     <br />
-                    <div className="w-full flex justify-between">
-                      <td className="w-full">rate&#40;avg&#41;</td>
-                      <td className="w-full">count</td>
+                    <div className="w-full flex justify-between ">
+                      <div className="w-full borders">rate&#40;avg&#41;</div>
+                      <div className="w-full borders">count</div>
                     </div>
                   </th>
                   <th className="py-3 px-0 text-center">Last Updated</th>
@@ -70,9 +91,7 @@ const Products = () => {
                         >
                           <td className="py-3 px-0 text-left whitespace-nowrap">
                             <div className="flex items-center justify-center">
-                              
-                                {index + 1}
-                              
+                              {index + 1}
                             </div>
                           </td>
                           <td className="p-3 text-center">
@@ -99,19 +118,34 @@ const Products = () => {
                           </td>
                           <td className="py-3 px-0 text-center">
                             <div className="w-full flex justify-between">
-                              <div className="w-full borders">{product.rating.rate}</div>
-                              <div className="w-full borders">{product.rating.count}</div>
+                              <div className="w-full borders">
+                                {product.rating.rate}
+                              </div>
+                              <div className="w-full borders">
+                                {product.rating.count}
+                              </div>
                             </div>
                           </td>
                           <td className="py-3 px-0 text-center">
-                            <p className="text-center ">{product.title}</p>
+                            <p className="text-center ">{product.updatedAt}</p>
                           </td>
 
                           <td className="py-3 px-0 text-center">
                             <div className="flex item-center justify-center">
-                              <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120"><Trash2/></div>
+                              <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120">
+                                <Trash2
+                                  onClick={() =>
+                                    deleteProduct(product.id as string)
+                                  }
+                                />
+                              </div>
                               <div className="w-6 mr-2  transform hover:text-purple-500 hover:scale-120">
-                                <PencilIcon />
+                                <Link to={'addproducts'}>
+                                
+                                  <PencilIcon
+                                    onClick={() => editProduct(product)}
+                                  />
+                                </Link>
                               </div>
                             </div>
                           </td>
