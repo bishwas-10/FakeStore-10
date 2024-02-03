@@ -3,12 +3,12 @@ import {model, Schema , Document} from "mongoose";
 export interface ProductProps extends Document {
     title:string;
     price:number;
-    category?:string;
-    description?:string;
+    category:string;
+    description:string;
     image:string;
-    rating?:{
+    rating:{
         rate:string;
-        count?:number;
+        count:string;
     }
 }
 
@@ -34,8 +34,14 @@ const productSchema = new Schema<ProductProps>({
         required:true
     },
     rating:{
-        rate:String,
-        count:Number,
+        rate:{
+            type:String,
+            required:true
+        },
+        count:{
+            type:String,
+            required:true
+        },
     }
 },
 {

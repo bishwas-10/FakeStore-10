@@ -1,12 +1,21 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, CardActions, CardContent, CardMedia, FormLabel, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  FormLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { UploadIcon } from "lucide-react";
 import { useState } from "react";
 import { addProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+import { instance } from "../../../api/instance";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -24,6 +33,14 @@ export const productSchema = z.object({
     // Check if the base64 data starts with 'data:image'
     return base64Data && base64Data.startsWith("data:image");
   }, "Only image files in base64 format are supported."),
+  rating: z.object({
+    rate: z.string({required_error:"Rate is required"}).min(1, "Rate must be a number").refine((value) => /^\d+$/.test(value), {
+      message: "Rate must contain only numeric characters",
+    }), // Ensure "rate" is validated as a number
+    count: z.string({required_error:"Count is required"}).min(1, "Count must be a number").refine((value) => /^\d+$/.test(value), {
+      message: "Count must contain only numeric characters",
+    }) // Ensure "count" is validated as a number
+  }),
 });
 
 export type TProductSchema = z.infer<typeof productSchema>;
@@ -66,6 +83,24 @@ const AddProducts = () => {
     convert2base64(file);
   };
   const onSubmit = async (data: TProductSchema) => {
+   
+    const productData = await instance({
+      url:'/products',
+      method:'POST',
+      data:{
+        title:data.title,
+        category:data.category,
+        price:data.price,
+        image:data.image,
+        description:data.description,
+        rating:{
+          rate:data.rating.rate,
+          count:data.rating.count
+        }
+      }
+     
+    })
+ console.log(productData)
     dispatch(addProduct(data));
   };
 
@@ -97,27 +132,15 @@ const AddProducts = () => {
                 {...register("category", { required: true })}
               />
             </div>
-
             <div className="flex flex-col gap-1">
               <TextField
                 id="price"
                 label="price"
+                type="number"
                 variant="outlined"
                 error={!!errors.price}
                 helperText={errors.price ? "Price is required" : ""}
                 {...register("price", { required: true })}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <TextField
-                id="description"
-                label="description"
-                variant="outlined"
-                multiline
-                maxRows={4}
-                error={!!errors.description} // Set error prop based on the presence of errors
-                helperText={errors.description ? "Description is required" : ""} // Display error message if there are errors
-                {...register("description", { required: true })}
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -150,6 +173,44 @@ const AddProducts = () => {
                 )}
               </>
             </div>
+            <div className="flex flex-col gap-1">
+              <FormLabel>Rating</FormLabel>
+              <TextField
+                id="rate"
+                label="rate"
+                type="number"
+                variant="outlined"
+                error={!!errors.rating?.rate} // Update error check to reflect nested structure
+                helperText={
+                  errors.rating?.rate ? errors.rating.rate?.message : ""
+                } // Update helper text to access nested error message
+                {...register("rating.rate", { required: true })}
+              />
+
+              <TextField
+                id="count"
+                label="count"
+                type="number"
+                variant="outlined"
+                error={!!errors.rating?.count} // Update error check to reflect nested structure
+                helperText={
+                  errors.rating?.count ? errors.rating.count?.message : ""
+                } // Update helper text to access nested error message
+                {...register("rating.count", { required: true })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <TextField
+                id="description"
+                label="description"
+                variant="outlined"
+                multiline
+                maxRows={4}
+                error={!!errors.description} // Set error prop based on the presence of errors
+                helperText={errors.description ? "Description is required" : ""} // Display error message if there are errors
+                {...register("description", { required: true })}
+              />
+            </div>{" "}
           </div>
           <button
             type="submit"
@@ -195,34 +256,41 @@ const AddProducts = () => {
                 </div>
               </div>
             </div> */}
-            <Card sx={{ maxWidth: "100%",padding:"10px" }}>
-    <div className="w-full flex items-center justify-center">
-    <img
-      className="object-contain h-80 w-72 obe"
-        src={product.image}
-        alt={product.title}
-      />
-    </div>
-    
-      <CardContent className="flex flex-col gap-2">
-      <Typography variant="body1" color="text.secondary">
-          <strong>Title:</strong>{" "}{product.title}
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          <strong>Price:</strong>{" "}{product.price}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          <strong>Category:</strong>{" "}{product.category}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-        <strong>Description:</strong>{" "}{product.description}
+            <Card sx={{ maxWidth: "100%", padding: "10px" }}>
+              <div className="w-full flex items-center justify-center">
+                <img
+                  className="object-contain h-80 w-72 obe"
+                  src={product.image}
+                  alt={product.title}
+                />
+              </div>
 
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button variant="outlined" size="small" className="w-full">Add </Button>
-      </CardActions>
-    </Card>
+              <CardContent className="flex flex-col gap-2">
+                <Typography variant="body1" color="text.secondary">
+                  <strong>Title:</strong> {product.title}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  <strong>Price:</strong> {product.price}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Category:</strong> {product.category}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Rate:</strong> {product.rating.rate}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Count:</strong> {product.rating.count}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Description:</strong> {product.description}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button variant="outlined" size="small" className="w-full">
+                  Add{" "}
+                </Button>
+              </CardActions>
+            </Card>
           </div>
         )}
       </div>

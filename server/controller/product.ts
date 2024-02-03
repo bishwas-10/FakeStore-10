@@ -58,14 +58,14 @@ try {
 
 export const addProduct = async (req: Request, res: Response) => {
   try {
-    const validation = productSchema.safeParse(req.body);
-    if (!validation.success) {
-      return res
-        .status(400)
-        .send({ sucess: false, message: validation.error.issues[0].message });
-    }
-    const totalProduct = await Product.countDocuments();
-
+    // const validation = productSchema.safeParse(req.body);
+    // if (!validation.success) {
+    //   console.log(typeof(req.body.rating.rate))
+    //   return res
+    //     .status(400)
+    //     .send({ sucess: false, message: validation.error.issues[0].message });
+    // }
+console.log(req.body.rating)
     const existingProduct = await Product.findOne({title:req.body.title });
     if (existingProduct) {
       return res
@@ -80,11 +80,16 @@ export const addProduct = async (req: Request, res: Response) => {
       category: req.body.category,
       description: req.body.description,
       image: req.body.image,
+      rating:{
+        rate:req.body.rating.rate,
+        count:req.body.rating.count
+      }
     });
     await product.save();
     res.status(200).send({success:true,message:"product added"});
-  } catch (error) {
-    return res.status(500).send({success:false,message:"internal server error"})
+  } catch (error:any) {
+    console.log(error)
+    return res.status(500).send({success:false,message:error.message})
   }
 };
 export const editProduct =async (req:Request, res:Response) => {

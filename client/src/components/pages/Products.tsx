@@ -1,6 +1,12 @@
 import { Button } from "@mui/material";
 import { PencilIcon } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { TProductSchema } from "./sub-components/add-products";
 const Products = () => {
+
+  const products = useSelector((state:RootState)=>state.product.products);
+  console.log(products);
   return (
     <div className="px-4">
       <div className="h-20 w-full p-4 flex flex-row items-center justify-between">
@@ -32,40 +38,44 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody className=" text-sm font-medium">
-                <tr className="border-b border-gray-200 ">
+
+                {products.length!==0 && (
+                  <>
+                  {products.map((product:TProductSchema,index:number)=>{
+ <tr className="border-b border-gray-200 ">
                   <td className="py-3 px-0 text-left whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="mr-2"></div>
-                      <span className="font-medium">5</span>
+                      <span className="font-medium">{index}</span>
                     </div>
                   </td>
                   <td className="py-3 px-0 text-left">
                     <div className="flex items-center">
                       <div className="mr-2"></div>
-                      <span>tuyik</span>
+                      <span>{product.title}</span>
                     </div>
                   </td>
                   <td className="py-3 px-0 text-center">
-                    <div className="flex items-center justify-center">2542</div>
+                    <div className="flex items-center justify-center">{product.price}</div>
                   </td>
-                  <td id="address" className="py-3 px-0 text-center">
+                  <td id="category" className="py-3 px-0 text-center">
                     <div className="">
-                      <strong>dfvbfd</strong>,
+                      <strong>{product.category}</strong>,
                     </div>
                   </td>
 
                   <td className="py-3 px-0 text-center">
-                    <div className="flex items-center justify-center">fsaf</div>
+                    <img src={product.image} alt={product.title} />
                   </td>
                   <td className="py-3 px-0 text-center">
                     <div className="flex items-center justify-center">
-                      Description
+                      {product.description}
                     </div>
                   </td>
                   <td className="py-3 px-0 text-center">
                     <div className="flex gap-4 items-center justify-center">
-                      <p>wd</p>
-                      <p>swd</p>
+                      <p>{product.rating.rate}</p>
+                      <p>{product.rating.count}</p>
                     </div>
                   </td>
                   <td className="py-3 px-0 text-center">
@@ -81,6 +91,12 @@ const Products = () => {
                     </div>
                   </td>
                 </tr>
+                  })}
+                  
+                  </>
+                  
+                )}
+               
               </tbody>
             </table>
           </div>

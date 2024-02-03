@@ -10,11 +10,18 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 export const productSchema = z.object({
     title:z.string({required_error:"title is required"}),
     price:z.number({required_error:"price is required"}),
-    category:z.string().optional(),
-    description:z.string().optional(),
+    category:z.string({required_error:"category is required"}),
+    description:z.string({required_error:"description is required"}),
     image:z
-    .string({required_error:"image is required"})
-    ,
+    .string({required_error:"image is required"}),
+    rating: z.object({
+      rate: z.string({required_error:"Rate is required"}).min(1, "Rate must be a number").refine((value) => /^\d+$/.test(value), {
+        message: "Rate must contain only numeric characters",
+      }), // Ensure "rate" is validated as a number
+      count: z.string({required_error:"Count is required"}).min(1, "Count must be a number").refine((value) => /^\d+$/.test(value), {
+        message: "Count must contain only numeric characters",
+      }) // Ensure "count" is validated as a number
+    }),
 });
 
 export const customerSchema = z.object({
