@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import {
   Button,
@@ -14,28 +14,30 @@ import {
 import { Link } from "react-router-dom";
 import { instance } from "../../../api/instance";
 import { z } from "zod";
+import { addCustomer } from "../../../store/customerSlice";
 export const customerSchema = z.object({
     id: z.string().optional(),
     updatedAt: z.string().optional(),
     addedAt: z.string().optional(),
-    email: z.string({ required_error: "email is required" }),
-    username: z.string({ required_error: "username is required" }),
-    password: z.string(),
+    email: z.string().email().min(1,"email is required"),
+    username: z.string().min(1,"username is required"),
+    password: z.string().optional(),
     name: z.object({
-      firstName: z.string({ required_error: "first name is required" }),
-      lastName: z.string({ required_error: "last name is required" }),
+      firstName: z.string().min(1,"first name is required"),
+      lastName: z.string().min(1,"last name is required"),
     }),
     address: z.object({
-      city: z.string({ required_error: "city is required" }),
+      city: z.string().min(1,"city is required"),
       street: z.string().optional(),
       zipcode: z.string().optional(),
     }),
-    phone: z.string({ required_error: "phone number is required" }),
+    phone: z.string().min(1,"phone is required"),
   });
   
   export type TCustomerSchema = z.infer<typeof customerSchema>;
 
 const EditCustomers = () => {
+  const dispatch =useDispatch();
   const customer = useSelector(
     (state: RootState) => state.customer.selectedCustomer
   );
@@ -62,6 +64,7 @@ const EditCustomers = () => {
       phone: customer?.phone,
     },
   });
+  console.log(errors)
   const onSubmit = async (data: TCustomerSchema) => {
     console.log("aaipugyo");
     if (customer?.id) {
@@ -88,7 +91,9 @@ const EditCustomers = () => {
           phone: data.phone,
         },
       });
-      console.log(response);
+      if(response.data.success){
+        dispatch(addCustomer(response.data.customer));
+      }
     }
   };
 
@@ -171,23 +176,12 @@ const EditCustomers = () => {
               {...register("address.zipcode")}
             />
           </div>
-          <div className="flex flex-col gap-1">
-            <TextField
-              id="city"
-              label="city"
-              variant="outlined"
-              error={!!errors.address?.city}
-              helperText={errors.address?.city ? "city is required" : ""}
-              {...register("address.city", { required: true })}
-            />
-          </div>
+         
           <div className="flex flex-col gap-1">
             <TextField
               id="phone"
               label="phone"
               variant="outlined"
-              multiline
-              maxRows={4}
               error={!!errors.phone} // Set error prop based on the presence of errors
               helperText={errors.phone ? "phone is required" : ""} // Display error message if there are errors
               {...register("phone", { required: true })}

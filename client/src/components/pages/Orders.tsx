@@ -7,25 +7,46 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, Trash } from "lucide-react";
+import { z } from "zod";
 
+
+
+export const CartPropsSchema = z.object({
+  id: z.string().optional(),
+  updatedAt: z.string().optional(),
+  addedAt: z.string().optional(),
+  quantity: z.number().default(1),
+  customerId: z.number().min(1,"customer id is required"),
+  product: z.string().min(1,"product id is required"),
+  shippingAddress: z.object({
+    city: z.string().min(1,"city is required"),
+    street: z.string().min(1,"street is required"),
+    zipcode: z.string().optional(),
+  }),
+  orderStatus: z.string().min(1,"order status is required"),
+  paymentMethod: z.string().min(1,"order method is required"),
+  paymentStatus: z.string().min(1,"payment status is required"),
+});
+
+export type TCartSchema = z.infer<typeof CartPropsSchema>;
 
 const Order = () => {
-  const [orderStatus, setOrderStatus] = useState<string>("");
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
-  const [payment, setPayment] = useState<string>("");
+  // const [orderStatus, setOrderStatus] = useState<string>("");
+  // const [paymentMethod, setPaymentMethod] = useState<string>("");
+  // const [payment, setPayment] = useState<string>("");
   
-  const handleOrderChange = (event: SelectChangeEvent) => {
-    setOrderStatus(event.target.value as string);
-  };
+  // const handleOrderChange = (event: SelectChangeEvent) => {
+  //   setOrderStatus(event.target.value as string);
+  // };
 
-  const handlePaymentChange = (event: SelectChangeEvent) => {
-    setPaymentMethod(event.target.value as string);
-  };
+  // const handlePaymentChange = (event: SelectChangeEvent) => {
+  //   setPaymentMethod(event.target.value as string);
+  // };
 
-  const handlePayment = (event: SelectChangeEvent) => {
-    setPayment(event.target.value as string);
-  };
+  // const handlePayment = (event: SelectChangeEvent) => {
+  //   setPayment(event.target.value as string);
+  // };
   return (
     <div className="px-4">
       <div className=" flex items-center justify-center font-sans overflow-hidden">
@@ -35,19 +56,22 @@ const Order = () => {
               <thead>
                 <tr className=" uppercase text-sm leading-normal">
                   <th className="py-3 px-0 text-left cursor-pointer">
-                    Order#{" "}
+                    SN
                   </th>
                   <th className="py-3 px-0 text-left">Items</th>
                   <th className="py-3 px-0 text-left cursor-pointer">
-                    Total Amount{" "}
+                    Total Amount
+                  </th>
+                  <th className="py-3 px-0 text-left cursor-pointer">
+                    Customer Details
                   </th>
                   <th className="py-3 px-0 text-center">Shipping Address</th>
                   <th className="py-3 px-0 text-center">Order Status</th>
                   <th className="py-3 px-0 text-center">Payment Method</th>
                   <th className="py-3 px-0 text-center">Payment Status</th>
-                  <th className="py-3 px-0 text-left cursor-pointer"></th>
+                  <th className="py-3 px-0 text-left cursor-pointer">Added Date</th>
                   <th className="py-3 px-0 text-left cursor-pointer">
-                    Last Updated{" "}
+                    Last Updated
                   </th>
                   <th className="py-3 px-0 text-center">Actions</th>
                 </tr>
@@ -69,20 +93,18 @@ const Order = () => {
                   <td className="py-3 px-0 text-center">
                     <div className="flex items-center justify-center">2542</div>
                   </td>
-                  <td id="address" className="py-3 px-0 text-center">
+                  <td id="customer_address" className="py-3 px-0 text-center">
                     <div className="">
-                      <div>
-                        <strong>dfvbfd</strong>,
-                      </div>
-                      <div>dfvbfd,</div>
-                      <div>dfvbfd, </div>
-                      <div>dfvbfd </div>
-                      <div>dfvbfd, </div>
-                      <div>dfvbfd, </div>
+                    customer address
+                    </div>
+                  </td>
+                  <td id="shipping_address" className="py-3 px-0 text-center">
+                    <div className="">
+                    shipping address
                     </div>
                   </td>
                   <td id="status" className="py-3 px-0 text-center">
-                    <Box style={{ height: "20px" }} className="text-sm">
+                    {/* <Box style={{ height: "20px" }} className="text-sm">
                       <FormControl
                         variant="standard"
                         style={{
@@ -135,11 +157,12 @@ const Order = () => {
                           </MenuItem>
                         </Select>
                       </FormControl>
-                    </Box>
+                    </Box> */}
+                    order status
                   </td>
 
-                  <td id="payment status" className="py-3 px-0 text-center">
-                    <Box style={{ height: "20px" }} className="text-sm">
+                  <td id="payment_method" className="py-3 px-0 text-center">
+                    {/* <Box style={{ height: "20px" }} className="text-sm">
                       <FormControl
                         variant="standard"
                         style={{
@@ -180,11 +203,12 @@ const Order = () => {
                           </MenuItem>
                         </Select>
                       </FormControl>
-                    </Box>
+                    </Box> */}
+                    payment method
                   </td>
 
                   <td className="py-3 px-0 text-center">
-                    <Box style={{ height: "20px" }} className="text-sm">
+                    {/* <Box style={{ height: "20px" }} className="text-sm">
                       <FormControl
                         variant="standard"
                         style={{
@@ -225,16 +249,20 @@ const Order = () => {
                           </MenuItem>
                         </Select>
                       </FormControl>
-                    </Box>
+                    </Box> */}
+                    payment status
                   </td>
 
                   <td className="py-3 px-0 text-center">
-                    <div className="flex items-center justify-center"></div>
+                    <div className="flex items-center justify-center">added date</div>
+                  </td>
+                  <td className="py-3 px-0 text-center">
+                    <div className="flex items-center justify-center">updated date</div>
                   </td>
 
                   <td className="py-3 px-0 text-center">
                     <div className="flex item-center justify-center">
-                      <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120"></div>
+                      <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120"><Trash/></div>
                       <div className="w-6 mr-2 transform hover:text-purple-500 hover:scale-120">
                         <PencilIcon />
                       </div>

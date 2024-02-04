@@ -1,27 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { instance } from "../api/instance";
-import { z } from "zod";
+import { TCustomerSchema } from "../components/pages/sub-components/editCustomers";
 
-export const customerSchema = z.object({
-  id: z.string().optional(),
-  updatedAt: z.string().optional(),
-  addedAt: z.string().optional(),
-  email: z.string({ required_error: "email is required" }),
-  username: z.string({ required_error: "username is required" }),
-  password: z.string(),
-  name: z.object({
-    firstName: z.string({ required_error: "first name is required" }),
-    lastName: z.string({ required_error: "last name is required" }),
-  }),
-  address: z.object({
-    city: z.string({ required_error: "city is required" }),
-    street: z.string().optional(),
-    zipcode: z.string().optional(),
-  }),
-  phone: z.string({ required_error: "phone number is required" }),
-});
 
-export type TCustomerSchema = z.infer<typeof customerSchema>;
 
 interface CustomerStateProps {
   customers: TCustomerSchema[];

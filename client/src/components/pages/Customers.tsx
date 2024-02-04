@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import { PencilIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { TCustomerSchema, addCustomer, fetchCustomers, removeCustomers } from "../../store/customerSlice";
+import {  addCustomer, fetchCustomers, removeCustomers } from "../../store/customerSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
+import { TCustomerSchema } from "./sub-components/editCustomers";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
@@ -26,7 +27,7 @@ const Customers = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 uppercase text-sm leading-normal">
-                  <th className="py-3 px-0 text-left cursor-pointer">S.N.</th>
+                  <th className="py-3 px-0 text-center cursor-pointer">S.N.</th>
                   <th className="py-3 px-0 text-center">Email</th>
                   <th className="py-3 px-0 text-center">Username</th>
                   <th className="py-3 px-0 text-center">
@@ -52,13 +53,13 @@ const Customers = () => {
                   customers.map((customer:TCustomerSchema, index) => {
                     return (
                       <tr key={index} className="border-b border-gray-200 ">
-                        <td className="py-3 px-0 text-left whitespace-nowrap">
-                          <span className="font-medium text-center w-full">
+                        <td className="py-3 px-0 text-center whitespace-nowrap">
+                          <span className="font-medium">
                             {index+1}
                           </span>
                         </td>
-                        <td className="py-3 px-0 text-left">
-                          <span className="text-center">{customer.email}</span>
+                        <td className="py-3 px-0 text-center">
+                         {customer.email}
                         </td>
                         <td className="py-3 px-0 text-center">
                           <div className="flex items-center justify-center">
@@ -67,10 +68,10 @@ const Customers = () => {
                         </td>
                         <td className="py-3 px-0 text-center">
                           <div className="flex flex-row justify-around">
-                            <div className="w-full borders">
+                            <div className="w-full borders p-2">
                               {customer.name.firstName}
                             </div>
-                            <div className="w-full borders">
+                            <div className="w-full borders p-2">
                               {customer.name.firstName}
                             </div>
                           </div>
@@ -78,13 +79,13 @@ const Customers = () => {
 
                         <td className="py-3 px-0 text-center">
                           <div className="flex flex-row justify-around">
-                            <div className="w-full borders">
+                            <div className="w-full borders p-2">
                               {customer.address.city}
                             </div>
-                            <div className="w-full borders">
+                            <div className="w-full borders p-2">
                               {customer.address.zipcode}
                             </div>
-                            <div className="w-full borders">
+                            <div className="w-full borders p-2">
                               {customer.address.street}
                             </div>
                           </div>
@@ -100,12 +101,9 @@ const Customers = () => {
                         </td>
 
                         <td className="py-3 px-0 text-center">
-                          <div className="flex item-center justify-center">
-                            <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120"></div>
-                            <div className="w-6 mr-2 transform hover:text-purple-500 hover:scale-120">
+                            <div className="w-full flex items-center justify-center transform hover:text-purple-500 hover:scale-120">
                             <Link to={'editcustomers'}>  <PencilIcon onClick={()=>dispatch(addCustomer(customer))}/></Link>
                             </div>
-                          </div>
                         </td>
                       </tr>
                     );
