@@ -10,6 +10,7 @@ import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
 import AddProducts from "./components/pages/sub-components/add-products";
 import EditCustomers from "./components/pages/sub-components/editCustomers";
+import EditOrders from "./components/pages/sub-components/editOrders";
 
 function App() {
   // State to manage the current theme mode
@@ -38,7 +39,11 @@ function App() {
               <Route index element={<Customers />} />
               <Route path="editcustomers" element={<EditCustomers />} />
             </Route>
-            <Route path="/orders" element={<Order />} />
+            <Route path="/orders">
+              <Route index element={<Order />} />
+              <Route path="editorders" element={<EditOrders />} />
+            </Route>
+          
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>

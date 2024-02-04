@@ -4,6 +4,7 @@ import Product from "./product";
 
 export interface CartProps extends Document {
   quantity: number;
+  totalAmount:string;
   customer: mongoose.Schema.Types.ObjectId;
   product: mongoose.Schema.Types.ObjectId;
   shippingAddress: {
@@ -23,7 +24,10 @@ const cartSchema = new Schema<CartProps>(
       required: true,
       default: 1,
     },
-
+totalAmount:{
+type:String,
+required:true
+},
     customer: {
       type: Schema.Types.ObjectId,
       ref: User,

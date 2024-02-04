@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { PencilIcon, Trash } from "lucide-react";
 import { z } from "zod";
+import { Link } from "react-router-dom";
 
 
 
@@ -17,8 +18,28 @@ export const CartPropsSchema = z.object({
   updatedAt: z.string().optional(),
   addedAt: z.string().optional(),
   quantity: z.number().default(1),
-  customerId: z.number().min(1,"customer id is required"),
-  product: z.string().min(1,"product id is required"),
+  totalAmount: z
+  .string()
+  .min(1, "Price is required")
+  .refine((value) => /^\d+(\.\d+)?$/.test(value), {
+    message: "Price must contain only numeric characters",
+  }),
+  customerId: z.object({
+    username:z.string().min(1,"username is required"),
+    email:z.string().min(1,"email is required").email(),
+    phone:z.string().min(1,"phone no is required"),
+    address:z.string().min(1,"address is required"),
+  }),
+  product: z.object({
+    title: z.string().min(1, "title is required"),
+    price: z
+      .string()
+      .min(1, "Price is required")
+      .refine((value) => /^\d+(\.\d+)?$/.test(value), {
+        message: "Price must contain only numeric characters",
+      }),
+    category: z.string().min(1, "category is required"),
+  }),
   shippingAddress: z.object({
     city: z.string().min(1,"city is required"),
     street: z.string().min(1,"street is required"),
@@ -32,21 +53,7 @@ export const CartPropsSchema = z.object({
 export type TCartSchema = z.infer<typeof CartPropsSchema>;
 
 const Order = () => {
-  // const [orderStatus, setOrderStatus] = useState<string>("");
-  // const [paymentMethod, setPaymentMethod] = useState<string>("");
-  // const [payment, setPayment] = useState<string>("");
   
-  // const handleOrderChange = (event: SelectChangeEvent) => {
-  //   setOrderStatus(event.target.value as string);
-  // };
-
-  // const handlePaymentChange = (event: SelectChangeEvent) => {
-  //   setPaymentMethod(event.target.value as string);
-  // };
-
-  // const handlePayment = (event: SelectChangeEvent) => {
-  //   setPayment(event.target.value as string);
-  // };
   return (
     <div className="px-4">
       <div className=" flex items-center justify-center font-sans overflow-hidden">
@@ -104,152 +111,17 @@ const Order = () => {
                     </div>
                   </td>
                   <td id="status" className="py-3 px-0 text-center">
-                    {/* <Box style={{ height: "20px" }} className="text-sm">
-                      <FormControl
-                        variant="standard"
-                        style={{
-                          fontSize: "14px",
-                          lineHeight: "10px",
-                          height: "20px",
-                        }}
-                        className="w-40"
-                      >
-                        <InputLabel
-                          style={{
-                            fontSize: "14px",
-                            lineHeight: "10px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Order Status
-                        </InputLabel>
-                        <Select
-                          className="text-sm"
-                          labelId="orderstatus labelid"
-                          id="order_status"
-                          value={orderStatus}
-                          label="Order Status"
-                          onChange={handleOrderChange}
-                        >
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"pending"}
-                          >
-                            Pending
-                          </MenuItem>
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"dispatched"}
-                          >
-                            Dispatched
-                          </MenuItem>
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"delivered"}
-                          >
-                            Delivered
-                          </MenuItem>
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"cancelled"}
-                          >
-                            Cancelled
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box> */}
+                    
                     order status
                   </td>
 
                   <td id="payment_method" className="py-3 px-0 text-center">
-                    {/* <Box style={{ height: "20px" }} className="text-sm">
-                      <FormControl
-                        variant="standard"
-                        style={{
-                          fontSize: "14px",
-                          lineHeight: "10px",
-                          height: "20px",
-                        }}
-                        className="w-40"
-                      >
-                        <InputLabel
-                          style={{
-                            fontSize: "14px",
-                            lineHeight: "10px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Payment Method
-                        </InputLabel>
-                        <Select
-                          className="text-sm"
-                          labelId="payment-method labelid"
-                          id="paymentmethod_status"
-                          value={paymentMethod}
-                          label="paymentmethod Status"
-                          onChange={handlePaymentChange}
-                        >
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"online"}
-                          >
-                            Online
-                          </MenuItem>
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"onsite"}
-                          >
-                            Onsite
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box> */}
+                   
                     payment method
                   </td>
 
                   <td className="py-3 px-0 text-center">
-                    {/* <Box style={{ height: "20px" }} className="text-sm">
-                      <FormControl
-                        variant="standard"
-                        style={{
-                          fontSize: "14px",
-                          lineHeight: "10px",
-                          height: "20px",
-                        }}
-                        className="w-40"
-                      >
-                        <InputLabel
-                          style={{
-                            fontSize: "14px",
-                            lineHeight: "10px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Payment Status
-                        </InputLabel>
-                        <Select
-                          className="text-sm"
-                          labelId="paymentdone labelid"
-                          id="payment"
-                          value={payment}
-                          label="payment"
-                          onChange={handlePayment}
-                        >
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"done"}
-                          >
-                            Done
-                          </MenuItem>
-                          <MenuItem
-                            style={{ fontSize: "14px", lineHeight: "10px" }}
-                            value={"notdone"}
-                          >
-                            Not Done
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box> */}
+                   
                     payment status
                   </td>
 
@@ -264,7 +136,7 @@ const Order = () => {
                     <div className="flex item-center justify-center">
                       <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120"><Trash/></div>
                       <div className="w-6 mr-2 transform hover:text-purple-500 hover:scale-120">
-                        <PencilIcon />
+                     <Link to={'editorders'}> <PencilIcon /></Link>  
                       </div>
                     </div>
                   </td>

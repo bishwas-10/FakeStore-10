@@ -64,11 +64,8 @@ const EditCustomers = () => {
       phone: customer?.phone,
     },
   });
-  console.log(errors)
   const onSubmit = async (data: TCustomerSchema) => {
-    console.log("aaipugyo");
     if (customer?.id) {
-      console.log("aaipugyo");
       const response = await instance({
         url: `/customers/${customer.id}`,
         method: "PUT",
