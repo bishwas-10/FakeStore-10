@@ -4,10 +4,16 @@ import Product from "./product";
 
 export interface CartProps extends Document {
   quantity: number;
-  customerId: number;
+  customer: mongoose.Schema.Types.ObjectId;
   product: mongoose.Schema.Types.ObjectId;
-  status: string;
-  addedDate: String;
+  shippingAddress: {
+    city: string;
+    street: string;
+    zipcode?: string;
+  };
+  orderStatus: string;
+  paymentMethod:string;
+  paymentStatus:string;
 }
 
 const cartSchema = new Schema<CartProps>(
@@ -18,8 +24,8 @@ const cartSchema = new Schema<CartProps>(
       default: 1,
     },
 
-    customerId: {
-      type: Number,
+    customer: {
+      type: Schema.Types.ObjectId,
       ref: User,
       required: true,
     },
@@ -29,12 +35,27 @@ const cartSchema = new Schema<CartProps>(
       ref: Product,
       required: true,
     },
-
-    addedDate: {
+    shippingAddress: {
+      city: {
+        type: String,
+        required: true,
+      },
+      street: {
+        type:String,
+        required:true
+      },
+      zipcode: String,
+    },
+    
+    orderStatus: {
       type: String,
       required: true,
     },
-    status: {
+    paymentStatus: {
+      type: String,
+      required: true,
+    },
+    paymentMethod: {
       type: String,
       required: true,
     },

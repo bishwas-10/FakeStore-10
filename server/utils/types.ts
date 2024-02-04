@@ -35,26 +35,37 @@ export const productSchema = z.object({
 });
 
 export const customerSchema = z.object({
-  email: z.string({ required_error: "email is required" }),
-  username: z.string({ required_error: "username is required" }),
-  password: z.string(),
+  id: z.string().optional(),
+  updatedAt: z.string().optional(),
+  addedAt: z.string().optional(),
+  email: z.string().email().min(1,"email is required"),
+  username: z.string().min(1,"username is required"),
+  password: z.string().optional(),
   name: z.object({
-    firstName: z.string({ required_error: "first name is required" }),
-    lastName: z.string({ required_error: "last name is required" }),
+    firstName: z.string().min(1,"first name is required"),
+    lastName: z.string().min(1,"last name is required"),
   }),
   address: z.object({
-    city: z.string({ required_error: "city is required" }),
+    city: z.string().min(1,"city is required"),
     street: z.string().optional(),
     zipcode: z.string().optional(),
   }),
-  phone: z.string({ required_error: "phone number is required" }),
+  phone: z.string().min(1,"phone is required"),
 });
 
 export const CartPropsSchema = z.object({
-  quantity: z.number().default(0),
-  customerId: z.number({ required_error: "customerId is required" }),
-  product: z.string({ required_error: "productId is required" }),
-
-  status: z.string({ required_error: "paid status is required" }),
-  addedDate: z.string({ required_error: "added date is required" }),
+  id: z.string().optional(),
+  updatedAt: z.string().optional(),
+  addedAt: z.string().optional(),
+  quantity: z.number().default(1),
+  customerId: z.number().min(1,"customer id is required"),
+  product: z.string().min(1,"product id is required"),
+  shippingAddress: z.object({
+    city: z.string().min(1,"city is required"),
+    street: z.string().min(1,"street is required"),
+    zipcode: z.string().optional(),
+  }),
+  orderStatus: z.string().min(1,"order status is required"),
+  paymentMethod: z.string().min(1,"order method is required"),
+  paymentStatus: z.string().min(1,"payment status is required"),
 });
