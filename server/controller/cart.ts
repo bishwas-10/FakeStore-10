@@ -40,12 +40,13 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
 };
 
 export const addCart = async (req: Request, res: Response) => {
+  console.log(req.body)
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {
       return res
         .status(400)
-        .send({ sucess: false, message: validation.error.issues[0].message });
+        .send({ sucess: false, message: validation.error });
     }
 
     // const existingCart = await Cart.findOne({
@@ -82,16 +83,24 @@ export const addCart = async (req: Request, res: Response) => {
 
     const cart = await Cart.create({
       quantity: req.body.quantity,
-      customerId: req.body.customerId,
+      totalAmount:req.body.totalAmount,
+      customer: req.body.customer,
       product: req.body.product,
-      status: req.body.status,
-      addedDate: req.body.addedDate,
+      shippingAddress: {
+        city:  req.body.shippingAddress.city,
+        street:  req.body.shippingAddress.street,
+        zipcode:  req.body.shippingAddress.zipcode
+      },
+      orderStatus:  req.body.orderStatus,
+      paymentMethod: req.body.paymentMethod,
+      paymentStatus: req.body.paymentStatus
     });
     const doc = await cart.save();
     const populatedCart = await doc.populate("product");
     console.log(populatedCart);
     res.status(200).send({ success: true, message: "cart added" });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .send({ success: false, message: "internal server error" });
@@ -110,10 +119,17 @@ export const editCart = async (req: Request, res: Response) => {
       { _id: id },
       {
         quantity: req.body.quantity,
-        customerId: req.body.customerId,
+        customer: req.body.customer,
+        totalAmount:req.body.totalAmount,
         product: req.body.product,
-        status: req.body.status,
-        addedDate: req.body.addedDate,
+        shippingAddress: {
+          city:  req.body.shippingAddress.city,
+          street:  req.body.shippingAddress.street,
+          zipcode:  req.body.shippingAddress.zipcode
+        },
+        orderStatus:  req.body.orderStatus,
+        paymentMethod: req.body.paymentMethod,
+        paymentStatus: req.body.paymentStatus
       },
       {
         new: true,

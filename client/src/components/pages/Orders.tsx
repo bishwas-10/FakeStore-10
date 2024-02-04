@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -10,50 +10,52 @@ import {
 import { PencilIcon, Trash } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { addCart, fetchCarts, removeCarts } from "../../store/cartSlice";
+import { RootState } from "../../store/store";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
-  addedAt: z.string().optional(),
+  createdAt: z.string().optional(),
   quantity: z.number().default(1),
   totalAmount: z
-  .string()
-  .min(1, "Price is required")
-  .refine((value) => /^\d+(\.\d+)?$/.test(value), {
-    message: "Price must contain only numeric characters",
-  }),
-  customerId: z.object({
-    username:z.string().min(1,"username is required"),
-    email:z.string().min(1,"email is required").email(),
-    phone:z.string().min(1,"phone no is required"),
-    address:z.string().min(1,"address is required"),
+    .string()
+    .min(1, "Price is required")
+    .refine((value) => /^\d+(\.\d+)?$/.test(value), {
+      message: "Price must contain only numeric characters",
+    }),
+  customer: z.object({
+    id: z.string().min(1, "customer id is required"),
+    username: z.string().min(1, "username is required"),
   }),
   product: z.object({
     title: z.string().min(1, "title is required"),
-    price: z
-      .string()
-      .min(1, "Price is required")
-      .refine((value) => /^\d+(\.\d+)?$/.test(value), {
-        message: "Price must contain only numeric characters",
-      }),
-    category: z.string().min(1, "category is required"),
   }),
   shippingAddress: z.object({
-    city: z.string().min(1,"city is required"),
-    street: z.string().min(1,"street is required"),
+    city: z.string().min(1, "city is required"),
+    street: z.string().min(1, "street is required"),
     zipcode: z.string().optional(),
   }),
-  orderStatus: z.string().min(1,"order status is required"),
-  paymentMethod: z.string().min(1,"order method is required"),
-  paymentStatus: z.string().min(1,"payment status is required"),
+  orderStatus: z.string().min(1, "order status is required"),
+  paymentMethod: z.string().min(1, "order method is required"),
+  paymentStatus: z.string().min(1, "payment status is required"),
 });
 
 export type TCartSchema = z.infer<typeof CartPropsSchema>;
 
 const Order = () => {
-  
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const cartData = useSelector((state: RootState) => state.cart.carts);
+  console.log(cartData);
+  useEffect(() => {
+    dispatch(fetchCarts());
+    return () => {
+      dispatch(removeCarts());
+    };
+  }, []);
+
   return (
     <div className="px-4">
       <div className=" flex items-center justify-center font-sans overflow-hidden">
@@ -62,9 +64,7 @@ const Order = () => {
             <table className="w-full table-auto">
               <thead>
                 <tr className=" uppercase text-sm leading-normal">
-                  <th className="py-3 px-0 text-left cursor-pointer">
-                    SN
-                  </th>
+                  <th className="py-3 px-0 text-left cursor-pointer">SN</th>
                   <th className="py-3 px-0 text-left">Items</th>
                   <th className="py-3 px-0 text-left cursor-pointer">
                     Total Amount
@@ -76,7 +76,9 @@ const Order = () => {
                   <th className="py-3 px-0 text-center">Order Status</th>
                   <th className="py-3 px-0 text-center">Payment Method</th>
                   <th className="py-3 px-0 text-center">Payment Status</th>
-                  <th className="py-3 px-0 text-left cursor-pointer">Added Date</th>
+                  <th className="py-3 px-0 text-left cursor-pointer">
+                    Added Date
+                  </th>
                   <th className="py-3 px-0 text-left cursor-pointer">
                     Last Updated
                   </th>
@@ -84,63 +86,82 @@ const Order = () => {
                 </tr>
               </thead>
               <tbody className=" text-sm font-light">
-                <tr className="border-b border-gray-200 ">
-                  <td className="py-3 px-0 text-left whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="mr-2"></div>
-                      <span className="font-medium">5</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-0 text-left">
-                    <div className="flex items-center">
-                      <div className="mr-2"></div>
-                      <span>tuyik</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-0 text-center">
-                    <div className="flex items-center justify-center">2542</div>
-                  </td>
-                  <td id="customer_address" className="py-3 px-0 text-center">
-                    <div className="">
-                    customer address
-                    </div>
-                  </td>
-                  <td id="shipping_address" className="py-3 px-0 text-center">
-                    <div className="">
-                    shipping address
-                    </div>
-                  </td>
-                  <td id="status" className="py-3 px-0 text-center">
-                    
-                    order status
-                  </td>
+                {cartData.length !== 0 &&
+                  cartData.map((cart, index) => {
+                    return (
+                      <tr key={index} className="border-b border-gray-200 ">
+                        <td className="py-3 px-0 text-left whitespace-nowrap">
+                          <span className="font-medium">{index + 1}</span>
+                        </td>
+                        <td className="py-3 px-0 text-left">
+                          <div className="flex items-center">
+                            <span>{cart.product?.title}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-0 text-center">
+                          <div className="flex items-center justify-center">
+                            {cart.totalAmount}
+                          </div>
+                        </td>
+                        <td
+                          id="customer_address"
+                          className="py-3 px-0 text-center"
+                        >
+                          <div className="">{cart.customer.id}</div>
+                        </td>
+                        <td
+                          id="shipping_address"
+                          className="py-3 px-0 text-center"
+                        >
+                          <div className="">
+                            {cart.shippingAddress.city}
+                            {cart.shippingAddress.street}
 
-                  <td id="payment_method" className="py-3 px-0 text-center">
-                   
-                    payment method
-                  </td>
+                            {cart.shippingAddress.zipcode}
+                          </div>
+                        </td>
+                        <td id="status" className="py-3 px-0 text-center">
+                          {cart.orderStatus}
+                        </td>
 
-                  <td className="py-3 px-0 text-center">
-                   
-                    payment status
-                  </td>
+                        <td
+                          id="payment_method"
+                          className="py-3 px-0 text-center"
+                        >
+                          {cart.paymentMethod}
+                        </td>
 
-                  <td className="py-3 px-0 text-center">
-                    <div className="flex items-center justify-center">added date</div>
-                  </td>
-                  <td className="py-3 px-0 text-center">
-                    <div className="flex items-center justify-center">updated date</div>
-                  </td>
+                        <td className="py-3 px-0 text-center">
+                          {cart.paymentStatus}
+                        </td>
 
-                  <td className="py-3 px-0 text-center">
-                    <div className="flex item-center justify-center">
-                      <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120"><Trash/></div>
-                      <div className="w-6 mr-2 transform hover:text-purple-500 hover:scale-120">
-                     <Link to={'editorders'}> <PencilIcon /></Link>  
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+                        <td className="py-3 px-0 text-center">
+                          <div className="flex items-center justify-center">
+                            {cart.createdAt}
+                          </div>
+                        </td>
+                        <td className="py-3 px-0 text-center">
+                          <div className="flex items-center justify-center">
+                          {cart.updatedAt}
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-0 text-center">
+                          <div className="flex item-center justify-center">
+                            <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120">
+                              <Trash />
+                            </div>
+                            <div className="w-6 mr-2 transform hover:text-purple-500 hover:scale-120">
+                              <Link to={"editorders"}>
+                               
+                                <PencilIcon onClick={()=>dispatch(addCart(cart))}/>
+                              </Link>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

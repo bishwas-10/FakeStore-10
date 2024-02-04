@@ -8,6 +8,7 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/webp",
 ];
 export const productSchema = z.object({
+  createdAt: z.string().optional(),
   title: z.string({ required_error: "title is required" }),
   price: z
     .string()
@@ -37,7 +38,7 @@ export const productSchema = z.object({
 export const customerSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
-  addedAt: z.string().optional(),
+  createdAt: z.string().optional(),
   email: z.string().email().min(1,"email is required"),
   username: z.string().min(1,"username is required"),
   password: z.string().optional(),
@@ -56,7 +57,7 @@ export const customerSchema = z.object({
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
-  addedAt: z.string().optional(),
+  createdAt: z.string().optional(),
   quantity: z.number().default(1),
   totalAmount: z
     .string()
@@ -64,7 +65,7 @@ export const CartPropsSchema = z.object({
     .refine((value) => /^\d+(\.\d+)?$/.test(value), {
       message: "Price must contain only numeric characters",
     }),
-  customerId: z.number().min(1,"customer id is required"),
+  customer: z.string().min(1,"customer id is required"),
   product: z.string().min(1,"product id is required"),
   shippingAddress: z.object({
     city: z.string().min(1,"city is required"),

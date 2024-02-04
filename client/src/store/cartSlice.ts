@@ -24,7 +24,8 @@ export const fetchCarts = createAsyncThunk("customers/fetchCarts", async () => {
       "Content-Type": "application/json",
     },
   });
-  return response.data.carts;
+  console.log(response)
+  return response.data.cart;
 });
 
 const customerSlice = createSlice({
