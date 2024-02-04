@@ -16,6 +16,7 @@ import { addProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { instance } from "../../../api/instance";
+import { Link } from "react-router-dom";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -29,11 +30,12 @@ export const productSchema = z.object({
   updatedAt: z.string().optional(),
   addedAt: z.string().optional(),
   title: z.string().min(1, "title is required"),
-  price: z.string({ required_error: "Price is required" })
-  .min(1, "Price is required")
-  .refine((value) => /^\d+$/.test(value), {
-    message: "Price must contain only numeric characters",
-  }),
+  price: z
+    .string()
+    .min(1, "Price is required")
+    .refine((value) => /^\d+(\.\d+)?$/.test(value), {
+      message: "Price must contain only numeric characters",
+    }),
   category: z.string().min(1, "category is required"),
   description: z.string().min(1, "description is required"),
   image: z.any().refine((base64Data) => {
@@ -42,13 +44,13 @@ export const productSchema = z.object({
   }, "Only image files in base64 format are supported."),
   rating: z.object({
     rate: z
-      .string({ required_error: "Rate is required" })
+      .string()
       .min(1, "Rate must be a number")
-      .refine((value) => /^\d+$/.test(value), {
+      .refine((value) => /^\d+(\.\d+)?$/.test(value), {
         message: "Rate must contain only numeric characters",
       }), // Ensure "rate" is validated as a number
     count: z
-      .string({ required_error: "Count is required" })
+      .string()
       .min(1, "Count must be a number")
       .refine((value) => /^\d+$/.test(value), {
         message: "Count must contain only numeric characters",
@@ -65,6 +67,7 @@ const AddProducts = () => {
   const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
+  console.log(product?.id);
   const {
     register,
     handleSubmit,
@@ -103,9 +106,9 @@ const AddProducts = () => {
     convert2base64(file);
   };
   const onSubmit = async (data: TProductSchema) => {
-    const productData = await instance({
-      url:  `/products`,
-      method:  "POST",
+    const response = await instance({
+      url: product?.id ? `/products/${product?.id}` : `/products`,
+      method: product?.id ? "PUT" : "POST",
       data: {
         title: data.title,
         category: data.category,
@@ -118,40 +121,47 @@ const AddProducts = () => {
         },
       },
     });
-    console.log(productData);
-    dispatch(addProduct(data));
-    reset();
+    
+    if(response.data.success){
+      if(response.data.message==="edited successfully"){
+         dispatch(addProduct(response.data.product));
+      }else{
+        dispatch(addProduct(data)); 
+        reset();
+      }
+      
+    }
+   
+   
   };
 
-const editProduct = async(data:TProductSchema)=>{
-  console.log(data)
-  const productData = await instance({
-    url:`/products/${data.id}` ,
-    method:  "PUT" ,
-    data: {
-      title: data.title,
-      category: data.category,
-      price: data.price,
-      image: data.image,
-      description: data.description,
-      rating: {
-        rate: data.rating.rate,
-        count: data.rating.count,
-      },
-    },
-  });
-  if(productData.data.success){
-    console.log(productData.data.product)
-     dispatch(addProduct(productData.data.product));
-     reset();
-  }
- 
-
-}
+  // const editProduct = async (data: TProductSchema) => {
+  //   console.log(data);
+  //   const productData = await instance({
+  //     url: `/products/${data.id}`,
+  //     method: "PUT",
+  //     data: {
+  //       title: data.title,
+  //       category: data.category,
+  //       price: data.price,
+  //       image: data.image,
+  //       description: data.description,
+  //       rating: {
+  //         rate: data.rating.rate,
+  //         count: data.rating.count,
+  //       },
+  //     },
+  //   });
+  //   if (productData.data.success) {
+  //     console.log(productData.data.product);
+  //     dispatch(addProduct(productData.data.product));
+  //     reset();
+  //   }
+  // };
 
   return (
-    <div className="w-full flex flex-row gap-2 p-4">
-      <div className="w-1/2">
+    <div className="w-full flex flex-col md:flex-row gap-2 p-4">
+      <div className=" w-full md:w-1/2">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-4 mt-4 ease-in-out w-[50%]"
@@ -181,7 +191,6 @@ const editProduct = async(data:TProductSchema)=>{
               <TextField
                 id="price"
                 label="price"
-                
                 variant="outlined"
                 error={!!errors.price}
                 helperText={errors.price ? "Price is required" : ""}
@@ -222,7 +231,6 @@ const editProduct = async(data:TProductSchema)=>{
               <TextField
                 id="rate"
                 label="rate"
-                
                 variant="outlined"
                 error={!!errors.rating?.rate} // Update error check to reflect nested structure
                 helperText={
@@ -234,7 +242,6 @@ const editProduct = async(data:TProductSchema)=>{
               <TextField
                 id="count"
                 label="count"
-                
                 variant="outlined"
                 error={!!errors.rating?.count} // Update error check to reflect nested structure
                 helperText={
@@ -256,17 +263,16 @@ const editProduct = async(data:TProductSchema)=>{
               />
             </div>{" "}
           </div>
-         
-            <Button
-              type="submit"
-              className="bg-blue-500 text-white disabled:bg-gray-500 py-2 rounded"
-            >
-              {product?.id ? "Edit":'Add'}
-            </Button>
-          
+
+          <Button
+            type="submit"
+            className="bg-blue-500 text-white disabled:bg-gray-500 py-2 rounded"
+          >
+            {product?.id ? "Edit" : "Add"}
+          </Button>
         </form>
       </div>
-      <div className="w-1/2 p-4">
+      <div className=" w-full md:w-1/2 p-4">
         {product && (
           <div className="flex flex-col items-center justify-center gap-4 w-full">
             {/* <div className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
@@ -333,12 +339,12 @@ const editProduct = async(data:TProductSchema)=>{
               </CardContent>
               <CardActions>
                 <Button
-                  onClick={() => dispatch(addProduct(product))}
+                 
                   variant="outlined"
                   size="small"
                   className="w-full"
                 >
-                  EDIT
+                 <Link to="/products"> Back to Product</Link>
                 </Button>
               </CardActions>
             </Card>
