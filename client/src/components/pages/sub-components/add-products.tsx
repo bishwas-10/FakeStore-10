@@ -275,39 +275,7 @@ const AddProducts = () => {
       <div className=" w-full md:w-1/2 p-4">
         {product && (
           <div className="flex flex-col items-center justify-center gap-4 w-full">
-            {/* <div className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
-              <div className="w-full h-44 relative bg-white rounded-t-md p-4">
-                <div className="absolute z-10 top-2 right-2 flex flex-row items-center justify-center h-6 py-3 px-2 bg-red-500 rounded-full">
-                  <p className="text-sm font-semibold text-white">
-                    $ {product?.price}
-                  </p>
-                </div>
-                <div className="">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="p-4 w-full h-40 object-fit"
-                  />
-                </div>
-              </div>
-              <div className="w-full h-32 rounded-b-md flex flex-col border-t border-gray-600 bg-gray-100">
-                <div className="flex flex-row w-full pt-1 px-2">
-                  <div className="flex items-center ">
-                    <p className="text-sm font-semibold ml-2">22</p>
-                  </div>
-                </div>
-                <div className="flex flex-col flex-grow items-center justify-between ">
-                  <div className="flex flex-row  w-full pt-1 px-2">
-                    <p className="text-sm font-semibold line-clamp-2 text-slate-800 hover:text-red-400">
-                      {product.title}
-                    </p>
-                  </div>
-                  <span className="flex flex-row w-full text-xs font-semibold px-2 py-1  text-gray-500 text-justify overflow-hidden">
-                    <p className="line-clamp-2">{product.description}</p>
-                  </span>
-                </div>
-              </div>
-            </div> */}
+           
             <Card sx={{ maxWidth: "100%", padding: "10px" }}>
               <div className="w-full flex items-center justify-center">
                 <img
