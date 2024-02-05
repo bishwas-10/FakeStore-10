@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
@@ -11,8 +11,13 @@ import Customers from "./components/pages/Customers";
 import AddProducts from "./components/pages/sub-components/add-products";
 import EditCustomers from "./components/pages/sub-components/editCustomers";
 import EditOrders from "./components/pages/sub-components/editOrders";
+import LoginPage from "./components/pages/auth/login";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/store";
+import PrivateRoute from "./utils/privateRoute";
 
 function App() {
+  const isSignedIn = useSelector((state: RootState) => state.user.isSignedIn);
   // State to manage the current theme mode
   const { theme } = useTheme();
   // Create custom theme based on the current mode
@@ -26,10 +31,10 @@ function App() {
   return (
     <ThemeProvider theme={themeUi}>
       <CssBaseline />
-      <BrowserRouter>
-        <div>
-          <Navbar />
-          <Routes>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route element={<PrivateRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/products">
               <Route index element={<Products />} />
@@ -43,11 +48,13 @@ function App() {
               <Route index element={<Order />} />
               <Route path="editorders" element={<EditOrders />} />
             </Route>
-          
+
             <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+          </Route>
+
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </div>
     </ThemeProvider>
   );
 }

@@ -9,7 +9,9 @@ const Navbar = () => {
   return (
     <div className="border-b p-2 ">
       <div className="flex h-16 items-center justify-between px-4 shadow-lg dark:bg-black dark:text-white">
-        <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
+        
+        {pathname!=="/login" &&  
+          <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
           <a
             href="/"
             className={`p-2 rounded-md transition-all  hover:text-primary
@@ -62,7 +64,20 @@ const Navbar = () => {
           >
             Settings
           </a>
-        </nav>
+          <a
+            href="/login"
+            className={`p-2 
+            ${
+              pathname === "/login"
+                ? "font-semibold text-gray-600 bg-gray-300"
+                : "text-muted-foreground"
+            }
+            rounded-md transition-all hover:text-primary`}
+          >
+            Login
+          </a>
+        </nav>}
+     
         <div>
           <FormControlLabel
             control={

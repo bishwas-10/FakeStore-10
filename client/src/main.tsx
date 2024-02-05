@@ -4,12 +4,14 @@ import App from "./App.tsx";
 import "./input.css";
 import { ThemeModeProvider } from "./providers/theme-provider.tsx";
 import ReduxProvider from "./providers/ReduxProvider.tsx";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ReduxProvider >
       <ThemeModeProvider>
-      <App />
+      <BrowserRouter> <App /></BrowserRouter>
+     
     </ThemeModeProvider >
     </ReduxProvider>
    

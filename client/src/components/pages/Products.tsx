@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import {
   ChevronLeft,
   ChevronRight,
@@ -35,7 +41,7 @@ const Products = () => {
   useEffect(() => {
     setPageStartIndex(productsPerPage * (currentPage - 1));
     setPageEndIndex(productsPerPage * currentPage - 1);
-  }, [currentPage]);
+  }, [currentPage, productsPerPage]);
   const deleteProduct = async (id: string) => {
     const response = await instance({
       url: `/products/${id}`,
@@ -184,15 +190,34 @@ const Products = () => {
         </div>
       </div>
       <div className="my-4  flex flex-row gap-2 justify-center items-center">
+        <FormControl className="w-40">
+          <InputLabel id="demo-simple-select-label">
+            Products per page
+          </InputLabel>
+          <Select
+            labelId="productsPerPage"
+            id="productsPerPage"
+            value={productsPerPage}
+            label="productsPerPage"
+            onChange={(e) => setProductsPerPage(e.target.value as number)}
+          >
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+          </Select>
+        </FormControl>
         {currentPage !== 1 && (
           <>
             <Button variant="text" onClick={() => handlePageSelection(1)}>
               <ChevronsLeft />
             </Button>
-            <Button variant="text" onClick={() => setCurrentPage((currentPage) => currentPage - 1)}>
-              <ChevronLeft
-               
-              />
+            <Button
+              variant="text"
+              onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+            >
+              <ChevronLeft />
             </Button>
           </>
         )}
@@ -201,19 +226,21 @@ const Products = () => {
 
         {currentPage !== Math.ceil(products.length / productsPerPage) && (
           <>
-            <Button variant="text" onClick={() => setCurrentPage((currentPage) => currentPage + 1)}>
-              <ChevronRight
-               
-              />
+            <Button
+              variant="text"
+              onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+            >
+              <ChevronRight />
             </Button>
-            <Button variant="text" onClick={() =>
-                  handlePageSelection(
-                    Math.ceil(products.length / productsPerPage)
-                  )
-                }>
-              <ChevronsRight
-               
-              />
+            <Button
+              variant="text"
+              onClick={() =>
+                handlePageSelection(
+                  Math.ceil(products.length / productsPerPage)
+                )
+              }
+            >
+              <ChevronsRight />
             </Button>
           </>
         )}

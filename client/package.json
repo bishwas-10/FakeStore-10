@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy":"http://localhost:4000",
+  "proxy": "http://localhost:4000",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -25,6 +25,7 @@
     "react-router-dom": "^6.21.3",
     "recharts": "^2.11.0",
     "redux-persist": "^6.0.0",
+    "styled-components": "^6.1.8",
     "zod": "^3.22.4"
   },
   "devDependencies": {
