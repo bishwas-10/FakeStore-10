@@ -2,10 +2,14 @@ import { Request, Response, request } from "express";
 import Cart from "../models/cart";
 import { CartPropsSchema } from "../utils/types";
 import Product from "../models/product";
+import Customer from "../models/customer";
 
 export const getAllCarts = async (req: Request, res: Response) => {
   try {
-    const cart = await Cart.find().populate("product");
+    const cart = await Cart.find().populate([
+      { path: "product", model: Product },
+      { path: "customer", model: Customer },
+    ]);
     if (!cart) {
       return res
         .status(403)
@@ -28,10 +32,14 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
       customerId: id,
     }).populate([{ path: "product", model: Product }]);
     console.log(cart);
-   if(cart.length===0){
-    return res.status(403).send({success:false,message:"couldn't find any cart"})
-   }
-   return res.status(200).send({success:true,message:"cart found",cart:cart})
+    if (cart.length === 0) {
+      return res
+        .status(403)
+        .send({ success: false, message: "couldn't find any cart" });
+    }
+    return res
+      .status(200)
+      .send({ success: true, message: "cart found", cart: cart });
   } catch (error) {
     return res
       .status(500)
@@ -40,13 +48,11 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
 };
 
 export const addCart = async (req: Request, res: Response) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {
-      return res
-        .status(400)
-        .send({ sucess: false, message: validation.error });
+      return res.status(400).send({ sucess: false, message: validation.error });
     }
 
     // const existingCart = await Cart.findOne({
@@ -83,21 +89,23 @@ export const addCart = async (req: Request, res: Response) => {
 
     const cart = await Cart.create({
       quantity: req.body.quantity,
-      totalAmount:req.body.totalAmount,
+      totalAmount: req.body.totalAmount,
       customer: req.body.customer,
       product: req.body.product,
       shippingAddress: {
-        city:  req.body.shippingAddress.city,
-        street:  req.body.shippingAddress.street,
-        zipcode:  req.body.shippingAddress.zipcode
+        city: req.body.shippingAddress.city,
+        street: req.body.shippingAddress.street,
+        zipcode: req.body.shippingAddress.zipcode,
       },
-      orderStatus:  req.body.orderStatus,
+      orderStatus: req.body.orderStatus,
       paymentMethod: req.body.paymentMethod,
-      paymentStatus: req.body.paymentStatus
+      paymentStatus: req.body.paymentStatus,
     });
     const doc = await cart.save();
-    const populatedCart = await doc.populate("product");
-    console.log(populatedCart);
+    const populatedCart = await doc.populate([
+      { path: "product", model: Product },
+      { path: "customer", model: Customer },
+    ]);
     res.status(200).send({ success: true, message: "cart added" });
   } catch (error) {
     console.log(error);
@@ -108,6 +116,7 @@ export const addCart = async (req: Request, res: Response) => {
 };
 export const editCart = async (req: Request, res: Response) => {
   const id = req.params.id;
+  console.log(req.body);
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {
@@ -117,27 +126,19 @@ export const editCart = async (req: Request, res: Response) => {
     }
     const cart = await Cart.findOneAndUpdate(
       { _id: id },
-      {
-        quantity: req.body.quantity,
-        customer: req.body.customer,
-        totalAmount:req.body.totalAmount,
-        product: req.body.product,
-        shippingAddress: {
-          city:  req.body.shippingAddress.city,
-          street:  req.body.shippingAddress.street,
-          zipcode:  req.body.shippingAddress.zipcode
-        },
-        orderStatus:  req.body.orderStatus,
-        paymentMethod: req.body.paymentMethod,
-        paymentStatus: req.body.paymentStatus
-      },
+      req.body,
       {
         new: true,
         runValidators: true,
       }
     );
+ 
     if (cart) {
-      const result = await cart.populate("product");
+      const result = await cart.populate([
+        { path: "product", model: Product },
+        { path: "customer", model: Customer },
+      ]);
+   console.log(result);
       return res
         .status(200)
         .send({ success: true, messsage: "cart  found", cart: result });
@@ -147,6 +148,7 @@ export const editCart = async (req: Request, res: Response) => {
         .send({ success: false, messsage: "cart not found", cart: null });
     }
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .send({ success: false, message: "internal server error" });
@@ -156,9 +158,13 @@ export const editCart = async (req: Request, res: Response) => {
 export const deleteCart = async (req: Request, res: Response) => {
   const id = req.params.id;
   try {
-   await Cart.findByIdAndDelete({_id:id});
-   return res.status(200).json({success:true, message:"deleted successfully"})
+    await Cart.findByIdAndDelete({ _id: id });
+    return res
+      .status(200)
+      .json({ success: true, message: "deleted successfully" });
   } catch (error) {
-    return res.status(500).send({success:false, message:"internal server error"})
+    return res
+      .status(500)
+      .send({ success: false, message: "internal server error" });
   }
 };

@@ -16,30 +16,34 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { CartPropsSchema, TCartSchema } from "../Orders";
 import { RootState } from "../../../store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 import { instance } from "../../../api/instance";
+import { addCart } from "../../../store/cartSlice";
 
-const EditCartSchema =z.object({
-  
-  quantity: z.number().default(1),
+const EditCartSchema = z.object({
+  quantity:z
+  .string()
+  .min(1, "Price is required")
+  .refine((value) => /^\d+?$/.test(value), {
+    message: "Price must contain only numeric characters",
+  }),
   totalAmount: z
     .string()
     .min(1, "Price is required")
     .refine((value) => /^\d+(\.\d+)?$/.test(value), {
       message: "Price must contain only numeric characters",
     }),
-    orderStatus: z.string().min(1, "order status is required"),
-    paymentMethod: z.string().min(1, "order method is required"),
-    paymentStatus: z.string().min(1, "payment status is required"),
-})
+  orderStatus: z.string().min(1, "order status is required"),
+  paymentMethod: z.string().min(1, "order method is required"),
+  paymentStatus: z.string().min(1, "payment status is required"),
+});
 
 type TEditCartSchema = z.infer<typeof EditCartSchema>;
 const EditOrders = () => {
-  const cardData = useSelector((state: RootState) => state.cart.selectedCart);
-  
+  const cartData = useSelector((state: RootState) => state.cart.selectedCart);
+ const dispatch = useDispatch();
   const [orderStatus, setOrderStatus] = useState<string>(
     cartData?.orderStatus as string
   );
@@ -50,34 +54,36 @@ const EditOrders = () => {
     cartData?.paymentStatus as string
   );
 
-  
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
   } = useForm<TEditCartSchema>({
     resolver: zodResolver(EditCartSchema),
+    reValidateMode: "onChange",
     defaultValues: {
-      quantity:cartData?.quantity,
-      totalAmount:cartData?.totalAmount
+      quantity: cartData?.quantity ,
+      totalAmount: cartData?.totalAmount,
     },
   });
+ console.log(errors); 
   const handleOrderChange = (event: SelectChangeEvent) => {
     setOrderStatus(event.target.value as string);
-    setValue("orderStatus",event.target.value as string);
+    setValue("orderStatus", event.target.value as string);
   };
 
   const handlePaymentChange = (event: SelectChangeEvent) => {
     setPaymentMethod(event.target.value as string);
-    setValue("paymentMethod",event.target.value as string);
+    setValue("paymentMethod", event.target.value as string);
   };
 
   const handlePayment = (event: SelectChangeEvent) => {
     setPayment(event.target.value as string);
-    setValue("paymentStatus",event.target.value as string);
+    setValue("paymentStatus", event.target.value as string);
   };
   const onSubmit = async (data: TEditCartSchema) => {
+
     if (cartData?.id) {
       const response = await instance({
         url: `/carts/${cartData.id}`,
@@ -87,21 +93,21 @@ const EditOrders = () => {
         },
         data: {
           shippingAddress: {
-            city:  cardData?.shippingAddress.city,
-            street:  cardData?.shippingAddress.street,
-            zipcode:  cardData?.shippingAddress.zipcode
+            city: cartData?.shippingAddress.city,
+            street: cartData?.shippingAddress.street,
+            zipcode: cartData?.shippingAddress.zipcode,
           },
-        
-          product:cartData.id,
-          quantity:data.quantity,
-          totalAmount:data.totalAmount,
-          orderStatus:data.orderStatus,
-          paymentStatus:data.paymentStatus,
-          paymentMethod:data.paymentMethod
+          customer:cartData?.customer.id,
+          product: cartData?.product.id,
+          quantity: data.quantity,
+          totalAmount: data.totalAmount,
+          orderStatus: data.orderStatus,
+          paymentStatus: data.paymentStatus,
+          paymentMethod: data.paymentMethod,
         },
       });
       if(response.data.success){
-      console.log(response.data.cart);
+        dispatch(addCart(response.data.cart));
       }
     }
   };
@@ -114,14 +120,14 @@ const EditOrders = () => {
       >
         <div className="flex flex-col gap-8 h-max">
           <div className="flex flex-row gap-2 justify-between items-center">
-          
             <div className="flex flex-col gap-1 w-1/2">
               <TextField
+              type="number"
                 id="quantity"
                 label="quantity"
                 variant="outlined"
                 error={!!errors.quantity}
-                helperText={errors.quantity ? "email is required" : ""}
+                helperText={errors.quantity ?errors.quantity.message : ""}
                 {...register("quantity", { required: true })}
               />
             </div>
@@ -137,149 +143,151 @@ const EditOrders = () => {
             </div>
           </div>
 
-       <div className="flex flex-row gap-4">
-       <Box style={{ height: "20px" }} className="text-sm ">
-            <FormControl
-              variant="standard"
-              style={{
-                fontSize: "14px",
-                lineHeight: "10px",
-                height: "20px",
-              }}
-              className="w-40"
-            >
-              <InputLabel
+          <div className="flex flex-row gap-4">
+            <Box style={{ height: "20px" }} className="text-sm ">
+              <FormControl
+                variant="standard"
                 style={{
                   fontSize: "14px",
                   lineHeight: "10px",
-                  textAlign: "center",
+                  height: "20px",
                 }}
+                className="w-40"
+                error={!!errors.orderStatus}
               >
-                Order Status
-              </InputLabel>
-              <Select
-                className="text-sm"
-                labelId="orderstatus labelid"
-                id="order_status"
-                value={orderStatus}
-                label="Order Status"
-                onChange={handleOrderChange}
-              >
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"pending"}
+                <InputLabel
+                  style={{
+                    fontSize: "14px",
+                    lineHeight: "10px",
+                    textAlign: "center",
+                  }}
                 >
-                  Pending
-                </MenuItem>
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"dispatched"}
+                  Order Status
+                </InputLabel>
+                <Select
+                  className="text-sm"
+                  labelId="orderstatus labelid"
+                  id="order_status"
+                  value={orderStatus}
+                  label="Order Status"
+                  onChange={handleOrderChange}
                 >
-                  Dispatched
-                </MenuItem>
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"delivered"}
-                >
-                  Delivered
-                </MenuItem>
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"cancelled"}
-                >
-                  Cancelled
-                </MenuItem>
-              
-              </Select>
-            </FormControl>
-          </Box>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"pending"}
+                  >
+                    Pending
+                  </MenuItem>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"dispatched"}
+                  >
+                    Dispatched
+                  </MenuItem>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"delivered"}
+                  >
+                    Delivered
+                  </MenuItem>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"cancelled"}
+                  >
+                    Cancelled
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
 
-          <Box style={{ height: "20px" }} className="text-sm">
-            <FormControl
-              variant="standard"
-              style={{
-                fontSize: "14px",
-                lineHeight: "10px",
-                height: "20px",
-              }}
-              className="w-40"
-            >
-              <InputLabel
+            <Box style={{ height: "20px" }} className="text-sm">
+              <FormControl
+                variant="standard"
                 style={{
                   fontSize: "14px",
                   lineHeight: "10px",
-                  textAlign: "center",
+                  height: "20px",
                 }}
+                className="w-40"
+                error={!!errors.paymentMethod}
               >
-                Payment Method
-              </InputLabel>
-              <Select
-                className="text-sm"
-                labelId="payment-method labelid"
-                id="paymentmethod_status"
-                value={paymentMethod}
-                label="paymentmethod Status"
-                onChange={handlePaymentChange}
-              >
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"online"}
+                <InputLabel
+                  style={{
+                    fontSize: "14px",
+                    lineHeight: "10px",
+                    textAlign: "center",
+                  }}
                 >
-                  Online
-                </MenuItem>
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"onsite"}
+                  Payment Method
+                </InputLabel>
+                <Select
+                  className="text-sm"
+                  labelId="payment-method labelid"
+                  id="paymentmethod_status"
+                  value={paymentMethod}
+                  label="paymentmethod Status"
+                  onChange={handlePaymentChange}
                 >
-                  Onsite
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"online"}
+                  >
+                    Online
+                  </MenuItem>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"onsite"}
+                  >
+                    Onsite
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
 
-          <Box style={{ height: "20px" }} className="text-sm">
-            <FormControl
-              variant="standard"
-              style={{
-                fontSize: "14px",
-                lineHeight: "10px",
-                height: "20px",
-              }}
-              className="w-40"
-            >
-              <InputLabel
+            <Box style={{ height: "20px" }} className="text-sm">
+              <FormControl
+                variant="standard"
                 style={{
                   fontSize: "14px",
                   lineHeight: "10px",
-                  textAlign: "center",
+                  height: "20px",
                 }}
+                className="w-40"
+                error={!!errors.paymentStatus}
               >
-                Payment Status
-              </InputLabel>
-              <Select
-                className="text-sm"
-                labelId="paymentdone labelid"
-                id="payment"
-                value={payment}
-                label="payment"
-                onChange={handlePayment}
-              >
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"paid"}
+                <InputLabel
+                  style={{
+                    fontSize: "14px",
+                    lineHeight: "10px",
+                    textAlign: "center",
+                  }}
                 >
-                  paid
-                </MenuItem>
-                <MenuItem
-                  style={{ fontSize: "14px", lineHeight: "10px" }}
-                  value={"notpaid"}
+                  Payment Status
+                </InputLabel>
+                <Select
+                  className="text-sm"
+                  labelId="paymentdone labelid"
+                  id="payment"
+                  value={payment}
+                  label="payment"
+                  onChange={handlePayment}
                 >
-                  not paid
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-       </div>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"paid"}
+                  >
+                    paid
+                  </MenuItem>
+                  <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={"notpaid"}
+                  >
+                    not paid
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </div>
 
           <Button
             type="submit"

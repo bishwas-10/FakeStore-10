@@ -58,7 +58,12 @@ export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
   createdAt: z.string().optional(),
-  quantity: z.number().default(1),
+  quantity:  z
+  .string()
+  .min(1, "Price is required")
+  .refine((value) => /^\d+$/.test(value), {
+    message: "quantity must contain only numeric characters",
+  }),
   totalAmount: z
     .string()
     .min(1, "Price is required")

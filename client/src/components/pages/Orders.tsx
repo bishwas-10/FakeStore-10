@@ -19,7 +19,12 @@ export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
   createdAt: z.string().optional(),
-  quantity: z.number().default(1),
+  quantity: z
+  .string()
+  .min(1, "Price is required")
+  .refine((value) => /^\d+$/.test(value), {
+    message: "quantity must contain only numeric characters",
+  }),
   totalAmount: z
     .string()
     .min(1, "Price is required")
@@ -31,6 +36,7 @@ export const CartPropsSchema = z.object({
     username: z.string().min(1, "username is required"),
   }),
   product: z.object({
+    id: z.string().min(1, "customer id is required"),
     title: z.string().min(1, "title is required"),
   }),
   shippingAddress: z.object({
@@ -107,7 +113,7 @@ const Order = () => {
                           id="customer_address"
                           className="py-3 px-0 text-center"
                         >
-                          <div className="">{cart.customer.id}</div>
+                          <div className="">{cart.customer?.id}</div>
                         </td>
                         <td
                           id="shipping_address"

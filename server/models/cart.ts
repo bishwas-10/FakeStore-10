@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema, model } from "mongoose";
 import User from "./users";
 import Product from "./product";
+import Customer from "./customer";
 
 export interface CartProps extends Document {
   quantity: number;
-  totalAmount:string;
+  totalAmount: string;
   customer: mongoose.Schema.Types.ObjectId;
   product: mongoose.Schema.Types.ObjectId;
   shippingAddress: {
@@ -13,8 +14,8 @@ export interface CartProps extends Document {
     zipcode?: string;
   };
   orderStatus: string;
-  paymentMethod:string;
-  paymentStatus:string;
+  paymentMethod: string;
+  paymentStatus: string;
 }
 
 const cartSchema = new Schema<CartProps>(
@@ -24,13 +25,13 @@ const cartSchema = new Schema<CartProps>(
       required: true,
       default: 1,
     },
-totalAmount:{
-type:String,
-required:true
-},
+    totalAmount: {
+      type: String,
+      required: true,
+    },
     customer: {
       type: Schema.Types.ObjectId,
-      ref: User,
+      ref: Customer,
       required: true,
     },
 
@@ -45,12 +46,12 @@ required:true
         required: true,
       },
       street: {
-        type:String,
-        required:true
+        type: String,
+        required: true,
       },
       zipcode: String,
     },
-    
+
     orderStatus: {
       type: String,
       required: true,

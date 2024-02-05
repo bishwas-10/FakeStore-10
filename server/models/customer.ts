@@ -60,6 +60,6 @@ const customerSchema = new Schema(
   }
 );
 
-const Customer = model<CustomerProps>("customers", customerSchema);
+const Customer = model<CustomerProps>("customer", customerSchema);
 
 export default Customer;
