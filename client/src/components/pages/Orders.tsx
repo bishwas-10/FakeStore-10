@@ -1,12 +1,4 @@
-import { useEffect, useState } from "react";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { useEffect } from "react";
 import { PencilIcon, Trash } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
@@ -34,6 +26,8 @@ export const CartPropsSchema = z.object({
   customer: z.object({
     id: z.string().min(1, "customer id is required"),
     username: z.string().min(1, "username is required"),
+    email: z.string().min(1, "email is required"),
+    phone: z.string().min(1, "phone is required"),
   }),
   product: z.object({
     id: z.string().min(1, "customer id is required"),
@@ -54,7 +48,19 @@ export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const Order = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const cartData = useSelector((state: RootState) => state.cart.carts);
-  console.log(cartData);
+
+const dateFormatter =(date:string)=>{
+  const dateObj = new Date(date);
+
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1; // Month is zero-based
+  const day = dateObj.getDate();
+  const hours = dateObj.getHours();
+  const minutes = dateObj.getMinutes();
+  const seconds = dateObj.getSeconds();
+  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return formattedDate;
+}
   useEffect(() => {
     dispatch(fetchCarts());
     return () => {
@@ -71,14 +77,23 @@ const Order = () => {
               <thead>
                 <tr className=" uppercase text-sm leading-normal">
                   <th className="py-3 px-0 text-left cursor-pointer">SN</th>
-                  <th className="py-3 px-0 text-left">Items</th>
-                  <th className="py-3 px-0 text-left cursor-pointer">
+                  <th className="py-3 px-0 text-center">Items</th>
+                  <th className="py-3 px-0 text-center ">
+                    Total Quantity
+                  </th>
+                  <th className="py-3 px-0 text-center ">
                     Total Amount
                   </th>
-                  <th className="py-3 px-0 text-left cursor-pointer">
-                    Customer Details
+                  <th className="py-3 px-0 text-center cursor-pointer">
+                    <span className="text-md">Customer Details</span><br/>
+                    &#40;username&#41;<br/>
+                    &#40;email&#41;<br/>
+                    &#40;phone&#41;
                   </th>
-                  <th className="py-3 px-0 text-center">Shipping Address</th>
+                  <th className="py-3 px-0 text-center"><span className="text-md">Shiping Address</span><br/>
+                    &#40;city&#41;<br/>
+                    &#40;street&#41;<br/>
+                    &#40;zipcode&#41;</th>
                   <th className="py-3 px-0 text-center">Order Status</th>
                   <th className="py-3 px-0 text-center">Payment Method</th>
                   <th className="py-3 px-0 text-center">Payment Status</th>
@@ -91,7 +106,9 @@ const Order = () => {
                   <th className="py-3 px-0 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className=" text-sm font-light">
+              <tbody className=" text-sm font-medium">
+                here i will add delete button later which functionality would be 
+                sending an email to respective users with customizable message box
                 {cartData.length !== 0 &&
                   cartData.map((cart, index) => {
                     return (
@@ -106,23 +123,30 @@ const Order = () => {
                         </td>
                         <td className="py-3 px-0 text-center">
                           <div className="flex items-center justify-center">
-                            {cart.totalAmount}
+                            {cart.quantity}
+                          </div>
+                        </td>
+                        <td className="py-3 px-0 text-center">
+                          <div className="flex items-center justify-center">
+                          &#36;{cart.totalAmount}
                           </div>
                         </td>
                         <td
                           id="customer_address"
                           className="py-3 px-0 text-center"
                         >
-                          <div className="">{cart.customer?.id}</div>
+                          <div className="">{cart.customer?.username}<br/>
+                          {cart.customer?.email}<br/>
+                          {cart.customer?.phone}<br/>
+                          </div>
                         </td>
                         <td
                           id="shipping_address"
                           className="py-3 px-0 text-center"
                         >
                           <div className="">
-                            {cart.shippingAddress.city}
-                            {cart.shippingAddress.street}
-
+                            {cart.shippingAddress.city}<br/>
+                            {cart.shippingAddress.street}<br/>
                             {cart.shippingAddress.zipcode}
                           </div>
                         </td>
@@ -143,12 +167,12 @@ const Order = () => {
 
                         <td className="py-3 px-0 text-center">
                           <div className="flex items-center justify-center">
-                            {cart.createdAt}
+                            {dateFormatter(cart.createdAt as string)}
                           </div>
                         </td>
                         <td className="py-3 px-0 text-center">
                           <div className="flex items-center justify-center">
-                          {cart.updatedAt}
+                          {dateFormatter(cart.updatedAt as string)}
                           </div>
                         </td>
 

@@ -1,6 +1,13 @@
 import { useEffect } from "react";
 import { Button } from "@mui/material";
-import { PencilIcon, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  PencilIcon,
+  Trash2,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import {
@@ -140,8 +147,7 @@ const Products = () => {
                                 />
                               </div>
                               <div className="w-6 mr-2  transform hover:text-purple-500 hover:scale-120">
-                                <Link to={'addproducts'}>
-                                
+                                <Link to={"addproducts"}>
                                   <PencilIcon
                                     onClick={() => editProduct(product)}
                                   />
@@ -158,6 +164,26 @@ const Products = () => {
             </table>
           </div>
         </div>
+      </div>
+      <div className="my-4  flex flex-row gap-2 justify-center items-center">
+        <Button
+          
+          variant="text"
+        >
+          <ChevronsLeft />
+        </Button>
+        <Button variant="text">
+          <ChevronLeft />
+        </Button>
+        <Button variant="text">1</Button>
+        <Button variant="contained">2</Button>
+        <Button variant="text">3</Button>
+        <Button variant="text">
+          <ChevronRight />
+        </Button>
+        <Button variant="text">
+          <ChevronsRight />
+        </Button>
       </div>
     </div>
   );
