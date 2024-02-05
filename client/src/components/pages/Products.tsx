@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import {
   ChevronLeft,
@@ -22,6 +22,20 @@ import { Link } from "react-router-dom";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [productsPerPage, setProductsPerPage] = useState<number>(2);
+  const [pageStartIndex, setPageStartIndex] = useState<number>(0);
+  const [pageEndIndex, setPageEndIndex] = useState<number>(3);
+
+  const handlePageSelection = (page: number) => {
+    setCurrentPage(page);
+  };
+  useEffect(() => {
+    setPageStartIndex(productsPerPage * (currentPage - 1));
+    setPageEndIndex(productsPerPage * currentPage - 1);
+  }, [currentPage]);
   const deleteProduct = async (id: string) => {
     const response = await instance({
       url: `/products/${id}`,
@@ -91,72 +105,76 @@ const Products = () => {
                 {products.length !== 0 && (
                   <>
                     {products?.map((product, index) => {
-                      return (
-                        <tr
-                          key={product.title}
-                          className="border-b border-gray-200 "
-                        >
-                          <td className="py-3 px-0 text-left whitespace-nowrap">
-                            <div className="flex items-center justify-center">
-                              {index + 1}
-                            </div>
-                          </td>
-                          <td className="p-3 text-center">
-                            <img
-                              src={product.image}
-                              alt={product.title}
-                              className="w-40 object-contain"
-                            />
-                          </td>
-                          <td className="py-3 px-0 text-center">
-                            <span>{product.title}</span>
-                          </td>
-                          <td className="py-3 px-0 text-center">
-                            <div className="flex items-center justify-center">
-                              &#x0024;{product.price}
-                            </div>
-                          </td>
-                          <td id="category" className="py-3 px-0 text-center">
-                            <strong>{product.category}</strong>,
-                          </td>
+                      if (pageStartIndex <= index && pageEndIndex >= index) {
+                        return (
+                          <tr
+                            key={product.title}
+                            className="border-b border-gray-200 "
+                          >
+                            <td className="py-3 px-0 text-left whitespace-nowrap">
+                              <div className="flex items-center justify-center">
+                                {index + 1}
+                              </div>
+                            </td>
+                            <td className="p-3 text-center">
+                              <img
+                                src={product.image}
+                                alt={product.title}
+                                className="w-40 object-contain"
+                              />
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <span>{product.title}</span>
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <div className="flex items-center justify-center">
+                                &#x0024;{product.price}
+                              </div>
+                            </td>
+                            <td id="category" className="py-3 px-0 text-center">
+                              <strong>{product.category}</strong>,
+                            </td>
 
-                          <td className="py-3 px-0 text-center max-w-30 break-words">
-                            {product.description}
-                          </td>
-                          <td className="py-3 px-0 text-center">
-                            <div className="w-full flex justify-between">
-                              <div className="w-full borders">
-                                {product.rating.rate}
+                            <td className="py-3 px-0 text-center max-w-30 break-words">
+                              {product.description}
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <div className="w-full flex justify-between">
+                                <div className="w-full borders">
+                                  {product.rating.rate}
+                                </div>
+                                <div className="w-full borders">
+                                  {product.rating.count}
+                                </div>
                               </div>
-                              <div className="w-full borders">
-                                {product.rating.count}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-0 text-center">
-                            <p className="text-center ">{product.updatedAt}</p>
-                          </td>
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <p className="text-center ">
+                                {product.updatedAt}
+                              </p>
+                            </td>
 
-                          <td className="py-3 px-0 text-center">
-                            <div className="flex item-center justify-center">
-                              <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120">
-                                <Trash2
-                                  onClick={() =>
-                                    deleteProduct(product.id as string)
-                                  }
-                                />
-                              </div>
-                              <div className="w-6 mr-2  transform hover:text-purple-500 hover:scale-120">
-                                <Link to={"addproducts"}>
-                                  <PencilIcon
-                                    onClick={() => editProduct(product)}
+                            <td className="py-3 px-0 text-center">
+                              <div className="flex item-center justify-center">
+                                <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120">
+                                  <Trash2
+                                    onClick={() =>
+                                      deleteProduct(product.id as string)
+                                    }
                                   />
-                                </Link>
+                                </div>
+                                <div className="w-6 mr-2  transform hover:text-purple-500 hover:scale-120">
+                                  <Link to={"addproducts"}>
+                                    <PencilIcon
+                                      onClick={() => editProduct(product)}
+                                    />
+                                  </Link>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                      );
+                            </td>
+                          </tr>
+                        );
+                      }
                     })}
                   </>
                 )}
@@ -166,24 +184,39 @@ const Products = () => {
         </div>
       </div>
       <div className="my-4  flex flex-row gap-2 justify-center items-center">
-        <Button
-          
-          variant="text"
-        >
-          <ChevronsLeft />
-        </Button>
-        <Button variant="text">
-          <ChevronLeft />
-        </Button>
-        <Button variant="text">1</Button>
-        <Button variant="contained">2</Button>
-        <Button variant="text">3</Button>
-        <Button variant="text">
-          <ChevronRight />
-        </Button>
-        <Button variant="text">
-          <ChevronsRight />
-        </Button>
+        {currentPage !== 1 && (
+          <>
+            <Button variant="text" onClick={() => handlePageSelection(1)}>
+              <ChevronsLeft />
+            </Button>
+            <Button variant="text" onClick={() => setCurrentPage((currentPage) => currentPage - 1)}>
+              <ChevronLeft
+               
+              />
+            </Button>
+          </>
+        )}
+
+        <Button variant="contained">{currentPage}</Button>
+
+        {currentPage !== Math.ceil(products.length / productsPerPage) && (
+          <>
+            <Button variant="text" onClick={() => setCurrentPage((currentPage) => currentPage + 1)}>
+              <ChevronRight
+               
+              />
+            </Button>
+            <Button variant="text" onClick={() =>
+                  handlePageSelection(
+                    Math.ceil(products.length / productsPerPage)
+                  )
+                }>
+              <ChevronsRight
+               
+              />
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

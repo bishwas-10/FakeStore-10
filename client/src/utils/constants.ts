@@ -1,0 +1,1 @@
+export const TOTAL_ITEMS_TO_DISPLAY:number = 10
