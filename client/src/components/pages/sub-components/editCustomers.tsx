@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { instance } from "../../../api/instance";
 import { z } from "zod";
 import { addCustomer } from "../../../store/customerSlice";
+import { ToastContainer, toast } from "react-toastify";
 export const customerSchema = z.object({
     id: z.string().optional(),
     updatedAt: z.string().optional(),
@@ -38,6 +39,7 @@ export const customerSchema = z.object({
 
 const EditCustomers = () => {
   const dispatch =useDispatch();
+  const token = useSelector((state:RootState)=>state.token.token);
   const customer = useSelector(
     (state: RootState) => state.customer.selectedCustomer
   );
@@ -71,7 +73,9 @@ const EditCustomers = () => {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
+            authorization: `Bearer ${token}`,
         },
+      
         data: {
           email: data.email,
           username: data.username,
@@ -90,6 +94,7 @@ const EditCustomers = () => {
       });
       if(response.data.success){
         dispatch(addCustomer(response.data.customer));
+        toast.success(response.data.message);
       }
     }
   };
@@ -232,6 +237,7 @@ const EditCustomers = () => {
           </div>
         )}
       </div>
+      <ToastContainer/>
     </div>
   );
 };

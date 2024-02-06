@@ -25,6 +25,7 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { instance } from "../../api/instance";
 import { TProductSchema } from "./sub-components/add-products";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
@@ -34,7 +35,7 @@ const Products = () => {
   const [productsPerPage, setProductsPerPage] = useState<number>(2);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
-
+  const token = useSelector((state:RootState)=>state.token.token);
   const handlePageSelection = (page: number) => {
     setCurrentPage(page);
   };
@@ -42,16 +43,22 @@ const Products = () => {
     setPageStartIndex(productsPerPage * (currentPage - 1));
     setPageEndIndex(productsPerPage * currentPage - 1);
   }, [currentPage, productsPerPage]);
+
+
+  //
   const deleteProduct = async (id: string) => {
     const response = await instance({
       url: `/products/${id}`,
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+       headers: {
+        "Content-type": "application/json",
+          authorization: `Bearer ${token}`,
+      }, 
     });
-    if (response.status) {
-      dispatch(fetchProducts());
+    if (response.data.success) {
+      dispatch(fetchProducts(token as string));
+      toast.info(response.data.message);
+      
     }
   };
   const editProduct = (product: TProductSchema) => {
@@ -59,7 +66,7 @@ const Products = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchProducts(token as string));
     return () => {
       dispatch(removeProducts());
     };
@@ -110,7 +117,7 @@ const Products = () => {
               <tbody className=" text-sm font-medium">
                 {products.length !== 0 && (
                   <>
-                    {products?.map((product, index) => {
+                    {products?.map((product:TProductSchema, index:number) => {
                       if (pageStartIndex <= index && pageEndIndex >= index) {
                         return (
                           <tr
@@ -208,7 +215,7 @@ const Products = () => {
             <MenuItem value={8}>8</MenuItem>
           </Select>
         </FormControl>
-        {currentPage !== 1 && (
+        {currentPage > 1 && (
           <>
             <Button variant="text" onClick={() => handlePageSelection(1)}>
               <ChevronsLeft />
@@ -221,10 +228,24 @@ const Products = () => {
             </Button>
           </>
         )}
-
+        {currentPage > 1 && (
+          <Button
+          variant="text"
+          onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+        >
+          {currentPage - 1}
+        </Button>
+        )}
+        
         <Button variant="contained">{currentPage}</Button>
-
-        {currentPage !== Math.ceil(products.length / productsPerPage) && (
+        {currentPage < Math.ceil(products.length / productsPerPage) &&  <Button
+          variant="text"
+          onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+        >{currentPage + 1}
+        </Button>}
+       
+          
+        {currentPage < Math.ceil(products.length / productsPerPage) && (
           <>
             <Button
               variant="text"
@@ -245,6 +266,7 @@ const Products = () => {
           </>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

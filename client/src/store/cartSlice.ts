@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { instance } from "../api/instance";
 import { TCartSchema } from "../components/pages/Orders";
 
+
 interface CartStateProps{
     carts:TCartSchema[];
     status:"idle" | "loading" | "success" | "failed";
@@ -16,16 +17,19 @@ const initialState:CartStateProps = {
   selectedCart: null,
 };
 
-export const fetchCarts = createAsyncThunk("customers/fetchCarts", async () => {
+export const fetchCarts = createAsyncThunk("customers/fetchCarts", async (token:string) => {
   const response = await instance({
     url: "/carts",
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Content-type": "application/json",
+        authorization: `Bearer ${token}`,
     },
   });
-  console.log(response)
-  return response.data.cart;
+ if(response.data.success){
+    return response.data.cart;
+ }
+
 });
 
 const customerSlice = createSlice({
@@ -46,6 +50,7 @@ const customerSlice = createSlice({
     }),
       builder.addCase(fetchCarts.fulfilled, (state, action) => {
         state.carts = action.payload;
+        state.status="success";
       }),
       builder.addCase(fetchCarts.rejected, (state) => {
         state.status = "failed";

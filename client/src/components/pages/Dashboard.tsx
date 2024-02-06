@@ -15,23 +15,12 @@ const Dashboard = () => {
           </div>
         </div>
         <div defaultValue="overview" className="space-y-4">
-          {/* <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics" disabled>
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="reports" disabled>
-              Reports
-            </TabsTrigger>
-            <TabsTrigger value="notifications" disabled>
-              Notifications
-            </TabsTrigger>
-          </TabsList> */}
+         
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                  {" "}
+                
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <span className="text-sm font-medium">Total Revenue</span>
                     <svg
@@ -58,7 +47,7 @@ const Dashboard = () => {
 
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                  {" "}
+                  
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="text-sm font-medium">Sales</div>
                     <svg
@@ -85,7 +74,7 @@ const Dashboard = () => {
               </Card>
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                  {" "}
+                 
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <h1 className="text-sm font-medium">Active Now</h1>
                     <svg
@@ -120,10 +109,10 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-span-3">
-                <h1>
+                <span>
                   <h2>Recent Sales</h2>
                   <p>You made 265 sales this month.</p>
-                </h1>
+                </span>
                 <div>{/* //  <RecentSales /> */}</div>
               </div>
             </div>

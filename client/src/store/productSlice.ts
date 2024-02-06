@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TProductSchema } from "../components/pages/sub-components/add-products";
 import { instance } from "../api/instance";
 
+
 const addedProduct={
     title: "",
     price:'',
@@ -20,7 +21,6 @@ interface ProductStateProps {
   errorMessage: string | null;
   newlyAddedProduct: TProductSchema | null;
 }
-
 const initialState: ProductStateProps = {
   products: [],
   status: "idle" || "loading" || "success" || "failed",
@@ -30,12 +30,13 @@ const initialState: ProductStateProps = {
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async () => {
+  async (token:string) => {
     const response = await instance({
       url: "/products",
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-type": "application/json",
+          authorization: `Bearer ${token}`,
       },
     });
     return response.data.products;
@@ -60,6 +61,7 @@ const productSlice = createSlice({
     }),
       builder.addCase(fetchProducts.fulfilled, (state, action) => {
         state.products = action.payload;
+        state.status="success";
       }),
       builder.addCase(fetchProducts.rejected, (state) => {
         state.status = "failed";

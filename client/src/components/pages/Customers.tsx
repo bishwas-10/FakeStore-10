@@ -9,11 +9,12 @@ import { TCustomerSchema } from "./sub-components/editCustomers";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
+  const token = useSelector((state:RootState)=>state.token.token);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-  console.log(customers);
+
 
   useEffect(() => {
-    dispatch(fetchCustomers());
+    dispatch(fetchCustomers(token as string));
     return () => {
       dispatch(removeCustomers());
     };

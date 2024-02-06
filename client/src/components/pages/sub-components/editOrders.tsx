@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 import { instance } from "../../../api/instance";
 import { addCart } from "../../../store/cartSlice";
+import { ToastContainer, toast } from "react-toastify";
 
 const EditCartSchema = z.object({
   quantity:z
@@ -43,6 +44,8 @@ const EditCartSchema = z.object({
 type TEditCartSchema = z.infer<typeof EditCartSchema>;
 const EditOrders = () => {
   const cartData = useSelector((state: RootState) => state.cart.selectedCart);
+  console.log(cartData)
+  const token = useSelector((state:RootState)=>state.token.token);
  const dispatch = useDispatch();
   const [orderStatus, setOrderStatus] = useState<string>(
     cartData?.orderStatus as string
@@ -67,7 +70,6 @@ const EditOrders = () => {
       totalAmount: cartData?.totalAmount,
     },
   });
- console.log(errors); 
   const handleOrderChange = (event: SelectChangeEvent) => {
     setOrderStatus(event.target.value as string);
     setValue("orderStatus", event.target.value as string);
@@ -90,6 +92,7 @@ const EditOrders = () => {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
+            authorization: `Bearer ${token}`,
         },
         data: {
           shippingAddress: {
@@ -108,6 +111,7 @@ const EditOrders = () => {
       });
       if(response.data.success){
         dispatch(addCart(response.data.cart));
+        toast.success("edited successfully");
       }
     }
   };
@@ -331,6 +335,7 @@ const EditOrders = () => {
           </div>
         )}
       </div>
+      <ToastContainer/>
     </div>
   );
 };

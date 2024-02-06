@@ -44,8 +44,10 @@ const LoginPage = () => {
         }
     });
 if(response.data.status){
+  
     dispatch(signInSuccess(response.data.user));
     dispatch(setToken(response.data.token));
+    navigate("/");
 }
   };
 

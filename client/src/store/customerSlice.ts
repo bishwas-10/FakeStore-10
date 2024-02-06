@@ -4,6 +4,7 @@ import { TCustomerSchema } from "../components/pages/sub-components/editCustomer
 
 
 
+
 interface CustomerStateProps {
   customers: TCustomerSchema[];
   status: "idle" | "loading" | "success" | "failed";
@@ -19,24 +20,25 @@ const initialState: CustomerStateProps = {
 };
 export const fetchCustomers = createAsyncThunk(
   "customers/fetchCustomers",
-  async () => {
+  async (token:string) => {
     const response = await instance({
       url: "/customers",
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-type": "application/json",
+          authorization: `Bearer ${token}`,
       },
     });
     return response.data.customers;
   }
 );
-
 const customerSlice = createSlice({
   name: "customer",
   initialState,
   reducers: {
     addCustomer(state,action){
       state.selectedCustomer = { ...action.payload };
+
     },
     removeCustomers(state) {
       state.customers = [];
@@ -49,6 +51,7 @@ const customerSlice = createSlice({
     }),
       builder.addCase(fetchCustomers.fulfilled, (state, action) => {
         state.customers = action.payload;
+        state.status="success";
       }),
       builder.addCase(fetchCustomers.rejected, (state) => {
         state.status = "failed";

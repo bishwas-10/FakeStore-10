@@ -48,7 +48,7 @@ export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const Order = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const cartData = useSelector((state: RootState) => state.cart.carts);
-
+  const token = useSelector((state: RootState) => state.token.token);
 const dateFormatter =(date:string)=>{
   const dateObj = new Date(date);
 
@@ -62,7 +62,7 @@ const dateFormatter =(date:string)=>{
   return formattedDate;
 }
   useEffect(() => {
-    dispatch(fetchCarts());
+    dispatch(fetchCarts(token as string));
     return () => {
       dispatch(removeCarts());
     };

@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { instance } from "../../../api/instance";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -63,11 +64,11 @@ export type TProductSchema = z.infer<typeof productSchema>;
 const AddProducts = () => {
   const [imageName, setImageName] = useState<string>("");
   const dispatch = useDispatch();
-
+  const token = useSelector((state:RootState)=>state.token.token);
   const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
-  console.log(product?.id);
+ 
   const {
     register,
     handleSubmit,
@@ -109,6 +110,10 @@ const AddProducts = () => {
     const response = await instance({
       url: product?.id ? `/products/${product?.id}` : `/products`,
       method: product?.id ? "PUT" : "POST",
+      headers: {
+        "Content-type": "application/json",
+          authorization: `Bearer ${token}`,
+      },
       data: {
         title: data.title,
         category: data.category,
@@ -125,11 +130,12 @@ const AddProducts = () => {
     if(response.data.success){
       if(response.data.message==="edited successfully"){
          dispatch(addProduct(response.data.product));
+        
       }else{
         dispatch(addProduct(data)); 
         reset();
       }
-      
+       toast.success(response.data.message);
     }
    
    
@@ -319,6 +325,7 @@ const AddProducts = () => {
           </div>
         )}
       </div>
+      <ToastContainer/>
     </div>
   );
 };

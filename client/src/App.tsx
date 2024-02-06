@@ -15,9 +15,9 @@ import LoginPage from "./components/pages/auth/login";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import PrivateRoute from "./utils/privateRoute";
-
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
-  const isSignedIn = useSelector((state: RootState) => state.user.isSignedIn);
+
   // State to manage the current theme mode
   const { theme } = useTheme();
   // Create custom theme based on the current mode
