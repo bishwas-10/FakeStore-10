@@ -26,6 +26,7 @@ import { instance } from "../../api/instance";
 import { TProductSchema } from "./sub-components/add-products";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import { dateFormatter } from "../../utils/dateFormatter";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
@@ -59,6 +60,8 @@ const Products = () => {
       dispatch(fetchProducts(token as string));
       toast.info(response.data.message);
       
+    }else{
+      toast.error(response.data.message);
     }
   };
   const editProduct = (product: TProductSchema) => {
@@ -163,7 +166,7 @@ const Products = () => {
                             </td>
                             <td className="py-3 px-0 text-center">
                               <p className="text-center ">
-                                {product.updatedAt}
+                                {dateFormatter(product.updatedAt as string)}
                               </p>
                             </td>
 

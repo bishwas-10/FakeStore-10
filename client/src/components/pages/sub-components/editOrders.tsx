@@ -44,7 +44,7 @@ const EditCartSchema = z.object({
 type TEditCartSchema = z.infer<typeof EditCartSchema>;
 const EditOrders = () => {
   const cartData = useSelector((state: RootState) => state.cart.selectedCart);
-  console.log(cartData)
+  
   const token = useSelector((state:RootState)=>state.token.token);
  const dispatch = useDispatch();
   const [orderStatus, setOrderStatus] = useState<string>(
@@ -306,6 +306,7 @@ const EditOrders = () => {
         {cartData && (
           <div className="flex flex-col items-center justify-center gap-4 w-full">
             <Card sx={{ maxWidth: "100%", padding: "10px" }}>
+         
               <CardContent className="flex flex-col gap-2">
                 <Typography variant="body1" color="text.secondary">
                   <strong>title:</strong> {cartData.product?.title}

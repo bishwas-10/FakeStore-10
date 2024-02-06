@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { addCart, fetchCarts, removeCarts } from "../../store/cartSlice";
 import { RootState } from "../../store/store";
+import { dateFormatter } from "../../utils/dateFormatter";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
@@ -30,7 +31,7 @@ export const CartPropsSchema = z.object({
     phone: z.string().min(1, "phone is required"),
   }),
   product: z.object({
-    id: z.string().min(1, "customer id is required"),
+    id: z.string().min(1, "product id is required"),
     title: z.string().min(1, "title is required"),
   }),
   shippingAddress: z.object({
@@ -49,18 +50,7 @@ const Order = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const cartData = useSelector((state: RootState) => state.cart.carts);
   const token = useSelector((state: RootState) => state.token.token);
-const dateFormatter =(date:string)=>{
-  const dateObj = new Date(date);
 
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1; // Month is zero-based
-  const day = dateObj.getDate();
-  const hours = dateObj.getHours();
-  const minutes = dateObj.getMinutes();
-  const seconds = dateObj.getSeconds();
-  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  return formattedDate;
-}
   useEffect(() => {
     dispatch(fetchCarts(token as string));
     return () => {

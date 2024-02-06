@@ -6,6 +6,7 @@ import {  addCustomer, fetchCustomers, removeCustomers } from "../../store/custo
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
 import { TCustomerSchema } from "./sub-components/editCustomers";
+import { dateFormatter } from "../../utils/dateFormatter";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
@@ -98,7 +99,7 @@ const Customers = () => {
                         </td>
 
                         <td className="py-3 px-0 text-center">
-                          <p className="text-center ">{customer?.updatedAt}</p>
+                          <p className="text-center ">{dateFormatter(customer?.updatedAt as string)}</p>
                         </td>
 
                         <td className="py-3 px-0 text-center">

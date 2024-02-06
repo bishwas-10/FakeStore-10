@@ -13,9 +13,9 @@ const refresh =  (req: Request, res: Response,next:NextFunction) => {
        
         return res
         .status(401)
-        .send({ status: false, message: "you are not authorized" });
+        .send({ status: false, message: "you are not authorized please logout and signin again" });
      }
-  
+   
     jwt.verify(
       cookie,
       process.env.REFRESH_TOKEN_KEY as string,
@@ -23,7 +23,7 @@ const refresh =  (req: Request, res: Response,next:NextFunction) => {
       async(error: jwt.VerifyErrors | null, user: JwtPayload | undefined) => {
           if(error) {
            
-            return res.status(403).send({status:false, message:"you are forbidden"});
+            return res.status(403).send({status:false, message:"you are forbidden please logout and signin again"});
           }
           
           if(user){
@@ -43,7 +43,7 @@ const authUser =  (req: Request, res: Response, next: NextFunction) => {
         const token = req.headers.authorization?.split(" ")[1];
         
         if (!token) {
-            return res.status(403).send({ status: false, message: "Token is missing" });
+            return res.status(403).send({ status: false, message: "Token is missing please logout and signin again" });
         }
 
         jwt.verify(token, process.env.TOKEN_KEY as string, { complete: true }, async function(error: VerifyErrors | null, decoded: any) {
@@ -51,7 +51,7 @@ const authUser =  (req: Request, res: Response, next: NextFunction) => {
                 if( error instanceof TokenExpiredError){
                    return refresh(req, res, next);  
                 }else{
-                    return res.status(403).send({ status: false, message: "Token invalid" }); 
+                    return res.status(403).send({ status: false, message: "Token invalid please logout and signin again" }); 
                 }
                
              
@@ -64,7 +64,7 @@ const authUser =  (req: Request, res: Response, next: NextFunction) => {
         });
     } catch (error) {
         // Handle synchronous errors (e.g., invalid token format, etc.)
-        return res.status(500).send({ status: false, message: "Internal Server Error" });
+        return res.status(500).send({ status: false, message: "Internal Server Error or invalid token" });
     }
 };
 
