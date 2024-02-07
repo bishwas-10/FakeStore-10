@@ -42,38 +42,29 @@ export const signUp = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { username,email, password, } = req.body;
+  if (!username|| !password || !email) return res.status(400).json({ 'message': 'Username ,email and password are required.' });
+
+  // check for duplicate usernames in the db
+  const duplicate = await User.findOne({ email: email }).exec();
+  if (duplicate) return res.sendStatus(409); //Conflict 
+
   try {
-    const validation = signUpSchema.safeParse(req.body);
+      //encrypt the password
+      const hashedPwd = await bcrypt.hash(password, 10);
 
-    if (!validation.success) {
-      return res
-        .status(404)
-        .send({ status: false, message: validation.error.issues[0].message });
-    }
-    const { email, password, username, photo } = req.body;
+      //create and store the new user
+      const result = await User.create({
+          "username": username,
+          "email":email,
+          "password": hashedPwd
+      });
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(404)
-        .send({ status: false, message: "user already exists" });
-    }
+      console.log(result);
 
-    const hashedPassword = await hashPassword(password);
-
-    const user = await User.create({
-      username: username + Math.random().toString(36).slice(-8),
-      email,
-      password: hashedPassword,
-    });
-    await user.save();
-    const user2 = user.toObject();
-    delete user2.password;
-    res
-      .status(203)
-      .send({ status: true, message: "user signed in successfully" });
-  } catch (error) {
-    res.status(500).send({ status: false, message: "internal server error" });
+      res.status(201).json({ 'success': `New user ${username} created!` });
+  } catch (err:any) {
+      res.status(500).json({ 'message': err.message });
   }
 };
 
@@ -82,13 +73,13 @@ export const signUp = async (
 export const logIn = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
-  const { user, pwd } = req.body;
-  if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
+  const { email, password } = req.body;
+  if (!password || !email) return res.status(400).json({ 'message': 'Username ,email and password are required.' });
 
-  const foundUser = await User.findOne({ username: user }).exec();
+  const foundUser = await User.findOne({ email:email }).exec();
   if (!foundUser) return res.sendStatus(401); //Unauthorized 
   // evaluate password 
-  const match = await bcrypt.compare(pwd, foundUser.password as string);
+  const match = await bcrypt.compare(password, foundUser.password as string);
   if (match) {
       const roles = Object.values(foundUser.roles).filter(Boolean);
       // create JWTs
