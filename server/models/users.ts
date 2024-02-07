@@ -7,6 +7,11 @@ export interface UserProps extends Document{
     email:string;
     password?:string;
     confirmPassword?:string;
+    roles:{
+        customer:number,
+        admin: number
+    };
+    refreshToken:string[];
 
 }
 
@@ -25,6 +30,18 @@ const userSchema = new Schema<UserProps>({
         type:String,
         required:[true, 'is required field']
     },
+    roles:{
+        customer: {
+            type: Number,
+            default: 2001
+        },
+        
+        admin: Number
+    },
+    refreshToken:[{
+        type:String,
+        
+    }]
 
 },
 {

@@ -4,7 +4,8 @@ import { NextFunction, Request, Response } from "express";
 import { hashPassword, verifyPassword } from "../utils/password";
 import createSecretToken from "../utils/secretToken";
 import createRefreshToken from "../utils/createRefreshToken";
-
+import bcrypt from "bcrypt";
+import jwt, { JwtPayload } from "jsonwebtoken";
 //sigup
 
 const signUpSchema = z
@@ -79,130 +80,79 @@ export const signUp = async (
 //signin
 
 export const logIn = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res
-        .status(403)
-        .send({ status: false, message: "all fields are mandatory" });
-    }
+  const cookies = req.cookies;
+  console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
+  const { user, pwd } = req.body;
+  if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
 
-    const existingUser = await User.findOne({ email });
+  const foundUser = await User.findOne({ username: user }).exec();
+  if (!foundUser) return res.sendStatus(401); //Unauthorized 
+  // evaluate password 
+  const match = await bcrypt.compare(pwd, foundUser.password as string);
+  if (match) {
+      const roles = Object.values(foundUser.roles).filter(Boolean);
+      // create JWTs
+      const accessToken = jwt.sign(
+          {
+              "UserInfo": {
+                  "username": foundUser.username,
+                  "roles": roles
+              }
+          },
+          process.env.TOKEN_KEY as string,
+          { expiresIn: '1m' }
+      );
+      const newRefreshToken = jwt.sign(
+          { "username": foundUser.username },
+          process.env.REFRESH_TOKEN_KEY as string,
+          { expiresIn: '1d' }
+      );
 
-    if (!existingUser) {
-      return res
-        .status(403)
-        .send({ status: false, message: "user doesnt exist" });
-    }
+      // Changed to let keyword
+      let newRefreshTokenArray =
+          !cookies?.jwt
+              ? foundUser.refreshToken
+              : foundUser.refreshToken.filter(rt => rt !== cookies.jwt);
 
-    const isPasswordMatched = await verifyPassword(
-      password,
-      existingUser.password as string
-    );
+      if (cookies?.jwt) {
 
-    if (!isPasswordMatched) {
-      return res
-        .status(403)
-        .send({ status: false, message: "invalid credentials" });
-    }
-    const token = createSecretToken(existingUser._id);
+          /* 
+          Scenario added here: 
+              1) User logs in but never uses RT and does not logout 
+              2) RT is stolen
+              3) If 1 & 2, reuse detection is needed to clear all RTs when user logs in
+          */
+          const refreshToken = cookies.jwt;
+          const foundToken = await User.findOne({ refreshToken }).exec();
 
-    const refreshToken = createRefreshToken(existingUser._id);
-    const user = {
-      _id: existingUser._id,
-      username: existingUser.username,
-      email: existingUser.email,
-    };
+          // Detected refresh token reuse!
+          if (!foundToken) {
+              console.log('attempted refresh token reuse at login!')
+              // clear out ALL previous refresh tokens
+              newRefreshTokenArray = [];
+          }
 
-    const expiryDate = new Date(Date.now() + 7200000); //1hour
+          res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
+      }
 
-    res
-      .cookie("refresh_token", refreshToken, {
-        httpOnly: false,
-        expires: expiryDate,
-        secure: true,
-        sameSite: "none",
-      })
-      .status(200)
-      .send({
-        status: true,
-        message: "user logged in successfully",
-        user,
-        token,
-      });
-  } catch (error) {
-    res.status(500).send({ status: false, message: "internal server error" });
+      // Saving refreshToken with current user
+      foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+      const result = await foundUser.save();
+      console.log(result);
+      console.log(roles);
+
+      // Creates Secure Cookie with refresh token
+      res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
+
+      // Send authorization roles and access token to user
+      res.json({ roles, accessToken });
+
+  } else {
+      res.sendStatus(401);
   }
 };
-//google sign in
-export const google = async (req: Request, res: Response) => {
-  try {
-    const user = await User.findOne({ email: req.body.email });
 
-    if (user) {
-      const token = createSecretToken(user._id);
 
-      const existingUser = {
-        _id: user._id,
-        username: user.username,
-        email: req.body.email,
-        password: user.password,
-      };
-      const { password: hashedPassword, ...rest } = existingUser;
-
-      const expiryDate = new Date(Date.now() + 7200000); //1hour
-      const refreshToken = createRefreshToken(existingUser._id);
-      res
-        .cookie("refresh_token", refreshToken, {
-          httpOnly: false,
-          expires: expiryDate,
-          secure: true,
-          sameSite: "none",
-        })
-        .status(200)
-        .send({
-          status: true,
-          message: "user logged in successfully",
-          rest,
-          token,
-        });
-    } else {
-      const generatedPassword =
-        Math.random().toString(36).slice(-8) +
-        Math.random().toString(36).slice(-8);
-
-      const hashedPassword = await hashPassword(generatedPassword);
-
-      const newUser = await User.create({
-        username:
-          req.body.name.split(" ").join("").toLowerCase() +
-          Math.random().toString(36).slice(-8),
-        email: req.body.email,
-        password: hashedPassword,
-      });
-
-      await newUser.save();
-
-      const token = createSecretToken(newUser._id);
-
-      const { password: hashedPassword2, ...rest } = newUser;
-
-      const expiryDate = new Date(Date.now() + 6000); // 1 hour
-
-      res
-        .cookie("refresh_token", token, {
-          httpOnly: false,
-          expires: expiryDate,
-          secure: true,
-          sameSite: "none",
-        })
-        .status(200)
-        .json(rest);
-    }
-  } catch (error) {
-    res.status(500).send({ status: false, message: "internal server error" });
-  }
-};
 
 //signout
 
