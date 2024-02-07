@@ -1,20 +1,22 @@
 import express from 'express';
 import { addCustomer, deleteCustomer, getAllCustomers, getSpecificCustomer, loginCustomer, updateCustomer } from '../controller/customer';
 import authUser from '../middleware/authUser';
+import { verifyRoles } from '../middleware/verifyRoles';
+import { ROLES_LIST } from '../config/roles_list';
 
 const router = express.Router();
 
 //allProducts
-router.get('/customers',authUser,getAllCustomers);
-router.post('/customers',authUser,addCustomer);
+router.get('/customers',verifyRoles(ROLES_LIST.admin),getAllCustomers);
+router.post('/customers',verifyRoles(ROLES_LIST.admin),addCustomer);
 
-//eachProduct
-router.get('/customers/:id',authUser,getSpecificCustomer);
-router.put('/customers/:id',authUser,updateCustomer);
-router.delete('/customers/:id',authUser,deleteCustomer);
+//eachCustomer
+router.get('/customers/:id',verifyRoles(ROLES_LIST.admin),getSpecificCustomer);
+router.put('/customers/:id',verifyRoles(ROLES_LIST.admin),updateCustomer);
+router.delete('/customers/:id',verifyRoles(ROLES_LIST.admin),deleteCustomer);
 
 //loginCustomer
-router.post('/customers/login',authUser,loginCustomer)
+router.post('/customers/login',verifyRoles(ROLES_LIST.admin),loginCustomer)
 
 
 

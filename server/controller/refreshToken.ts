@@ -5,7 +5,7 @@ require("dotenv").config();
 
 export const handleRefreshToken = async (req:Request, res:Response) => {
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(401);
+    if (!cookies?.jwt) return res.status(401).send({success:false,message:"no token available"});
     const refreshToken = cookies.jwt;
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
 
@@ -20,12 +20,12 @@ export const handleRefreshToken = async (req:Request, res:Response) => {
             async (error: jwt.VerifyErrors | null, decoded: JwtPayload | undefined) => {
                 if (error) return res.sendStatus(403); //Forbidden
                 console.log('attempted refresh token reuse!')
-                const hackedUser = await User.findOne({ username: decoded?.payload.username }).exec();
+                const hackedUser = await User.findOne({ username: decoded?.payload.UserInfo.username }).exec();
                
                if(hackedUser){
                  hackedUser.refreshToken = [];
                 const result = await hackedUser.save();
-                console.log(result);   return res.sendStatus(403); //Forbidden
+                console.log(result);   return res.sendStatus(403);
                }
             }
         )
@@ -43,14 +43,14 @@ export const handleRefreshToken = async (req:Request, res:Response) => {
                 const result = await foundUser.save();
                 console.log(result);
             }
-            if (error || foundUser.username !== decoded?.payload.username) return res.sendStatus(403);
+            if (error || foundUser.username !== decoded?.payload.UserInfo.username) return res.sendStatus(403);
 
             // Refresh token was still valid
             const roles = Object.values(foundUser.roles);
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
-                        "username": decoded?.payload.username,
+                        "username": decoded?.payload.UserInfo.username,
                         "roles": roles
                     }
                 },

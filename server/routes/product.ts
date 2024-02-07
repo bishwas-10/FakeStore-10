@@ -1,21 +1,22 @@
 import express from 'express';
 import { addProduct, deleteProduct, editProduct, getAllCategories, getAllProducts, getCategoryProduct, getProduct } from '../controller/product';
-import authUser from '../middleware/authUser';
+import { ROLES_LIST } from '../config/roles_list';
+import { verifyRoles } from '../middleware/verifyRoles';
 
 const router = express.Router();
 
 //allProducts
-router.get('/products',authUser,getAllProducts);
-router.post('/products',authUser,addProduct);
+router.get('/products',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),getAllProducts);
+router.post('/products',verifyRoles(ROLES_LIST.admin),addProduct);
 
 //eachProduct
-router.get('/products/:id',authUser,getProduct);
-router.put('/products/:id',authUser,editProduct);
-router.delete('/products/:id',authUser,deleteProduct);
+router.get('/products/:id',verifyRoles(ROLES_LIST.admin),getProduct);
+router.put('/products/:id',verifyRoles(ROLES_LIST.admin),editProduct);
+router.delete('/products/:id',verifyRoles(ROLES_LIST.admin),deleteProduct);
 
 //category
-router.get('/products/categories',authUser,getAllCategories);
-router.get('/products/category/:category',authUser,getCategoryProduct);
+router.get('/products/categories',verifyRoles(ROLES_LIST.admin),getAllCategories);
+router.get('/products/category/:category',verifyRoles(ROLES_LIST.admin),getCategoryProduct);
 
 
 

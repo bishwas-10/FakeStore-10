@@ -31,7 +31,7 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/api/users",authRouter);
 
-app.use(verifyJWT)
+app.use(verifyJWT);
 app.use("/api",productRouter);
 app.use("/api",cartRouter);
 app.use("/api",customerRouter)

@@ -43,11 +43,11 @@ export const signUp = async (
   next: NextFunction
 ) => {
   const { username,email, password, } = req.body;
-  if (!username|| !password || !email) return res.status(400).json({ 'message': 'Username ,email and password are required.' });
+  if (!username|| !password || !email) return res.status(400).json({ success:false,message: 'Username ,email and password are required.' });
 
   // check for duplicate usernames in the db
   const duplicate = await User.findOne({ email: email }).exec();
-  if (duplicate) return res.sendStatus(409); //Conflict 
+  if (duplicate) return res.status(409).send({status:false,message:"email already used"}); //Conflict 
 
   try {
       //encrypt the password
@@ -74,7 +74,7 @@ export const logIn = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
   const { email, password } = req.body;
-  if (!password || !email) return res.status(400).json({ 'message': 'Username ,email and password are required.' });
+  if (!password || !email) return res.status(400).send({ success:false,message: 'Username ,email and password are required.' });
 
   const foundUser = await User.findOne({ email:email }).exec();
   if (!foundUser) return res.sendStatus(401); //Unauthorized 
@@ -91,7 +91,7 @@ export const logIn = async (req: Request, res: Response) => {
               }
           },
           process.env.TOKEN_KEY as string,
-          { expiresIn: '1m' }
+          { expiresIn: '10m' }
       );
       const newRefreshToken = jwt.sign(
           { "username": foundUser.username },
@@ -129,8 +129,7 @@ export const logIn = async (req: Request, res: Response) => {
       // Saving refreshToken with current user
       foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
       const result = await foundUser.save();
-      console.log(result);
-      console.log(roles);
+    
 
       // Creates Secure Cookie with refresh token
       res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
@@ -139,7 +138,7 @@ export const logIn = async (req: Request, res: Response) => {
       res.json({ roles, accessToken });
 
   } else {
-      res.sendStatus(401);
+      res.status(401).send({success:false,message:"password doesnt match"});
   }
 };
 
@@ -150,10 +149,10 @@ export const logIn = async (req: Request, res: Response) => {
 export const signOut = (req: Request, res: Response) => {
   try {
     res
-      .clearCookie("refresh_token")
+      .clearCookie("jwt")
       .status(200)
-      .send({ status: true, message: "signout succesfull" });
+      .send({ success: true, message: "signout succesfull" });
   } catch (error) {
-    res.status(500).send({ status: false, message: "internal server error" });
+    res.status(500).send({ success: false, message: "internal server error" });
   }
 };
