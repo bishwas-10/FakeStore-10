@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { instance } from "../api/instance";
 import { TCustomerSchema } from "../components/pages/sub-components/editCustomers";
 
-
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 
 interface CustomerStateProps {
@@ -20,15 +20,14 @@ const initialState: CustomerStateProps = {
 };
 export const fetchCustomers = createAsyncThunk(
   "customers/fetchCustomers",
-  async (token:string) => {
-    const response = await instance({
-      url: "/customers",
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-          authorization: `Bearer ${token}`,
-      },
-    });
+  async () => {
+    
+    const controller = new AbortController();
+    const axiosPrivate = useAxiosPrivate();
+    const response = await axiosPrivate.get('/customers', {
+      signal: controller.signal
+  })
+  console.log(response)
     return response.data.customers;
   }
 );

@@ -1,20 +1,17 @@
 import React, { createContext, useState, ReactNode } from "react";
 
 interface AuthState {
-  user: {
-    username: string;
-  } | null;
-  token: string | null;
+  token: string ;
 }
 
 interface AuthContextType {
-  auth: AuthState | null;
+  auth: AuthState ;
   setAuth: React.Dispatch<React.SetStateAction<AuthState>>;
 }
 
 const initialAuthState: AuthState = {
-  user: null,
-  token: null,
+  token: '',
+
 };
 
 const AuthContext = createContext<AuthContextType>({

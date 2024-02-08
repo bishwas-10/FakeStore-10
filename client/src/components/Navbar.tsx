@@ -1,5 +1,5 @@
 import { FormControlLabel, Switch } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../providers/theme-provider";
 import { instance } from "../api/instance";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,16 +33,16 @@ const handleLogout=async()=>{
         
         {pathname!=="/login" &&  
           <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
-          <a
-            href="/"
+          <Link
+            to="/"
             className={`p-2 rounded-md transition-all  hover:text-primary
             ${pathname === "/" ? "font-semibold text-gray-600 bg-gray-300" : "text-muted-foreground"}
             `}
           >
             Overview
-          </a>
-          <a
-            href="/products"
+          </Link>
+          <Link
+            to="/products"
             className={`p-2  
             ${
               pathname === "/products" 
@@ -52,9 +52,9 @@ const handleLogout=async()=>{
             rounded-md transition-all hover:text-primary`}
           >
             Products
-          </a>{" "}
-          <a
-            href="/customers"
+          </Link>{" "}
+          <Link
+            to="/customers"
             className={`p-2 
             ${
               pathname === "/customers"
@@ -64,17 +64,17 @@ const handleLogout=async()=>{
             rounded-md transition-all hover:text-primary`}
           >
             Customers
-          </a>
-          <a
-            href="/orders"
+          </Link>
+          <Link
+            to="/orders"
             className={`p-2 
             ${pathname === "/orders" ? "font-semibold text-gray-600 bg-gray-300" : "text-muted-foreground"}
             rounded-md transition-all hover:text-primary`}
           >
             Orders
-          </a>
-          <a
-            href="/settings"
+          </Link>
+          <Link
+            to="/settings"
             className={` p-2 
             ${
               pathname === "/settings"
@@ -84,7 +84,7 @@ const handleLogout=async()=>{
             rounded-md transition-all hover:text-primary`}
           >
             Settings
-          </a>
+          </Link>
           <a
             href="/login"
             className={`p-2 

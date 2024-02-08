@@ -5,8 +5,10 @@ require("dotenv").config();
 
 export const handleRefreshToken = async (req:Request, res:Response) => {
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.status(401).send({success:false,message:"no token available"});
-    const refreshToken = cookies.jwt;
+    console.log(cookies,"here")
+    if (!cookies?.token) return res.status(401).send({success:false,message:"no token available"});
+    
+    const refreshToken = cookies.token;
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
 
     const foundUser = await User.findOne({ refreshToken }).exec();
@@ -18,7 +20,7 @@ export const handleRefreshToken = async (req:Request, res:Response) => {
             process.env.REFRESH_TOKEN_KEY as string,
             { complete: true },
             async (error: jwt.VerifyErrors | null, decoded: JwtPayload | undefined) => {
-                if (error) return res.sendStatus(403); //Forbidden
+                if (error) return res.status(403).send({success:false,message:"refresh token invalid"}); //Forbidden
                 console.log('attempted refresh token reuse!')
                 const hackedUser = await User.findOne({ username: decoded?.payload.UserInfo.username }).exec();
                
@@ -43,14 +45,15 @@ export const handleRefreshToken = async (req:Request, res:Response) => {
                 const result = await foundUser.save();
                 console.log(result);
             }
-            if (error || foundUser.username !== decoded?.payload.UserInfo.username) return res.sendStatus(403);
+            console.log(decoded)
+            if (error || foundUser?.username !== decoded?.payload.username) return res.sendStatus(403);
 
             // Refresh token was still valid
             const roles = Object.values(foundUser.roles);
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
-                        "username": decoded?.payload.UserInfo.username,
+                        "username": decoded?.payload.username,
                         "roles": roles
                     }
                 },

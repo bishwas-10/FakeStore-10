@@ -4,11 +4,13 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { TextField } from "@mui/material";
 import { instance } from "../../../api/instance";
+import { jwtDecode } from "jwt-decode";
 import { signInSuccess } from "../../../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../../../store/tokenSlice";
 import { RootState } from "../../../store/store";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 export const LoginSchema = z.object({
   email: z.string().email({
     message: "Email is required",
@@ -21,6 +23,8 @@ export const LoginSchema = z.object({
 export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
+  const {setAuth,auth}= useAuth();
+  console.log(auth)
     const isSignedIn = useSelector((state:RootState)=>state.user.isSignedIn);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -43,11 +47,12 @@ const LoginPage = () => {
             password:data.password
         }
     });
-if(response.data.status){
-  
-    dispatch(signInSuccess(response.data.user));
-    dispatch(setToken(response.data.token));
-    navigate("/");
+if(response.data.success){
+  console.log(response.data);
+setAuth({token:response.data.accessToken});
+    // dispatch(signInSuccess(response.data.user));
+    // dispatch(setToken(response.data.token));
+     navigate("/customers");
 }
   };
 

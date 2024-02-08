@@ -7,18 +7,23 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
 import { TCustomerSchema } from "./sub-components/editCustomers";
 import { dateFormatter } from "../../utils/dateFormatter";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
   const token = useSelector((state:RootState)=>state.token.token);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-
-
+  const controller = new AbortController();
+  const axiosPrivate = useAxiosPrivate();
+const customerCall =async()=>{
+  const response = await axiosPrivate.get('/customers', {
+      signal: controller.signal
+  })
+  console.log(response)
+    
+}
   useEffect(() => {
-    dispatch(fetchCustomers(token as string));
-    return () => {
-      dispatch(removeCustomers());
-    };
+    customerCall();
   }, []);
 
   return (

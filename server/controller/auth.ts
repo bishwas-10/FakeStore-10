@@ -135,7 +135,7 @@ export const logIn = async (req: Request, res: Response) => {
       res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
 
       // Send authorization roles and access token to user
-      res.json({ roles, accessToken });
+      res.status(201).send({ success:true,message:"sign in successful", accessToken });
 
   } else {
       res.status(401).send({success:false,message:"password doesnt match"});
@@ -146,12 +146,25 @@ export const logIn = async (req: Request, res: Response) => {
 
 //signout
 
-export const signOut = (req: Request, res: Response) => {
+export const signOut =async (req: Request, res: Response) => {
   try {
-    res
+    const cookies = req.cookies;
+    if(!cookies?.jwt){res.status(204).send({success:false,message:"no refresh token available"})};
+
+    const refreshToken = cookies.jwt;
+     const foundUser = await User.findOne({refreshToken}).exec();
+     if(!foundUser){
+      res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
+      return res.status(204).send({success:false,message:"no refresh token available"});
+     }else{
+      foundUser.refreshToken = foundUser.refreshToken.filter((rt:string)=> rt!== refreshToken);
+      const result = await foundUser.save();
+      res
       .clearCookie("jwt")
       .status(200)
       .send({ success: true, message: "signout succesfull" });
+     }
+    
   } catch (error) {
     res.status(500).send({ success: false, message: "internal server error" });
   }

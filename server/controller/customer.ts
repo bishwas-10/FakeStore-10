@@ -5,6 +5,7 @@ import { hashPassword, verifyPassword } from "../utils/password";
 
 export const getAllCustomers=async(req:Request,res:Response)=>{
     try {
+      console.log("aaipugyo")
         const customer = await Customer.find();
         if(!customer){
           return res.status(403).send({success:false,message:"customers not found",customer:null})
