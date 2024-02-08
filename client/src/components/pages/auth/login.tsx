@@ -24,7 +24,6 @@ export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
   const {setAuth,auth}= useAuth();
-  console.log(auth)
     const isSignedIn = useSelector((state:RootState)=>state.user.isSignedIn);
     const dispatch = useDispatch();
     const navigate = useNavigate();

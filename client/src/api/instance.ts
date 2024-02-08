@@ -5,7 +5,10 @@ const BASE_URL="http://localhost:4000/api"
 export const instance = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
-    
+    headers:{
+      'Content-Type':'application/json',
+
+  },
   });
 
   export const axiosPrivate = axios.create({

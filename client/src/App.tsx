@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Missing from "./components/Missing";
 import Unauthorized from "./components/UnAuthorized";
 import RequireAuth from "./components/RequireAuth";
+import PersistLogin from "./components/PersistLogin";
 
 export interface RolesProps {
   admin: number;
@@ -44,28 +45,30 @@ function App() {
       <div>
         <Navbar />
         <Routes>
-          <Route
-            element={
-              <RequireAuth
-                allowedRoles={[ROLES_LIST.admin, ROLES_LIST.customer]}
-              />
-            }
-          >
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/products">
-              <Route index element={<Products />} />
-              <Route path="addproducts" element={<AddProducts />} />
-            </Route>
-            <Route path="/customers">
-              <Route index element={<Customers />} />
-              <Route path="editcustomers" element={<EditCustomers />} />
-            </Route>
-            <Route path="/orders">
-              <Route index element={<Order />} />
-              <Route path="editorders" element={<EditOrders />} />
-            </Route>
+          <Route element={<PersistLogin />}>
+            <Route
+              element={
+                <RequireAuth
+                  allowedRoles={[ROLES_LIST.admin, ROLES_LIST.customer]}
+                />
+              }
+            >
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/products">
+                <Route index element={<Products />} />
+                <Route path="addproducts" element={<AddProducts />} />
+              </Route>
+              <Route path="/customers">
+                <Route index element={<Customers />} />
+                <Route path="editcustomers" element={<EditCustomers />} />
+              </Route>
+              <Route path="/orders">
+                <Route index element={<Order />} />
+                <Route path="editorders" element={<EditOrders />} />
+              </Route>
 
-            <Route path="/settings" element={<Settings />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
           </Route>
 
           <Route path="/login" element={<LoginPage />} />

@@ -72,12 +72,12 @@ export const signUp = async (
 
 export const logIn = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
+ // console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
   const { email, password } = req.body;
   if (!password || !email) return res.status(400).send({ success:false,message: 'Username ,email and password are required.' });
 
   const foundUser = await User.findOne({ email:email }).exec();
-  if (!foundUser) return res.sendStatus(401); //Unauthorized 
+  if (!foundUser) return res.status(401).send({success:false,message:"email is incorrect"}); //Unauthorized 
   // evaluate password 
   const match = await bcrypt.compare(password, foundUser.password as string);
   if (match) {
@@ -115,7 +115,8 @@ export const logIn = async (req: Request, res: Response) => {
           */
           const refreshToken = cookies.jwt;
           const foundToken = await User.findOne({ refreshToken }).exec();
-
+console.log(foundToken);
+console.log("yoooo")
           // Detected refresh token reuse!
           if (!foundToken) {
               console.log('attempted refresh token reuse at login!')
@@ -129,7 +130,7 @@ export const logIn = async (req: Request, res: Response) => {
       // Saving refreshToken with current user
       foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
       const result = await foundUser.save();
-    
+    console.log(result);
 
       // Creates Secure Cookie with refresh token
       res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });

@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode } from "react";
 
 interface AuthState {
-  token: string ;
+  token: string|null ;
 }
 
 interface AuthContextType {
@@ -10,7 +10,7 @@ interface AuthContextType {
 }
 
 const initialAuthState: AuthState = {
-  token: '',
+  token: null,
 
 };
 

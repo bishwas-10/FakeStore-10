@@ -5,9 +5,10 @@ const useRefreshToken = () => {
     const { setAuth } = useAuth();
 
     const refresh = async () => {
-        const response = await instance.get('/refresh', {
+        const response = await instance.get('/users/refresh', {
             withCredentials: true
         });
+        console.log(response)
         setAuth(prev => {
             console.log(JSON.stringify(prev));
             console.log(response.data.accessToken);

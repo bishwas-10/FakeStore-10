@@ -5,7 +5,7 @@ import { TCartSchema } from "../components/pages/Orders";
 
 interface CartStateProps{
     carts:TCartSchema[];
-    status:"idle" | "loading" | "success" | "failed";
+    status:"idle" | "loading" | "success" |"failed";
     errorMessage:string |null;
     selectedCart:TCartSchema |null;
 } 

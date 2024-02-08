@@ -38,10 +38,7 @@ const userSchema = new Schema<UserProps>({
         
         admin: Number
     },
-    refreshToken:[{
-        type:String,
-        
-    }]
+    refreshToken:[String]
 
 },
 {

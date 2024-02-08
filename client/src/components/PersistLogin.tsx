@@ -8,7 +8,7 @@ const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const refresh = useRefreshToken();
     const { auth } = useAuth();
-    const [persist] = useLocalStorage('persist', false);
+    //const [persist] = useLocalStorage('persist', false);
 
     useEffect(() => {
         let isMounted = true;
@@ -26,7 +26,7 @@ const PersistLogin = () => {
         }
 
         
-        !auth?.token && persist ? verifyRefreshToken() : setIsLoading(false);
+        !auth?.token  ? verifyRefreshToken() : setIsLoading(false);
 
         return () =>{ isMounted = false;}
     }, [])
@@ -38,10 +38,10 @@ const PersistLogin = () => {
 
     return (
         <>
-            {!persist
+            {/* {!persist
                 ? <Outlet />
-                : isLoading
-                    ? <p>Loading...</p>
+                : isLoading */}
+                   {isLoading ? <p>Loading...</p>
                     : <Outlet />
             }
         </>
