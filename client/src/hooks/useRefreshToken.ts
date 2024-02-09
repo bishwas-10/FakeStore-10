@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 const useRefreshToken = () => {
   const { setAuth } = useAuth();
 
-  const refresh = async () => {
+  return  async () => {
     const response = await instance({
       url: "/refresh",
       method: "GET",
@@ -20,7 +20,7 @@ const useRefreshToken = () => {
     setAuth({token:response.data.accessToken});
     return response.data.accessToken;
   };
-  return refresh;
+ 
 };
 
 export default useRefreshToken;

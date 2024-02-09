@@ -10,17 +10,11 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
     return res
       .status(401)
       .send({ success: false, message: "no token available" });
-  }else{
-    const refreshToken = cookies.jwt;
-    //res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-    console.log(refreshToken);
-    const foundUser = await User.findOne({refreshToken}).exec();
-    console.log(foundUser);
   }
     
 
   const refreshToken = cookies.jwt as string;
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
+ // res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
   console.log(refreshToken);
   const foundUser = await User.findOne({ refreshToken :refreshToken});
   console.log(foundUser);
@@ -86,27 +80,24 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
           { expiresIn: "10m" }
         );
 
-        const newRefreshToken = jwt.sign(
-          { username: foundUser.username },
-          process.env.REFRESH_TOKEN_KEY as string,
-          { expiresIn: "1d" }
-        );
-        // Saving refreshToken with current user
-        foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-        const result = await foundUser.save();
+        // const newRefreshToken = jwt.sign(
+        //   { username: foundUser.username },
+        //   process.env.REFRESH_TOKEN_KEY as string,
+        //   { expiresIn: "1d" }
+        // );
+        // // Saving refreshToken with current user
+        // foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+        // const result = await foundUser.save();
 
         // Creates Secure Cookie with refresh token
-        res.cookie("jwt", newRefreshToken, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          maxAge: 24 * 60 * 60 * 1000,
-        });
-
         res.status(201).send({ success: true, accessToken });
+
+//res.status(200).send({message:"bdasjbdnj"})
+
       }
     );
   }
+
 
   // evaluate jwt
 };

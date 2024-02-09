@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/api/users",authRouter);
-app.get('/refresh',handleRefreshToken);
+app.get('/api/refresh',handleRefreshToken);
 app.use(verifyJWT);
 app.use("/api",productRouter);
 app.use("/api",cartRouter);

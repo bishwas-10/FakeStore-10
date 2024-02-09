@@ -23,8 +23,8 @@ export const LoginSchema = z.object({
 export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
-  const {setAuth,auth}= useAuth();
-    const isSignedIn = useSelector((state:RootState)=>state.user.isSignedIn);
+  const { setAuth, persist, setPersist } = useAuth(); 
+     const isSignedIn = useSelector((state:RootState)=>state.user.isSignedIn);
     const dispatch = useDispatch();
     const navigate = useNavigate();
   const {
@@ -54,7 +54,16 @@ setAuth({token:response.data.accessToken});
      navigate("/customers");
 }
   };
+  const togglePersist = () => {
+    setPersist((prevPersist) => ({
+      ...prevPersist,
+      persist: !prevPersist.persist
+    }));
+  };
 
+useEffect(() => {
+    localStorage.setItem("persist", JSON.stringify(persist));
+}, [persist])
   useEffect(()=>{
     if(isSignedIn){
         navigate("/")
@@ -90,7 +99,15 @@ setAuth({token:response.data.accessToken});
             {...register("password", { required: true })}
           />
         </div>
-
+        <div className="persistCheck">
+                    <input
+                        type="checkbox"
+                        id="persist"
+                        onChange={togglePersist}
+                        checked={persist?.persist as boolean}
+                    />
+                    <label htmlFor="persist">Trust This Device</label>
+                </div>
         <button
           type="submit"
           className="my-6  w-full bg-blue-500 text-white py-2 rounded-md focus:outline-none focus:bg-blue-600 hover:bg-blue-600"
