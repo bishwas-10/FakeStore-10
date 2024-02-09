@@ -83,7 +83,7 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
             },
           },
           process.env.TOKEN_KEY as string,
-          { expiresIn: "1m" }
+          { expiresIn: "10m" }
         );
 
         const newRefreshToken = jwt.sign(

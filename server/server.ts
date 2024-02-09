@@ -11,6 +11,8 @@ import authRouter from "./routes/auth";
 import productRouter from "./routes/product";
 import cartRouter from "./routes/cart"
 import customerRouter from "./routes/customer";
+import { refreshDummmy } from './controller/refreshDummy';
+import { handleRefreshToken } from './controller/refreshToken';
 
 
 const app = express();
@@ -30,7 +32,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/api/users",authRouter);
-
+app.get('/refresh',handleRefreshToken);
 app.use(verifyJWT);
 app.use("/api",productRouter);
 app.use("/api",cartRouter);
