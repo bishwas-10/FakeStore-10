@@ -160,7 +160,7 @@ export const logIn = async (req: Request, res: Response) => {
 
     // Send authorization roles and access token to user
   } else {
-    res.status(401).send({ success: false, message: "password doesnt match" });
+   return res.status(401).send({ success: false, message: "password doesnt match" });
   }
 };
 

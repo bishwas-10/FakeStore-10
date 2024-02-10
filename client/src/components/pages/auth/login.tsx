@@ -23,9 +23,12 @@ export const LoginSchema = z.object({
 export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
-  const {auth, setAuth, persist, setPersist } = useAuth();
- console.log(auth);
+  const { auth, setAuth, persist, setPersist } = useAuth();
+  const [errMsg, setErrMsg] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
   const {
     register,
     handleSubmit,
@@ -33,6 +36,7 @@ const LoginPage = () => {
     reset,
   } = useForm<TLoginSchema>({ resolver: zodResolver(LoginSchema) });
   const onSubmit: SubmitHandler<TLoginSchema> = async (data) => {
+  try {
     const response = await instance({
       url: "/users/login",
       method: "POST",
@@ -45,12 +49,13 @@ const LoginPage = () => {
       },
     });
     if (response.data.success) {
-      console.log(response.data);
       setAuth({ token: response.data.accessToken });
-      // dispatch(signInSuccess(response.data.user));
-      // dispatch(setToken(response.data.token));
-      navigate("/customers");
-    }
+
+      navigate(from, { replace: true });
+    } 
+  } catch (error:any) {
+setErrMsg(error.response.data.message)
+  }
   };
   const togglePersist = () => {
     setPersist((prevPersist) => ({
@@ -58,9 +63,6 @@ const LoginPage = () => {
       persist: !prevPersist.persist,
     }));
   };
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     localStorage.setItem("persist", JSON.stringify(persist));
@@ -83,6 +85,7 @@ const LoginPage = () => {
             type="email"
             label="email"
             variant="outlined"
+            onFocus={()=>setErrMsg(null)}
             error={!!errors.email}
             helperText={errors.email ? errors.email.message : ""}
             {...register("email", { required: true })}
@@ -95,11 +98,14 @@ const LoginPage = () => {
             type="password"
             label="password"
             variant="outlined"
+            onFocus={()=>setErrMsg(null)}
             error={!!errors.password}
             helperText={errors.password ? errors.password.message : ""}
             {...register("password", { required: true })}
           />
         </div>
+        {errMsg && <span className="text-red-500">{errMsg}</span>}
+
         <div className="persistCheck">
           <input
             type="checkbox"

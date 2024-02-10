@@ -17,6 +17,8 @@ import Missing from "./components/Missing";
 import Unauthorized from "./components/UnAuthorized";
 import RequireAuth from "./components/RequireAuth";
 import PersistLogin from "./components/PersistLogin";
+import Dummy from "./components/pages/Dummy";
+import MainNav from "./cComponent/mainNav";
 
 export interface RolesProps {
   [key: string]: number;
@@ -28,6 +30,7 @@ export const ROLES_LIST: RolesProps = {
 };
 
 function App() {
+  const location = useLocation();
   // State to manage the current theme mode
   const { theme } = useTheme();
   // Create custom theme based on the current mode
@@ -41,38 +44,45 @@ function App() {
   return (
     <ThemeProvider theme={themeUi}>
       <CssBaseline />
-      <div>
-        <Navbar />
+      <div className="w-full h-max">
+        {location.pathname.startsWith("/admin") ? <Navbar/> :<MainNav/>}
         <Routes>
-          <Route element={<PersistLogin />}>
-            <Route
-              element={
-                <RequireAuth
-                  allowedRoles={[ROLES_LIST.admin, ROLES_LIST.customer]}
-                />
-              }
-            >
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/products">
-                <Route index element={<Products />} />
-                <Route path="addproducts" element={<AddProducts />} />
-              </Route>
-              <Route path="/customers">
-                <Route index element={<Customers />} />
-                <Route path="editcustomers" element={<EditCustomers />} />
-              </Route>
-              <Route path="/orders">
-                <Route index element={<Order />} />
-                <Route path="editorders" element={<EditOrders />} />
-              </Route>
-
-              <Route path="/settings" element={<Settings />} />
-            </Route>
+          <Route path="/">
+            <Route index element={<Dummy/>}/>
           </Route>
+          <Route path="/admin">
+            <Route element={<PersistLogin />}>
+              <Route
+                element={
+                  <RequireAuth
+                    allowedRoles={[ROLES_LIST.admin, ROLES_LIST.customer]}
+                  />
+                }
+              >
+             
+                  <Route index element={<Dashboard />} />
+                  <Route path="products">
+                    <Route index element={<Products />} />
+                    <Route path="addproducts" element={<AddProducts />} />
+                  </Route>
+                  <Route path="customers">
+                    <Route index element={<Customers />} />
+                    <Route path="editcustomers" element={<EditCustomers />} />
+                  </Route>
+                  <Route path="orders">
+                    <Route index element={<Order />} />
+                    <Route path="editorders" element={<EditOrders />} />
+                  </Route>
 
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/*" element={<Missing />} />
+                  <Route path="settings" element={<Settings />} />
+                </Route>
+              </Route>
+            </Route>
+
+            <Route path="login" element={<LoginPage />} />
+            <Route path="unauthorized" element={<Unauthorized />} />
+            <Route path="*" element={<Missing />} />
+          {/* </Route> */}
         </Routes>
       </div>
     </ThemeProvider>

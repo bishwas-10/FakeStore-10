@@ -44,7 +44,6 @@ for (const key in ROLES_LIST) {
     }
   }
 }
-  console.log(keys);
 
   //mui
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -68,10 +67,10 @@ for (const key in ROLES_LIST) {
         {pathname !== "/login" && (
           <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
             <Link
-              to="/"
+              to="/admin"
               className={`p-2 rounded-md transition-all  hover:text-primary
             ${
-              pathname === "/"
+              pathname === "/admin"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -80,10 +79,10 @@ for (const key in ROLES_LIST) {
               Overview
             </Link>
             <Link
-              to="/products"
+              to="/admin/products"
               className={`p-2  
             ${
-              pathname === "/products"
+              pathname === "/admin/products"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -92,10 +91,10 @@ for (const key in ROLES_LIST) {
               Products
             </Link>{" "}
             <Link
-              to="/customers"
+              to="/admin/customers"
               className={`p-2 
             ${
-              pathname === "/customers"
+              pathname === "/admin/customers"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -104,10 +103,10 @@ for (const key in ROLES_LIST) {
               Customers
             </Link>
             <Link
-              to="/orders"
+              to="/admin/orders"
               className={`p-2 
             ${
-              pathname === "/orders"
+              pathname === "/admin/orders"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -116,10 +115,10 @@ for (const key in ROLES_LIST) {
               Orders
             </Link>
             <Link
-              to="/settings"
+              to="/admin/settings"
               className={` p-2 
             ${
-              pathname === "/settings"
+              pathname === "/admin/settings"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -128,10 +127,10 @@ for (const key in ROLES_LIST) {
               Settings
             </Link>
             <Link
-              to="/login"
+              to="/admin/login"
               className={`p-2 
             ${
-              pathname === "/login"
+              pathname === "/admin/login"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -143,7 +142,7 @@ for (const key in ROLES_LIST) {
               onClick={() => logout()}
               className={`p-2 
             ${
-              pathname === "/login"
+              pathname === "/admin/login"
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
@@ -197,7 +196,7 @@ for (const key in ROLES_LIST) {
              <div className="flex flex-col gap-2 p-2">
              <Typography sx={{  }}>Roles:</Typography>
               {keys?.map((key,i)=>{
-                return(<span>
+                return(<span key={i}>
                   {i+1}.{" "}{key}
                 </span>)
                 
