@@ -36,6 +36,10 @@ const customerSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    fetchAllCarts(state,action){
+      state.carts=action.payload;
+      state.status="success";
+    },
     addCart(state, action) {
       state.selectedCart = { ...action.payload };
     },
@@ -58,6 +62,6 @@ const customerSlice = createSlice({
   },
 });
 
-export const { removeCarts, addCart } = customerSlice.actions;
+export const { removeCarts, addCart,fetchAllCarts } = customerSlice.actions;
 
 export default customerSlice.reducer;

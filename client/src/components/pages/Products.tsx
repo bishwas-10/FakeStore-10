@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import {
   addProduct,
+  fetchAllProducts,
   fetchProducts,
   removeProducts,
 } from "../../store/productSlice";
@@ -27,6 +28,8 @@ import { TProductSchema } from "./sub-components/add-products";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { dateFormatter } from "../../utils/dateFormatter";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
@@ -36,7 +39,7 @@ const Products = () => {
   const [productsPerPage, setProductsPerPage] = useState<number>(2);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
-  const token = useSelector((state:RootState)=>state.token.token);
+ const {auth}= useAuth();
   const handlePageSelection = (page: number) => {
     setCurrentPage(page);
   };
@@ -45,19 +48,32 @@ const Products = () => {
     setPageEndIndex(productsPerPage * currentPage - 1);
   }, [currentPage, productsPerPage]);
 
+  const controller = new AbortController();
+  const axiosPrivate = useAxiosPrivate();
+  //fetchallproducts
+const productCall =async()=>{
+  const response = await axiosPrivate.get('/products', {
+      signal: controller.signal
+  })
+  if(response.data.success){
+    
+    dispatch(fetchAllProducts(response.data.products));
+  }
 
-  //
+    
+}
+  //products
   const deleteProduct = async (id: string) => {
     const response = await instance({
       url: `/products/${id}`,
       method: "DELETE",
        headers: {
         "Content-type": "application/json",
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${auth.token}`,
       }, 
     });
     if (response.data.success) {
-      dispatch(fetchProducts(token as string));
+     productCall();
       toast.info(response.data.message);
       
     }else{
@@ -69,7 +85,7 @@ const Products = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchProducts(token as string));
+    productCall();
     return () => {
       dispatch(removeProducts());
     };

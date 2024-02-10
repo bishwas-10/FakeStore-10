@@ -11,9 +11,9 @@ router.get('/customers',verifyRoles(ROLES_LIST.customer),getAllCustomers);
 router.post('/customers',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),addCustomer);
 
 //eachCustomer
-router.get('/customers/:id',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),getSpecificCustomer);
-router.put('/customers/:id',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),updateCustomer);
-router.delete('/customers/:id',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),deleteCustomer);
+router.get('/customers/:id',verifyRoles(ROLES_LIST.admin),getSpecificCustomer);
+router.put('/customers/:id',verifyRoles(ROLES_LIST.admin),updateCustomer);
+router.delete('/customers/:id',verifyRoles(ROLES_LIST.admin),deleteCustomer);
 
 //loginCustomer
 router.post('/customers/login',verifyRoles(ROLES_LIST.admin),loginCustomer)

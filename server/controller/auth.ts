@@ -44,12 +44,10 @@ export const signUp = async (
 ) => {
   const { username, email, password } = req.body;
   if (!username || !password || !email)
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "Username ,email and password are required.",
-      });
+    return res.status(400).json({
+      success: false,
+      message: "Username ,email and password are required.",
+    });
 
   // check for duplicate usernames in the db
   const duplicate = await User.findOne({ email: email }).exec();
@@ -84,12 +82,10 @@ export const logIn = async (req: Request, res: Response) => {
   // console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
   const { email, password } = req.body;
   if (!password || !email)
-    return res
-      .status(400)
-      .send({
-        success: false,
-        message: "Username ,email and password are required.",
-      });
+    return res.status(400).send({
+      success: false,
+      message: "Username ,email and password are required.",
+    });
 
   const foundUser = await User.findOne({ email: email }).exec();
   if (!foundUser)
@@ -131,7 +127,7 @@ export const logIn = async (req: Request, res: Response) => {
           */
       const refreshToken = cookies.jwt;
       const foundToken = await User.findOne({ refreshToken }).exec();
-    
+
       // Detected refresh token reuse!
       if (!foundToken) {
         console.log("attempted refresh token reuse at login!");
@@ -172,24 +168,30 @@ export const logIn = async (req: Request, res: Response) => {
 
 export const signOut = async (req: Request, res: Response) => {
   try {
+    console.log("aaipugyo");
     const cookies = req.cookies;
     if (!cookies?.jwt) {
-      res
+      return res
         .status(204)
-        .send({ success: false, message: "no refresh token available" });
+        .clearCookie("jwt", {
+          httpOnly: false,
+          sameSite: "none",
+          secure: true,
+        })
+        .send({ success: true });
     }
 
     const refreshToken = cookies.jwt;
     const foundUser = await User.findOne({ refreshToken }).exec();
     if (!foundUser) {
-      res.clearCookie("jwt", {
-        httpOnly: false,
-        sameSite: "none",
-        secure: true,
-      });
       return res
+        .clearCookie("jwt", {
+          httpOnly: false,
+          sameSite: "none",
+          secure: true,
+        })
         .status(204)
-        .send({ success: false, message: "no refresh token available" });
+        .send({ success: true });
     } else {
       foundUser.refreshToken = foundUser.refreshToken.filter(
         (rt: string) => rt !== refreshToken
@@ -201,6 +203,8 @@ export const signOut = async (req: Request, res: Response) => {
         .send({ success: true, message: "signout succesfull" });
     }
   } catch (error) {
-    res.status(500).send({ success: false, message: "internal server error" });
+    return res
+      .status(500)
+      .send({ success: false, message: "internal server error" });
   }
 };

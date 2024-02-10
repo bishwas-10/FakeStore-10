@@ -18,6 +18,7 @@ import { RootState } from "../../../store/store";
 import { instance } from "../../../api/instance";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -64,7 +65,7 @@ export type TProductSchema = z.infer<typeof productSchema>;
 const AddProducts = () => {
   const [imageName, setImageName] = useState<string>("");
   const dispatch = useDispatch();
-  const token = useSelector((state:RootState)=>state.token.token);
+const {auth}= useAuth();
   const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
@@ -112,7 +113,7 @@ const AddProducts = () => {
       method: product?.id ? "PUT" : "POST",
       headers: {
         "Content-type": "application/json",
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${auth.token}`,
       },
       data: {
         title: data.title,

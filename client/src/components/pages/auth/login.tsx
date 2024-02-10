@@ -9,7 +9,7 @@ import { signInSuccess } from "../../../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../../../store/tokenSlice";
 import { RootState } from "../../../store/store";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 export const LoginSchema = z.object({
   email: z.string().email({
@@ -24,8 +24,7 @@ export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
   const {auth, setAuth, persist, setPersist } = useAuth();
-  const isSignedIn = useSelector((state: RootState) => state.user.isSignedIn);
-  const dispatch = useDispatch();
+ console.log(auth);
   const navigate = useNavigate();
   const {
     register,
@@ -59,15 +58,18 @@ const LoginPage = () => {
       persist: !prevPersist.persist,
     }));
   };
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     localStorage.setItem("persist", JSON.stringify(persist));
   }, [persist]);
   useEffect(() => {
     if (auth.token) {
-      navigate("/");
+      navigate(from, { replace: true });
     }
-  }, []);
+  }, [auth.token]);
   return (
     <div className="flex flex-row items-center justify-center w-full h-screen">
       <form

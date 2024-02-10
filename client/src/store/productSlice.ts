@@ -47,6 +47,10 @@ const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
+    fetchAllProducts(state,action){
+      state.products=action.payload;
+      state.status="success";
+    },
     addProduct(state, action) {
       state.newlyAddedProduct = { ...action.payload };
     },
@@ -69,6 +73,6 @@ const productSlice = createSlice({
   },
 });
 
-export const { addProduct, removeProducts } = productSlice.actions;
+export const { addProduct, removeProducts,fetchAllProducts } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -1,31 +1,20 @@
 import { FormControlLabel, Switch } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../providers/theme-provider";
 import { instance } from "../api/instance";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { signOut } from "../store/userSlice";
+import useAuth from "../hooks/useAuth";
+import useLogout from "../hooks/useLogout";
 
 const Navbar = () => {
   const { theme, toggleDarkMode } = useTheme();
   const { pathname } = useLocation();
-  const dispatch = useDispatch();
-const token = useSelector((state:RootState)=>state.token.token);
-const handleLogout=async()=>{
- const response = await instance(({
-  url:'/users/signout',
-  method:'GET',
-  headers:{
-    'Content-Type':'application/json',
-    authorization: `Bearer ${token}`
-  },
- }
- ));
- console.log(response);
- if(response.status){
-  dispatch(signOut());
- }
-}
+ 
+const {auth}= useAuth();
+const logout = useLogout();
+
 
   return (
     <div className="border-b p-2 ">
@@ -85,8 +74,8 @@ const handleLogout=async()=>{
           >
             Settings
           </Link>
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className={`p-2 
             ${
               pathname === "/login"
@@ -96,9 +85,9 @@ const handleLogout=async()=>{
             rounded-md transition-all hover:text-primary`}
           >
             Login
-          </a>
+          </Link>
           <button
-           onClick={handleLogout} 
+           onClick={()=>logout()} 
             className={`p-2 
             ${
               pathname === "/login"
