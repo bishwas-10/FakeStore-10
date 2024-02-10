@@ -12,10 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { instance } from "../../../api/instance";
+import { axiosPrivate, instance } from "../../../api/instance";
 import { z } from "zod";
 import { addCustomer } from "../../../store/customerSlice";
 import { ToastContainer, toast } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
 export const customerSchema = z.object({
     id: z.string().optional(),
     updatedAt: z.string().optional(),
@@ -38,6 +39,7 @@ export const customerSchema = z.object({
   export type TCustomerSchema = z.infer<typeof customerSchema>;
 
 const EditCustomers = () => {
+  const {auth}= useAuth();
   const dispatch =useDispatch();
   const token = useSelector((state:RootState)=>state.token.token);
   const customer = useSelector(
@@ -68,12 +70,12 @@ const EditCustomers = () => {
   });
   const onSubmit = async (data: TCustomerSchema) => {
     if (customer?.id) {
-      const response = await instance({
+      const response = await axiosPrivate({
         url: `/customers/${customer.id}`,
         method: "PUT",
         headers: {
           "Content-type": "application/json",
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${auth.token}`,
         },
       
         data: {

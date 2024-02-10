@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { PencilIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import {  addCustomer, fetchCustomers, removeCustomers } from "../../store/customerSlice";
+import {  addCustomer, fetchAllCustomers, fetchCustomers, removeCustomers } from "../../store/customerSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
 import { TCustomerSchema } from "./sub-components/editCustomers";
@@ -11,6 +11,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
+  console.log(customers)
   const token = useSelector((state:RootState)=>state.token.token);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const controller = new AbortController();
@@ -19,11 +20,17 @@ const customerCall =async()=>{
   const response = await axiosPrivate.get('/customers', {
       signal: controller.signal
   })
+  if(response.data.success){
+    
+    dispatch(fetchAllCustomers(response.data.customers));
+  }
   console.log(response)
     
 }
   useEffect(() => {
-    customerCall();
+   customerCall();
+
+   return ()=>{dispatch(removeCustomers());}
   }, []);
 
   return (

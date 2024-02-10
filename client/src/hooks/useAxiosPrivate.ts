@@ -6,13 +6,15 @@ import useAuth from "./useAuth";
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
     const { auth } = useAuth();
-console.log("aaipugyo")
+
     useEffect(() => {
 
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
-                if (!config.headers['Authorization']) {
+               
+                if (!config.headers['Authorization'] || !config.headers['authorization']) {
                     config.headers['Authorization'] = `Bearer ${auth?.token}`;
+                 
                 }
                 return config;
             }, (error) => Promise.reject(error)
@@ -22,6 +24,7 @@ console.log("aaipugyo")
             response => response,
             async (error) => {
                 const prevRequest = error?.config;
+                console.log(error);
                 if (error?.response?.status === 403 && !prevRequest?.sent) {
                     prevRequest.sent = true;
                     const newAccessToken = await refresh();

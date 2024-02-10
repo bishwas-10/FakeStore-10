@@ -3,6 +3,7 @@ import { instance } from "../api/instance";
 import { TCustomerSchema } from "../components/pages/sub-components/editCustomers";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { AxiosInstance } from "axios";
 
 
 interface CustomerStateProps {
@@ -18,16 +19,18 @@ const initialState: CustomerStateProps = {
   errorMessage: null,
   selectedCustomer:null
 };
+ const controller = new AbortController();
+    
 export const fetchCustomers = createAsyncThunk(
   "customers/fetchCustomers",
   async () => {
-    
-    const controller = new AbortController();
-    const axiosPrivate = useAxiosPrivate();
+    console.log("aayena")
+   const axiosPrivate = useAxiosPrivate();
+    console.log(controller,axiosPrivate)
     const response = await axiosPrivate.get('/customers', {
       signal: controller.signal
   })
-  console.log(response)
+  console.log(response,"yo ho")
     return response.data.customers;
   }
 );
@@ -35,7 +38,12 @@ const customerSlice = createSlice({
   name: "customer",
   initialState,
   reducers: {
+    fetchAllCustomers(state,action){
+      state.customers=action.payload;
+      state.status="success";
+    },
     addCustomer(state,action){
+      console.log({ ...action.payload })
       state.selectedCustomer = { ...action.payload };
 
     },
@@ -58,6 +66,6 @@ const customerSlice = createSlice({
   },
 });
 
-export const {removeCustomers,addCustomer} = customerSlice.actions;
+export const {removeCustomers,addCustomer,fetchAllCustomers} = customerSlice.actions;
 
 export default customerSlice.reducer;

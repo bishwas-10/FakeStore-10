@@ -23,10 +23,10 @@ export const LoginSchema = z.object({
 export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
-  const { setAuth, persist, setPersist } = useAuth(); 
-     const isSignedIn = useSelector((state:RootState)=>state.user.isSignedIn);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const {auth, setAuth, persist, setPersist } = useAuth();
+  const isSignedIn = useSelector((state: RootState) => state.user.isSignedIn);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -35,40 +35,39 @@ const LoginPage = () => {
   } = useForm<TLoginSchema>({ resolver: zodResolver(LoginSchema) });
   const onSubmit: SubmitHandler<TLoginSchema> = async (data) => {
     const response = await instance({
-        url:'/users/login',
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-
-        },
-        data:{
-            email:data.email,
-            password:data.password
-        }
+      url: "/users/login",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        email: data.email,
+        password: data.password,
+      },
     });
-if(response.data.success){
-  console.log(response.data);
-setAuth({token:response.data.accessToken});
-    // dispatch(signInSuccess(response.data.user));
-    // dispatch(setToken(response.data.token));
-     navigate("/customers");
-}
+    if (response.data.success) {
+      console.log(response.data);
+      setAuth({ token: response.data.accessToken });
+      // dispatch(signInSuccess(response.data.user));
+      // dispatch(setToken(response.data.token));
+      navigate("/customers");
+    }
   };
   const togglePersist = () => {
     setPersist((prevPersist) => ({
       ...prevPersist,
-      persist: !prevPersist.persist
+      persist: !prevPersist.persist,
     }));
   };
 
-useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("persist", JSON.stringify(persist));
-}, [persist])
-  useEffect(()=>{
-    if(isSignedIn){
-        navigate("/")
+  }, [persist]);
+  useEffect(() => {
+    if (auth.token) {
+      navigate("/");
     }
-  },[])
+  }, []);
   return (
     <div className="flex flex-row items-center justify-center w-full h-screen">
       <form
@@ -100,14 +99,14 @@ useEffect(() => {
           />
         </div>
         <div className="persistCheck">
-                    <input
-                        type="checkbox"
-                        id="persist"
-                        onChange={togglePersist}
-                        checked={persist?.persist as boolean}
-                    />
-                    <label htmlFor="persist">Trust This Device</label>
-                </div>
+          <input
+            type="checkbox"
+            id="persist"
+            onChange={togglePersist}
+            checked={persist?.persist as boolean}
+          />
+          <label htmlFor="persist">Trust This Device</label>
+        </div>
         <button
           type="submit"
           className="my-6  w-full bg-blue-500 text-white py-2 rounded-md focus:outline-none focus:bg-blue-600 hover:bg-blue-600"

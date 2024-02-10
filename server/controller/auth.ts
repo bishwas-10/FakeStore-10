@@ -114,7 +114,7 @@ export const logIn = async (req: Request, res: Response) => {
     const newRefreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN_KEY as string,
-      { expiresIn: "1d" }
+      { expiresIn: "1h" }
     );
 
     // Changed to let keyword
@@ -131,8 +131,7 @@ export const logIn = async (req: Request, res: Response) => {
           */
       const refreshToken = cookies.jwt;
       const foundToken = await User.findOne({ refreshToken }).exec();
-      console.log(foundToken);
-      console.log("yoooo");
+    
       // Detected refresh token reuse!
       if (!foundToken) {
         console.log("attempted refresh token reuse at login!");
@@ -158,7 +157,7 @@ export const logIn = async (req: Request, res: Response) => {
         httpOnly: false,
         secure: true,
         sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 1 * 60 * 60 * 1000,
       })
       .status(201)
       .send({ success: true, message: "sign in successful", accessToken });

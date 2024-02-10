@@ -5,7 +5,7 @@ require("dotenv").config();
 
 export const handleRefreshToken = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  console.log(cookies, "here");
+
   if (!cookies?.jwt){
     return res
       .status(401)
@@ -15,9 +15,9 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
 
   const refreshToken = cookies.jwt as string;
  // res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-  console.log(refreshToken);
+  
   const foundUser = await User.findOne({ refreshToken :refreshToken});
-  console.log(foundUser);
+
   // Detected refresh token reuse!
   if (!foundUser) {
     jwt.verify(
@@ -61,9 +61,9 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
           console.log("expired refresh token");
           foundUser.refreshToken = [...newRefreshTokenArray];
           const result = await foundUser.save();
-          console.log(result);
+     
         }
-        console.log(decoded);
+      
         if (error || foundUser?.username !== decoded?.payload.username)
           return res.sendStatus(403);
 

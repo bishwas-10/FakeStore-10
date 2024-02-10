@@ -20,7 +20,7 @@ const initialAuthState: AuthState = {
 };
 
 const initialPersistState: PersistState = {
-  persist: false,
+  persist: true,
 };
 
 const AuthContext = createContext<AuthContextType>({
