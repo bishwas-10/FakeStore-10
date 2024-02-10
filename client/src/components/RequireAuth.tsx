@@ -2,13 +2,13 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 const RequireAuth = ({ allowedRoles }: { allowedRoles: number[] }) => {
-  const { auth } = useAuth();
+  const { auth,setUser } = useAuth();
 
   const location = useLocation();
 
   if (auth.token) {
     const decoded = jwtDecode<JwtPayload>(auth?.token as string) as any;
-  
+ // setUser({username:decoded.UserInfo.username,roles:decoded.UserInfo.roles});
     if (decoded) {
       return decoded.UserInfo.roles.find((role: number) =>
         allowedRoles?.includes(role)

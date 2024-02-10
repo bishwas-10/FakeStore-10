@@ -4,9 +4,10 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { addCart, fetchCarts, removeCarts } from "../../store/cartSlice";
+import { addCart, fetchAllCarts, fetchCarts, removeCarts } from "../../store/cartSlice";
 import { RootState } from "../../store/store";
 import { dateFormatter } from "../../utils/dateFormatter";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
@@ -49,10 +50,23 @@ export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const Order = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const cartData = useSelector((state: RootState) => state.cart.carts);
-  const token = useSelector((state: RootState) => state.token.token);
+  console.log(cartData);
+  const controller = new AbortController();
+  const axiosPrivate = useAxiosPrivate();
+  const cartCall =async()=>{
+    const response = await axiosPrivate.get('/carts', {
+        signal: controller.signal
+    })
+    if(response.data.success){
+      console.log(response.data.cart)
+      dispatch(fetchAllCarts(response.data.cart));
+    }
 
+      
+  }
   useEffect(() => {
-    dispatch(fetchCarts(token as string));
+    cartCall();
+
     return () => {
       dispatch(removeCarts());
     };
@@ -62,7 +76,8 @@ const Order = () => {
     <div className="px-4">
       <div className=" flex items-center justify-center font-sans overflow-hidden">
         <div className="w-full">
-          <div className=" shadow-md rounded my-6">
+          <div className=" shadow-md rounded my-6">here i will add delete button later which functionality would be 
+                sending an email to respective users with customizable message box
             <table className="w-full table-auto">
               <thead>
                 <tr className=" uppercase text-sm leading-normal">
@@ -95,11 +110,10 @@ const Order = () => {
                   </th>
                   <th className="py-3 px-0 text-center">Actions</th>
                 </tr>
-              </thead>
+              </thead> 
               <tbody className=" text-sm font-medium">
-                here i will add delete button later which functionality would be 
-                sending an email to respective users with customizable message box
-                {cartData.length !== 0 &&
+               
+                {cartData?.length !== 0 &&
                   cartData.map((cart, index) => {
                     return (
                       <tr key={index} className="border-b border-gray-200 ">

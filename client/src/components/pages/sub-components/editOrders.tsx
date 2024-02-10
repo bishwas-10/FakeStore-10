@@ -22,6 +22,7 @@ import { z } from "zod";
 import { instance } from "../../../api/instance";
 import { addCart } from "../../../store/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
 
 const EditCartSchema = z.object({
   quantity:z
@@ -45,8 +46,8 @@ type TEditCartSchema = z.infer<typeof EditCartSchema>;
 const EditOrders = () => {
   const cartData = useSelector((state: RootState) => state.cart.selectedCart);
   
-  const token = useSelector((state:RootState)=>state.token.token);
- const dispatch = useDispatch();
+const {auth}= useAuth();
+  const dispatch = useDispatch();
   const [orderStatus, setOrderStatus] = useState<string>(
     cartData?.orderStatus as string
   );
@@ -92,7 +93,7 @@ const EditOrders = () => {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${auth.token}`,
         },
         data: {
           shippingAddress: {

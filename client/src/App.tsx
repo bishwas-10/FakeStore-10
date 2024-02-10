@@ -19,8 +19,7 @@ import RequireAuth from "./components/RequireAuth";
 import PersistLogin from "./components/PersistLogin";
 
 export interface RolesProps {
-  admin: number;
-  customer: number;
+  [key: string]: number;
 }
 
 export const ROLES_LIST: RolesProps = {
