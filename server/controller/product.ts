@@ -42,7 +42,7 @@ export const getAllCategories = async(req:Request,res:Response) => {
 };
 
 export const getCategoryProduct = async(req:Request,res:Response) => {
-  console.log("yeta aaipugeko")
+
 try {
   const category = req.params.category;
 

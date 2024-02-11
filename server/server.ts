@@ -11,9 +11,9 @@ import authRouter from "./routes/auth";
 import productRouter from "./routes/product";
 import cartRouter from "./routes/cart"
 import customerRouter from "./routes/customer";
-import { refreshDummmy } from './controller/refreshDummy';
+import getRouter from "./routes/getRoute";
 import { handleRefreshToken } from './controller/refreshToken';
-import { getAllProducts, getProduct } from './controller/product';
+
 
 
 const app = express();
@@ -34,9 +34,9 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/api/users",authRouter);
 app.get('/api/refresh',handleRefreshToken);
-//getproducts
-app.get('/api/products',getAllProducts);
-app.get('/api/products/:id',getProduct);
+/*getproducts and categories */
+app.use('/api',getRouter);
+
 
 
 app.use(verifyJWT);

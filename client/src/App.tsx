@@ -22,7 +22,8 @@ import MainNav from "./cComponent/MainNav";
 import SubNavbar from "./cComponent/SubNavbar";
 import HomePage from "./cComponent/pages/HomePage";
 import AllProducts from "./cComponent/pages/AllProducts";
-import EachProduct from "./cComponent/pages/eachProduct";
+import EachProduct from "./cComponent/pages/EachProduct";
+import EachCategoryProduct from "./cComponent/pages/EachCategoryProduct";
 
 export interface RolesProps {
   [key: string]: number;
@@ -57,6 +58,7 @@ function App() {
             <Route index element={<HomePage/>}/>
             <Route path="allproducts" element={<AllProducts/>}/>
             <Route path="product/:id" element={<EachProduct/>}/>
+            <Route path="categories/:category" element={<EachCategoryProduct/>}/>
           </Route>
           <Route path="/admin">
             <Route element={<PersistLogin />}>

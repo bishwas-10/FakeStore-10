@@ -7,18 +7,29 @@ import { instance } from '../../api/instance'
 import { useQuery } from '@tanstack/react-query'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+
 const fetchProductDetails = async (id: string) => {
     const response = await instance({
         url: `/products/${id}`,
         method: "GET",
       });
-      console.log(response.data);
-      return response.data.product;
+   
+      if(response.data.success){
+         return response.data.product;
+      }else{
+       
+          throw new Error(response.data.message);
+      
+      }
+     
   };
+
+
 const EachProduct = () => {
     const [quantity, setQuantity] = useState<number>(1);
 const {id}= useParams();
-    const { isLoading, data, isError } = useQuery<any>({
+    const { isLoading, data, isError,error } = useQuery<any>({
       queryKey: ["product-details", id],
       queryFn: () => fetchProductDetails(id as string),
     });
@@ -33,10 +44,11 @@ const {id}= useParams();
       return (
       <Loading/>
       );
-    }
+    };
+    console.log(error)
   
     if (isError) {
-      return <p>Error occured 404</p>;
+      return <p>Error occured 404 {error.message}</p>;
     }
   return (
     <div className="p-4 flex flex-col items-center">
@@ -46,6 +58,7 @@ const {id}= useParams();
         <ChevronRight />
         <Link to={"/" + data.category}>{data.category}</Link>
         <ChevronRight />
+        {data.title}
       </div>
     </div>
     <div className="flex flex-col w-[80%] mt-8 h-max-content">

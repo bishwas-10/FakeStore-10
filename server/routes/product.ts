@@ -13,9 +13,8 @@ router.post('/products',verifyRoles(ROLES_LIST.admin),addProduct);
 router.put('/products/:id',verifyRoles(ROLES_LIST.admin),editProduct);
 router.delete('/products/:id',verifyRoles(ROLES_LIST.admin),deleteProduct);
 
-//category
-router.get('/products/categories',verifyRoles(ROLES_LIST.admin),getAllCategories);
-router.get('/products/category/:category',verifyRoles(ROLES_LIST.admin),getCategoryProduct);
+
+
 
 
 
