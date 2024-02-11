@@ -6,7 +6,6 @@ import { verifyRoles } from '../middleware/verifyRoles';
 const router = express.Router();
 
 //allProducts
-router.get('/products',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),getAllProducts);
 router.post('/products',verifyRoles(ROLES_LIST.admin),addProduct);
 
 //eachProduct

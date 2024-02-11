@@ -9,11 +9,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { InboxIcon, MailIcon, ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 const SideBar = () => {
+  const navigate = useNavigate();
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -58,7 +60,7 @@ const SideBar = () => {
       <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={()=>navigate("/allproducts")}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>

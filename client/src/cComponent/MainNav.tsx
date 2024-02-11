@@ -5,7 +5,7 @@ import Cart from "./Cart";
 
 const MainNav = () => {
   return (
-    <div className="w-full h-full p-4 flex flex-row items-center justify-between  bg-blue-800 text-white">
+    <div className="w-full h-full p-4 flex flex-row items-center justify-between bg-slate-700 text-white">
       <div className="flex items-center" id="header-left">
         <Link
           to="/"
