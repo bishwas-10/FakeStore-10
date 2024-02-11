@@ -18,7 +18,9 @@ import Unauthorized from "./components/UnAuthorized";
 import RequireAuth from "./components/RequireAuth";
 import PersistLogin from "./components/PersistLogin";
 import Dummy from "./components/pages/Dummy";
-import MainNav from "./cComponent/mainNav";
+import MainNav from "./cComponent/MainNav";
+import SubNavbar from "./cComponent/SubNavbar";
+import HomePage from "./cComponent/pages/HomePage";
 
 export interface RolesProps {
   [key: string]: number;
@@ -45,10 +47,12 @@ function App() {
     <ThemeProvider theme={themeUi}>
       <CssBaseline />
       <div className="w-full h-max">
-        {location.pathname.startsWith("/admin") ? <Navbar/> :<MainNav/>}
+        {location.pathname.startsWith("/admin") ? <Navbar/> :
+        <><MainNav/><SubNavbar/></>
+        }
         <Routes>
           <Route path="/">
-            <Route index element={<Dummy/>}/>
+            <Route index element={<HomePage/>}/>
           </Route>
           <Route path="/admin">
             <Route element={<PersistLogin />}>

@@ -13,7 +13,7 @@ import { InboxIcon, MailIcon, ShoppingBag } from 'lucide-react';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
-const Cart = () => {
+const SideBar = () => {
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -73,17 +73,17 @@ const Cart = () => {
   return (
     <div>
     
-          <Button onClick={toggleDrawer("right", true)} sx={{color:'whitesmoke'}}><ShoppingBag/></Button>
+          <Button onClick={toggleDrawer("left", true)} sx={{color:'whitesmoke'}}>sgdg</Button>
           <Drawer
-            anchor="right"
-            open={state["right"]}
-            onClose={toggleDrawer("right", false)}
+            anchor="left"
+            open={state["left"]}
+            onClose={toggleDrawer("left", false)}
           >
-            {list("right")}
+            {list("left")}
           </Drawer>
       
     </div>
   );
 }
 
-export default Cart;
+export default SideBar;

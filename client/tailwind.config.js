@@ -4,7 +4,26 @@ export default {
     "./src/**/*.{html,js,ts,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
+      },
+    
+    animation:{
+      slider: 'slider 1.5s ease-in-out'
+    },
+    keyframes:{
+      'slider':{
+        '0% , 100%':{transform : 'translateX(-100%)'}
+      }
+    },
+    backgroundImage: {
+      'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      'gradient-conic':
+        'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+    },
+  },
   },
   plugins: [],
 }
