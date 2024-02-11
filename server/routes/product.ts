@@ -1,5 +1,5 @@
 import express from 'express';
-import { addProduct, deleteProduct, editProduct, getAllCategories, getAllProducts, getCategoryProduct, getProduct } from '../controller/product';
+import { addProduct, deleteProduct, editProduct, getAllCategories, getCategoryProduct } from '../controller/product';
 import { ROLES_LIST } from '../config/roles_list';
 import { verifyRoles } from '../middleware/verifyRoles';
 
@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/products',verifyRoles(ROLES_LIST.admin),addProduct);
 
 //eachProduct
-router.get('/products/:id',verifyRoles(ROLES_LIST.admin),getProduct);
+
 router.put('/products/:id',verifyRoles(ROLES_LIST.admin),editProduct);
 router.delete('/products/:id',verifyRoles(ROLES_LIST.admin),deleteProduct);
 

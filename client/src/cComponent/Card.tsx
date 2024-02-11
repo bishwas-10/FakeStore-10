@@ -1,4 +1,5 @@
 import React from "react";
+import { ratingStars } from "./reusable/utils";
 
 export interface ProductsProps {
   id?: number;
@@ -14,27 +15,7 @@ export interface ProductsProps {
 }
 
 const Card = ({ product }: { product: ProductsProps }) => {
-  const ratingStars = () => {
-    const stars = [];
-    const rating: number = Math.round(product.rating.rate);
-    for (let i = 0; i < 5; i++) {
-      const starColor = i < rating ? "text-yellow-500" : "text-gray-300";
-      stars.push(
-        <svg
-          key={i}
-          className={`w-4 h-4 fill-current ${starColor}`}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M10 15.585L3.535 19.9l1.065-6.203L.293 7.115l6.257-.91L10 0l3.45 6.205 6.257.91-4.307 4.582 1.064 6.203z"
-          />
-        </svg>
-      );
-    }
-    return stars;
-  };
+  
 
   return (
     <div className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
@@ -53,7 +34,7 @@ const Card = ({ product }: { product: ProductsProps }) => {
       <div className="w-full h-32 rounded-b-md flex flex-col border-t border-gray-600 bg-gray-100">
         <div className="flex flex-row w-full pt-1 px-2">
           <div className="flex items-center ">
-            {ratingStars()}
+            {ratingStars(product.rating.rate)}
             <p className="text-sm font-semibold ml-2">{product.rating.rate}</p>
           </div>
         </div>

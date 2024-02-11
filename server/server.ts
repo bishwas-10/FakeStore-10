@@ -13,7 +13,7 @@ import cartRouter from "./routes/cart"
 import customerRouter from "./routes/customer";
 import { refreshDummmy } from './controller/refreshDummy';
 import { handleRefreshToken } from './controller/refreshToken';
-import { getAllProducts } from './controller/product';
+import { getAllProducts, getProduct } from './controller/product';
 
 
 const app = express();
@@ -36,6 +36,9 @@ app.use("/api/users",authRouter);
 app.get('/api/refresh',handleRefreshToken);
 //getproducts
 app.get('/api/products',getAllProducts);
+app.get('/api/products/:id',getProduct);
+
+
 app.use(verifyJWT);
 app.use("/api",productRouter);
 app.use("/api",cartRouter);

@@ -15,6 +15,7 @@ export const getAllProducts = async(req: Request, res: Response) => {
 };
 
 export const getProduct = async (req: Request, res: Response) => {
+  console.log("aaipugyo")
   try {
     const product = await Product.findOne({_id: req.params.id});
     if(!product){
@@ -41,6 +42,7 @@ export const getAllCategories = async(req:Request,res:Response) => {
 };
 
 export const getCategoryProduct = async(req:Request,res:Response) => {
+  console.log("yeta aaipugeko")
 try {
   const category = req.params.category;
 
