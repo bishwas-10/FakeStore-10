@@ -25,7 +25,7 @@ const MainNav = () => {
         <button className="p-2 text-lg bg-yellow-600 text-black rounded-r ">
           <Search />
         </button>
-      </div>{" "}
+      </div>
       <div id="header-right">
         <Cart />
       </div>

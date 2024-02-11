@@ -37,14 +37,14 @@ const HomePage = () => {
 
   return (
     <div>
-         <div className="h-80 w-full flex items-center justify-center bg-white">
+         <div className="h-80 w-full flex items-center justify-center ">
       <ImageSlider images={IMAGES}/>
     </div>
-    <div className="mt-4 py-4 text-black">
+    <div className="mt-4 py-4 ">
       <h2 className="text-2xl font-bold capitalize tracking-wide text-center">Categories for you</h2>
         <CategoryHome categories= {CATEGORIES}/>
     </div>
-    <div className="h-40 mx-4 my-2 flex flex-col items-center justify-center shadow-sm text-black border-2 border-gray-400 rounded-lg ">
+    <div className="h-40 mx-4 my-2 flex flex-col items-center justify-center shadow-sm  border-2 border-gray-400 rounded-lg ">
      <p>See Personalized Recommendation</p>
      <button className="bg-yellow-600 px-4 py-1 mt-1 font-medium text-[15px] rounded">Sign In</button>
      <span className="text-sm">New Customer? <a href="#" className="text-blue-600 text-[14px]">Start here</a></span>

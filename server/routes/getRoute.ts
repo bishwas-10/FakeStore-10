@@ -6,11 +6,11 @@ const router = express.Router();
 //all get routes which can be accessed publicly
 
 /*product route*/
-router.get('/api/products',getAllProducts);
-router.get('/api/products/:id',getProduct);
+router.get('/products',getAllProducts);
+router.get('/products/:id',getProduct);
 
 /*category route*/
-router.get('/products/categories',getAllCategories);
-router.get('/products/category/:category',getCategoryProduct);
+router.get('/categories',getAllCategories);
+router.get('/categories/:category',getCategoryProduct);
 
 export default router;

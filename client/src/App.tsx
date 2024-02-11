@@ -49,16 +49,24 @@ function App() {
   return (
     <ThemeProvider theme={themeUi}>
       <CssBaseline />
-      <div className="w-full h-max">
-        {location.pathname.startsWith("/admin") ? <Navbar/> :
-        <><MainNav/><SubNavbar/></>
-        }
+      <div className="w-full h-max ">
+        {location.pathname.startsWith("/admin") ? (
+          <Navbar />
+        ) : (
+          <>
+            <MainNav />
+            <SubNavbar />
+          </>
+        )}
         <Routes>
           <Route path="/">
-            <Route index element={<HomePage/>}/>
-            <Route path="allproducts" element={<AllProducts/>}/>
-            <Route path="product/:id" element={<EachProduct/>}/>
-            <Route path="categories/:category" element={<EachCategoryProduct/>}/>
+            <Route index element={<HomePage />} />
+            <Route path="allproducts" element={<AllProducts />} />
+            <Route path="product/:id" element={<EachProduct />} />
+            <Route
+              path="categories/:category"
+              element={<EachCategoryProduct />}
+            />
           </Route>
           <Route path="/admin">
             <Route element={<PersistLogin />}>
@@ -69,29 +77,28 @@ function App() {
                   />
                 }
               >
-             
-                  <Route index element={<Dashboard />} />
-                  <Route path="products">
-                    <Route index element={<Products />} />
-                    <Route path="addproducts" element={<AddProducts />} />
-                  </Route>
-                  <Route path="customers">
-                    <Route index element={<Customers />} />
-                    <Route path="editcustomers" element={<EditCustomers />} />
-                  </Route>
-                  <Route path="orders">
-                    <Route index element={<Order />} />
-                    <Route path="editorders" element={<EditOrders />} />
-                  </Route>
-
-                  <Route path="settings" element={<Settings />} />
+                <Route index element={<Dashboard />} />
+                <Route path="products">
+                  <Route index element={<Products />} />
+                  <Route path="addproducts" element={<AddProducts />} />
                 </Route>
+                <Route path="customers">
+                  <Route index element={<Customers />} />
+                  <Route path="editcustomers" element={<EditCustomers />} />
+                </Route>
+                <Route path="orders">
+                  <Route index element={<Order />} />
+                  <Route path="editorders" element={<EditOrders />} />
+                </Route>
+
+                <Route path="settings" element={<Settings />} />
               </Route>
             </Route>
+          </Route>
 
-            <Route path="login" element={<LoginPage />} />
-            <Route path="unauthorized" element={<Unauthorized />} />
-            <Route path="*" element={<Missing />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<Missing />} />
           {/* </Route> */}
         </Routes>
       </div>

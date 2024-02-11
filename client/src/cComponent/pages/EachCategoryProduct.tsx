@@ -9,13 +9,13 @@ import { instance } from '../../api/instance';
 const fetchCategory = async (CATEGORY: string) => {
     try {
          const response = await  instance({
-            url: `/products/category/${CATEGORY}`,
+            url: `/categories/${CATEGORY}`,
             method: "GET",
           });
-       
-      if(response.data.success){
-        return response.data.product;
-     };
+       console.log(response)
+    
+        return response.data.products;
+    
     } catch (error:any) {
         if (error.response) {
             // The request was made and the server responded with a status code
@@ -36,9 +36,8 @@ const fetchCategory = async (CATEGORY: string) => {
 const EachCategoryProduct = () => {
     const {category}= useParams();
 
- 
       const { isLoading, data ,isError,error} = useQuery({
-        queryKey: [`category ${category}`],
+        queryKey: [`category ${category && category}`],
         queryFn: () => fetchCategory(category as string),
       });
 
@@ -63,7 +62,7 @@ const EachCategoryProduct = () => {
       {data?.map((data: ProductsProps) => {
         return (
           <Link key={data.id} to={"/product/" + data.id}>
-            {" "}
+            
             <Card product={data} key={data.id} />
           </Link>
         );

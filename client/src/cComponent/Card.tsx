@@ -19,9 +19,9 @@ const Card = ({ product }: { product: ProductsProps }) => {
 
   return (
     <div className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
-      <div className="w-full h-44 relative bg-white rounded-t-md p-4">
+      <div className="w-full h-44 relative  rounded-t-md p-4">
         <div className="absolute z-10 top-2 right-2 flex flex-row items-center justify-center h-6 py-3 px-2 bg-red-500 rounded-full">
-          <p className="text-sm font-semibold text-white">$ {product.price}</p>
+          <p className="text-sm font-semibold ">$ {product.price}</p>
         </div>
         <div className="w-full h-full">
           <img
@@ -31,7 +31,7 @@ const Card = ({ product }: { product: ProductsProps }) => {
           />
         </div>
       </div>
-      <div className="w-full h-32 rounded-b-md flex flex-col border-t border-gray-600 bg-gray-100">
+      <div className="w-full h-32 rounded-b-md flex flex-col border-t border-gray-600 ">
         <div className="flex flex-row w-full pt-1 px-2">
           <div className="flex items-center ">
             {ratingStars(product.rating.rate)}
@@ -40,7 +40,7 @@ const Card = ({ product }: { product: ProductsProps }) => {
         </div>
         <div className="flex flex-col flex-grow items-center justify-between">
           <div className="flex flex-row w-full pt-1 px-2">
-            <p className="text-sm font-semibold line-clamp-2 text-slate-800 hover:text-red-400">
+            <p className="text-sm font-semibold line-clamp-2 text-slate-400 hover:text-red-400">
               {product.title}
             </p>
           </div>

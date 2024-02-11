@@ -63,7 +63,7 @@ for (const key in ROLES_LIST) {
 
   return (
     <div className="border-b p-2 ">
-      <div className="flex h-16 items-center justify-between px-4 shadow-lg dark:bg-black dark:text-white">
+      <div className="flex h-16 items-center justify-between px-4 shadow-lg ">
         {pathname !== "/login" && (
           <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
             <Link

@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { instance } from "../api/instance";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "./reusable/Loading";
 
 type CategoriesProps = {
   categories: {
@@ -8,9 +11,42 @@ type CategoriesProps = {
     alt: string;
   }[];
 };
+
+const fetchCategories = async () => {
+  const response = await instance({
+      url: `/categories`,
+      method: "GET",
+    });
+ 
+    if(response.data.success){
+       return response.data.categories;
+    }else{
+     
+        throw new Error(response.data.message);
+    
+    }
+   
+};
 const CategoryHome = ({ categories }: CategoriesProps) => {
+  const { isLoading, data ,isError,error} = useQuery({
+    queryKey: [`categories`],
+    queryFn: () => fetchCategories(),
+  });
+
+  
+  if (isLoading) {
+    return <Loading/>;
+  }
+  if (isError ) {
+    return <span>Error occured 404<p className="text-md font-medium ">{error.message}</p> </span>;
+  }
   return (
     <div className="flex flex-wrap">
+      <div className="flex flex-row gap-2">
+{data?.map((item:string,i:number)=>{
+  return <Link key={i}  to={"/categories/" + item}>{item}</Link>
+})}
+      </div>
       {categories.map(({ name, url, alt }, index) => (
         <Link
           key={index}
