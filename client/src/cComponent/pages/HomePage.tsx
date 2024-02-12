@@ -13,8 +13,7 @@ import jewellery from '../../../image/jewell.jpg';
 import womens from '../../../image/womens.jpg';
 import ImageSlider from '../ImageSlider';
 import CategoryHome from '../CategoryHome';
-import BackToTop from '../reusable/BackToTop';
-import Footer from '../Footer';
+
 const IMAGES = [
     {url: pic1, alt: "pic 1"},
     {url: pic2, alt: "pic 2"},
@@ -49,8 +48,7 @@ const HomePage = () => {
      <button className="bg-yellow-600 px-4 py-1 mt-1 font-medium text-[15px] rounded">Sign In</button>
      <span className="text-sm">New Customer? <a href="#" className="text-blue-600 text-[14px]">Start here</a></span>
     </div>
-    <BackToTop/>
-    <Footer/>
+   
     </div>
   )
 }

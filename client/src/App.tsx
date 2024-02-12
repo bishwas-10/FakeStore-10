@@ -4,7 +4,7 @@ import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { indigo, teal,yellow } from "@mui/material/colors";
+import { indigo, amber,yellow } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -25,6 +25,9 @@ import AllProducts from "./cComponent/pages/AllProducts";
 import EachProduct from "./cComponent/pages/EachProduct";
 import EachCategoryProduct from "./cComponent/pages/EachCategoryProduct";
 import { useTheme } from "./providers/theme-provider";
+import SignUpPage from "./components/pages/auth/signup";
+import Footer from "./cComponent/Footer";
+import BackToTop from "./cComponent/reusable/BackToTop";
 
 export interface RolesProps {
   [key: string]: number;
@@ -43,7 +46,7 @@ function App() {
   const themeUi = createTheme({
     palette: {
       mode: theme === "dark" ? "dark" : "light",
-      primary: theme === "dark" ? yellow : indigo, // Customize primary color based on theme
+      primary: theme === "dark" ? amber : indigo, // Customize primary color based on theme
     },
   });
 
@@ -74,7 +77,7 @@ function App() {
               <Route
                 element={
                   <RequireAuth
-                    allowedRoles={[ROLES_LIST.admin, ROLES_LIST.customer]}
+                    allowedRoles={[ROLES_LIST.admin]}
                   />
                 }
               >
@@ -98,10 +101,14 @@ function App() {
           </Route>
 
           <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignUpPage />} />
+
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<Missing />} />
           {/* </Route> */}
         </Routes>
+       
+    <Footer/>
       </div>
     </ThemeProvider>
   );

@@ -17,7 +17,7 @@ const MainNav = () => {
           className="flex flex-row items-center text-lg md:text-xl font-semibold tracking-wider text-gray-200"
         >
           Fake
-          <span className="text-yellow-600">Store</span>
+          <span className="text-yellow-500">Store</span>
           <ShoppingBag className="text-2xl mx-1" />
         </Link>
       </div>
@@ -27,7 +27,7 @@ const MainNav = () => {
           placeholder="search for items"
           className="px-4 py-1 w-full text-sm focus:outline-none text-black rounded-l"
         />
-        <button className="p-2 text-lg bg-yellow-600 text-black rounded-r ">
+        <button className="p-2 text-lg bg-yellow-500 text-black rounded-r ">
           <Search />
         </button>
       </div>
@@ -47,7 +47,7 @@ const MainNav = () => {
           />
         </div>
         <Link
-          to="/"
+          to="/login"
           onMouseEnter={() => setShowDiv(true)}
           onFocus={() => setShowDiv(true)}
           onBlur={() => setShowDiv(false)}

@@ -7,8 +7,8 @@ import { ROLES_LIST } from '../config/roles_list';
 const router = express.Router();
 
 //allProducts
-router.get('/customers',verifyRoles(ROLES_LIST.customer),getAllCustomers);
-router.post('/customers',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),addCustomer);
+router.get('/customers',verifyRoles(ROLES_LIST.admin),getAllCustomers);
+router.post('/customers',verifyRoles(ROLES_LIST.admin),addCustomer);
 
 //eachCustomer
 router.get('/customers/:id',verifyRoles(ROLES_LIST.admin),getSpecificCustomer);

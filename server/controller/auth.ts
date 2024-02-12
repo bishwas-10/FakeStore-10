@@ -1,9 +1,7 @@
 import { ZodError, z } from "zod";
 import User from "../models/users";
 import { NextFunction, Request, Response } from "express";
-import { hashPassword, verifyPassword } from "../utils/password";
-import createSecretToken from "../utils/secretToken";
-import createRefreshToken from "../utils/createRefreshToken";
+
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 //sigup
@@ -42,6 +40,12 @@ export const signUp = async (
   res: Response,
   next: NextFunction
 ) => {
+  const validation = signUpSchema.safeParse(req.body);
+  if (!validation.success) {
+    return res
+      .status(400)
+      .send({ sucess: false, message: validation.error.issues[0].message });
+  }
   const { username, email, password } = req.body;
   if (!username || !password || !email)
     return res.status(400).json({
@@ -67,8 +71,7 @@ export const signUp = async (
       password: hashedPwd,
     });
 
-    console.log(result);
-
+   
     res.status(201).json({ success: `New user ${username} created!` });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
@@ -79,7 +82,7 @@ export const signUp = async (
 
 export const logIn = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  // console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
+
   const { email, password } = req.body;
   if (!password || !email)
     return res.status(400).send({
@@ -145,8 +148,7 @@ export const logIn = async (req: Request, res: Response) => {
     // Saving refreshToken with current user
     foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     const result = await foundUser.save();
-    console.log(result);
-
+ 
     // Creates Secure Cookie with refresh token
     res
       .cookie("jwt", newRefreshToken, {

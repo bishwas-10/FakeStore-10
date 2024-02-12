@@ -50,6 +50,7 @@ const LoginPage = () => {
         },
       });
       if (response.data.success) {
+        console.log(response)
         setAuth({ token: response.data.accessToken });
 
         navigate(from, { replace: true });
@@ -75,7 +76,7 @@ const LoginPage = () => {
   }, [auth.token]);
   return (
     <div className="flex  items-center justify-center w-full h-screen">
-      <div className="flex flex-col w-2/5">
+      <div className="flex flex-col w-3/4 md:w-2/5">
         <Link
           to="/"
           className="flex w-full flex-row items-center justify-center text-lg md:text-xl font-semibold tracking-wider  dark:text-gray-500"
@@ -144,7 +145,7 @@ const LoginPage = () => {
             </span>
             <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
           </span>
-          <Button sx={{ width: "100" }}>Create your FakeStore Account</Button>
+          <Link to={'/signup'} className="w-full mt-2 py-1  border-2 shadow-md hover:bg-gray-200 transition-all text-center">Create your FakeStore Account</Link>
         </div>
       </div>
     </div>
