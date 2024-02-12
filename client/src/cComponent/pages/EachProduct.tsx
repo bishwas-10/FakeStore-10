@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ratingStars } from '../reusable/utils'
 import Loading from '../reusable/Loading'
-import { instance } from '../../api/instance'
+import { instance } from '../../../api/instance'
 import { useQuery } from '@tanstack/react-query'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

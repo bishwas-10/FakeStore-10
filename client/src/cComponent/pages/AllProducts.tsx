@@ -3,7 +3,7 @@ import Card, { ProductsProps } from "../Card";
 import { Link } from "react-router-dom";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
-import { instance } from "../../api/instance";
+import { instance } from "../../../api/instance";
 
 const fetchAllProducts = async () => {
   const response = await instance({

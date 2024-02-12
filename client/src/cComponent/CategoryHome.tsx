@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { instance } from "../api/instance";
+import { instance } from "../../api/instance";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./reusable/Loading";
 

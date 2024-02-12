@@ -23,13 +23,13 @@ import {
   removeProducts,
 } from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { instance } from "../../api/instance";
+import { instance } from "../../../api/instance";
 import { TProductSchema } from "./sub-components/add-products";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
-import { dateFormatter } from "../../utils/dateFormatter";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useAuth from "../../hooks/useAuth";
+import { dateFormatter } from "../../../utils/dateFormatter";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();

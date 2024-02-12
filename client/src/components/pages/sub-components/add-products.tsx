@@ -15,10 +15,10 @@ import { useState } from "react";
 import { addProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
-import { instance } from "../../../api/instance";
+import { instance } from "../../../../api/instance";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../../hooks/useAuth";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",

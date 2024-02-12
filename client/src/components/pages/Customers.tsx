@@ -6,8 +6,8 @@ import {  addCustomer, fetchAllCustomers, fetchCustomers, removeCustomers } from
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
 import { TCustomerSchema } from "./sub-components/editCustomers";
-import { dateFormatter } from "../../utils/dateFormatter";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { dateFormatter } from "../../../utils/dateFormatter";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);

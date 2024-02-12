@@ -3,14 +3,14 @@ import React, { useEffect, useState, useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { TextField } from "@mui/material";
-import { instance } from "../../../api/instance";
+import { instance } from "../../../../api/instance";
 import { jwtDecode } from "jwt-decode";
 import { signInSuccess } from "../../../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../../../store/tokenSlice";
 import { RootState } from "../../../store/store";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../../hooks/useAuth";
 export const LoginSchema = z.object({
   email: z.string().email({
     message: "Email is required",

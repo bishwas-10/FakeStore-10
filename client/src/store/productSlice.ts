@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TProductSchema } from "../components/pages/sub-components/add-products";
-import { instance } from "../api/instance";
+import { instance } from "../../api/instance";
 
 
 const addedProduct={

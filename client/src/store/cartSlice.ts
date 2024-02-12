@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { instance } from "../api/instance";
+import { instance } from "../../api/instance";
 import { TCartSchema } from "../components/pages/Orders";
 
 

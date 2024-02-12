@@ -19,10 +19,10 @@ import { Link } from "react-router-dom";
 import { RootState } from "../../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
-import { instance } from "../../../api/instance";
+import { instance } from "../../../../api/instance";
 import { addCart } from "../../../store/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../../hooks/useAuth";
 
 const EditCartSchema = z.object({
   quantity:z

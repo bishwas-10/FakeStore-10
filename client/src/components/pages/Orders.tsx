@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { addCart, fetchAllCarts, fetchCarts, removeCarts } from "../../store/cartSlice";
 import { RootState } from "../../store/store";
-import { dateFormatter } from "../../utils/dateFormatter";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { dateFormatter } from "../../../utils/dateFormatter";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),

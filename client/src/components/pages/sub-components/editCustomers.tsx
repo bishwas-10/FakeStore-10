@@ -12,11 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { axiosPrivate, instance } from "../../../api/instance";
+import { axiosPrivate, instance } from "../../../../api/instance";
 import { z } from "zod";
 import { addCustomer } from "../../../store/customerSlice";
 import { ToastContainer, toast } from "react-toastify";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../../hooks/useAuth";
 export const customerSchema = z.object({
     id: z.string().optional(),
     updatedAt: z.string().optional(),

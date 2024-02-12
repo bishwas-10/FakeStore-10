@@ -2,8 +2,11 @@ import React from "react";
 import { Search, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import Cart from "./Cart";
+import { FormControlLabel, Switch } from "@mui/material";
+import { useTheme } from "../providers/theme-provider";
 
 const MainNav = () => {
+  const { theme, toggleDarkMode } = useTheme();
   return (
     <div className="w-full h-full p-4 flex flex-row items-center justify-between bg-slate-700 text-white">
       <div className="flex items-center" id="header-left">
@@ -26,7 +29,18 @@ const MainNav = () => {
           <Search />
         </button>
       </div>
-      <div id="header-right">
+      <div id="header-right" className="flex flex-row justify-between">
+      <FormControlLabel
+            control={
+              <Switch
+                checked={theme === "dark"}
+                onChange={() =>
+                  toggleDarkMode(theme === "dark" ? "light" : "dark")
+                }
+              />
+            }
+            label="Dark Mode"
+          />
         <Cart />
       </div>
     </div>

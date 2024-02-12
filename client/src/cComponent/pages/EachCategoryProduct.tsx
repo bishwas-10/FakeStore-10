@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import Card, { ProductsProps } from '../Card';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../reusable/Loading';
-import { instance } from '../../api/instance';
+import { instance } from '../../../api/instance';
 
 const fetchCategory = async (CATEGORY: string) => {
     try {
