@@ -17,6 +17,7 @@ import { z } from "zod";
 import { addCustomer } from "../../../store/customerSlice";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
+import useLogout from "../../../../hooks/useLogout";
 export const customerSchema = z.object({
     id: z.string().optional(),
     updatedAt: z.string().optional(),
@@ -41,6 +42,7 @@ export const customerSchema = z.object({
 const EditCustomers = () => {
   const {auth}= useAuth();
   const dispatch =useDispatch();
+  const logout = useLogout();
   const token = useSelector((state:RootState)=>state.token.token);
   const customer = useSelector(
     (state: RootState) => state.customer.selectedCustomer
@@ -69,6 +71,7 @@ const EditCustomers = () => {
     },
   });
   const onSubmit = async (data: TCustomerSchema) => {
+  try {
     if (customer?.id) {
       const response = await axiosPrivate({
         url: `/customers/${customer.id}`,
@@ -99,6 +102,9 @@ const EditCustomers = () => {
         toast.success(response.data.message);
       }
     }
+  } catch (error) {
+    logout();
+  }
   };
 
   return (

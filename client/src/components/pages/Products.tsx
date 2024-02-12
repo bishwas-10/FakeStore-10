@@ -30,16 +30,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
+import useLogout from "../../../hooks/useLogout";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-
+const logout = useLogout();
   //pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [productsPerPage, setProductsPerPage] = useState<number>(2);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
- const {auth}= useAuth();
+ const {auth,setAuth}= useAuth();
   const handlePageSelection = (page: number) => {
     setCurrentPage(page);
   };
@@ -52,19 +53,25 @@ const Products = () => {
   const axiosPrivate = useAxiosPrivate();
   //fetchallproducts
 const productCall =async()=>{
-  const response = await axiosPrivate.get('/products', {
+  try {
+     const response = await axiosPrivate.get('/products', {
       signal: controller.signal
   })
   if(response.data.success){
     
     dispatch(fetchAllProducts(response.data.products));
   }
+  } catch (error) {
+    logout();
+  }
+ 
 
     
 }
   //products
   const deleteProduct = async (id: string) => {
-    const response = await instance({
+    try {
+      const response = await instance({
       url: `/products/${id}`,
       method: "DELETE",
        headers: {
@@ -79,6 +86,10 @@ const productCall =async()=>{
     }else{
       toast.error(response.data.message);
     }
+    } catch (error) {
+     logout();
+    }
+    
   };
   const editProduct = (product: TProductSchema) => {
     dispatch(addProduct(product));

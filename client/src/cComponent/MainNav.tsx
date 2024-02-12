@@ -5,8 +5,10 @@ import Cart from "./Cart";
 import { FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
+import useAuth from "../../hooks/useAuth";
 
 const MainNav = () => {
+  const {auth} = useAuth();
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
   return (

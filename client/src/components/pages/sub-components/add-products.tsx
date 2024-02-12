@@ -19,6 +19,7 @@ import { instance } from "../../../../api/instance";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
+import useLogout from "../../../../hooks/useLogout";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -66,6 +67,7 @@ const AddProducts = () => {
   const [imageName, setImageName] = useState<string>("");
   const dispatch = useDispatch();
 const {auth}= useAuth();
+const logout = useLogout();
   const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
@@ -108,7 +110,8 @@ const {auth}= useAuth();
     convert2base64(file);
   };
   const onSubmit = async (data: TProductSchema) => {
-    const response = await instance({
+  try {
+     const response = await instance({
       url: product?.id ? `/products/${product?.id}` : `/products`,
       method: product?.id ? "PUT" : "POST",
       headers: {
@@ -138,6 +141,10 @@ const {auth}= useAuth();
       }
        toast.success(response.data.message);
     }
+  } catch (error) {
+    logout();
+  }
+   
    
    
   };

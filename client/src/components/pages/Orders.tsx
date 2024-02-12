@@ -8,6 +8,8 @@ import { addCart, fetchAllCarts, fetchCarts, removeCarts } from "../../store/car
 import { RootState } from "../../store/store";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
+import useLogout from "../../../hooks/useLogout";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
@@ -50,17 +52,23 @@ export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const Order = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const cartData = useSelector((state: RootState) => state.cart.carts);
-  console.log(cartData);
+  const {setAuth}= useAuth();
+  const logout = useLogout();
   const controller = new AbortController();
   const axiosPrivate = useAxiosPrivate();
   const cartCall =async()=>{
-    const response = await axiosPrivate.get('/carts', {
+    try {
+      const response = await axiosPrivate.get('/carts', {
         signal: controller.signal
     })
     if(response.data.success){
       console.log(response.data.cart)
       dispatch(fetchAllCarts(response.data.cart));
+    } 
+    } catch (error) {
+      logout();
     }
+   
 
       
   }

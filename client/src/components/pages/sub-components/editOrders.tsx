@@ -23,6 +23,7 @@ import { instance } from "../../../../api/instance";
 import { addCart } from "../../../store/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
+import useLogout from "../../../../hooks/useLogout";
 
 const EditCartSchema = z.object({
   quantity:z
@@ -45,7 +46,7 @@ const EditCartSchema = z.object({
 type TEditCartSchema = z.infer<typeof EditCartSchema>;
 const EditOrders = () => {
   const cartData = useSelector((state: RootState) => state.cart.selectedCart);
-  
+  const logout = useLogout();
 const {auth}= useAuth();
   const dispatch = useDispatch();
   const [orderStatus, setOrderStatus] = useState<string>(
@@ -87,33 +88,37 @@ const {auth}= useAuth();
   };
   const onSubmit = async (data: TEditCartSchema) => {
 
-    if (cartData?.id) {
-      const response = await instance({
-        url: `/carts/${cartData.id}`,
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-            authorization: `Bearer ${auth.token}`,
-        },
-        data: {
-          shippingAddress: {
-            city: cartData?.shippingAddress.city,
-            street: cartData?.shippingAddress.street,
-            zipcode: cartData?.shippingAddress.zipcode,
+    try {
+      if (cartData?.id) {
+        const response = await instance({
+          url: `/carts/${cartData.id}`,
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+              authorization: `Bearer ${auth.token}`,
           },
-          customer:cartData?.customer.id,
-          product: cartData?.product.id,
-          quantity: data.quantity,
-          totalAmount: data.totalAmount,
-          orderStatus: data.orderStatus,
-          paymentStatus: data.paymentStatus,
-          paymentMethod: data.paymentMethod,
-        },
-      });
-      if(response.data.success){
-        dispatch(addCart(response.data.cart));
-        toast.success("edited successfully");
+          data: {
+            shippingAddress: {
+              city: cartData?.shippingAddress.city,
+              street: cartData?.shippingAddress.street,
+              zipcode: cartData?.shippingAddress.zipcode,
+            },
+            customer:cartData?.customer.id,
+            product: cartData?.product.id,
+            quantity: data.quantity,
+            totalAmount: data.totalAmount,
+            orderStatus: data.orderStatus,
+            paymentStatus: data.paymentStatus,
+            paymentMethod: data.paymentMethod,
+          },
+        });
+        if(response.data.success){
+          dispatch(addCart(response.data.cart));
+          toast.success("edited successfully");
+        }
       }
+    } catch (error) {
+      logout();
     }
   };
 

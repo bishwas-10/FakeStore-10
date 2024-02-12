@@ -26,7 +26,7 @@ const Navbar = () => {
   const { pathname } = useLocation();
 
   const { auth } = useAuth();
-  console.log(auth);
+ 
   const logout = useLogout();
   let decoded;
   if(auth.token){
@@ -126,18 +126,7 @@ for (const key in ROLES_LIST) {
             >
               Settings
             </Link>
-            <Link
-              to="/admin/login"
-              className={`p-2 
-            ${
-              pathname === "/admin/login"
-                ? "font-semibold text-gray-600 bg-gray-300"
-                : "text-muted-foreground"
-            }
-            rounded-md transition-all hover:text-primary`}
-            >
-              Login
-            </Link>
+           
             <button
               onClick={() => logout()}
               className={`p-2 

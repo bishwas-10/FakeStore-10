@@ -108,12 +108,12 @@ export const logIn = async (req: Request, res: Response) => {
         },
       },
       process.env.TOKEN_KEY as string,
-      { expiresIn: "10m" }
+      { expiresIn: "10s" }
     );
     const newRefreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN_KEY as string,
-      { expiresIn: "1h" }
+      { expiresIn: "1m" }
     );
 
     // Changed to let keyword
@@ -155,7 +155,7 @@ export const logIn = async (req: Request, res: Response) => {
         httpOnly: false,
         secure: true,
         sameSite: "none",
-        maxAge: 1 * 60 * 60 * 1000,
+        maxAge:1 * 60 * 1000,
       })
       .status(201)
       .send({ success: true, message: "sign in successful", accessToken });

@@ -8,23 +8,29 @@ import { Link } from "react-router-dom";
 import { TCustomerSchema } from "./sub-components/editCustomers";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
+import useLogout from "../../../hooks/useLogout";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
-  console.log(customers)
-  const token = useSelector((state:RootState)=>state.token.token);
+const logout = useLogout();
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const controller = new AbortController();
   const axiosPrivate = useAxiosPrivate();
 const customerCall =async()=>{
-  const response = await axiosPrivate.get('/customers', {
+  try {
+    const response = await axiosPrivate.get('/customers', {
       signal: controller.signal
   })
   if(response.data.success){
     
     dispatch(fetchAllCustomers(response.data.customers));
   }
-  console.log(response)
+  } catch (error) {
+    logout();
+  }
+  
+
     
 }
   useEffect(() => {
@@ -64,7 +70,7 @@ const customerCall =async()=>{
               </thead>
               <tbody className=" text-sm font-medium">
                 {customers.length !== 0 &&
-                  customers.map((customer:TCustomerSchema, index) => {
+                  customers.map((customer:TCustomerSchema, index:number) => {
                     return (
                       <tr key={index} className="border-b border-gray-200 ">
                         <td className="py-3 px-0 text-center whitespace-nowrap">
