@@ -4,8 +4,8 @@ import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { purple, teal } from "@mui/material/colors";
-import { useTheme } from "./providers/theme-provider";
+import { indigo, teal,yellow } from "@mui/material/colors";
+
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
 import AddProducts from "./components/pages/sub-components/add-products";
@@ -24,6 +24,7 @@ import HomePage from "./cComponent/pages/HomePage";
 import AllProducts from "./cComponent/pages/AllProducts";
 import EachProduct from "./cComponent/pages/EachProduct";
 import EachCategoryProduct from "./cComponent/pages/EachCategoryProduct";
+import { useTheme } from "./providers/theme-provider";
 
 export interface RolesProps {
   [key: string]: number;
@@ -42,7 +43,7 @@ function App() {
   const themeUi = createTheme({
     palette: {
       mode: theme === "dark" ? "dark" : "light",
-      primary: theme === "dark" ? purple : teal, // Customize primary color based on theme
+      primary: theme === "dark" ? yellow : indigo, // Customize primary color based on theme
     },
   });
 
