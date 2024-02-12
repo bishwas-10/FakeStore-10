@@ -102,8 +102,11 @@ const EditCustomers = () => {
         toast.success(response.data.message);
       }
     }
-  } catch (error) {
-    logout();
+  }  catch (error:any) {
+    if(error.response.statusText==="Unauthorized" ||"Forbidden"){
+      logout();
+    }
+    console.log(error);
   }
   };
 
@@ -238,7 +241,7 @@ const EditCustomers = () => {
               </CardContent>
               <CardActions>
                 <Button variant="outlined" size="small" className="w-full">
-                  <Link to="/customers"> Back to Customer Listing</Link>
+                  <Link to="/admin/customers"> Back to Customer Listing</Link>
                 </Button>
               </CardActions>
             </Card>

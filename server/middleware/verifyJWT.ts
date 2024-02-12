@@ -8,14 +8,14 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   if (!authHeader?.startsWith("Bearer ")) return res.status(403).send({success:false,message:"no auth header"});
 
   const token = authHeader.split(" ")[1];
-
+console.log(token)
   jwt.verify(
     token,
     process.env.TOKEN_KEY as string,
     { complete: true },
     async (error: VerifyErrors | null, decoded: JwtPayload | undefined) => {
       if (error) {
-        console.log(error)
+        
         return res.status(403).send({success:false,message:error.message});}
       if (decoded) {
         console.log(decoded.payload.UserInfo.roles)

@@ -61,8 +61,11 @@ const productCall =async()=>{
     
     dispatch(fetchAllProducts(response.data.products));
   }
-  } catch (error) {
-    logout();
+  }  catch (error:any) {
+    if(error.response.statusText==="Unauthorized"||"Forbidden"){
+      logout();
+    }
+    console.log(error);
   }
  
 
@@ -86,8 +89,11 @@ const productCall =async()=>{
     }else{
       toast.error(response.data.message);
     }
-    } catch (error) {
-     logout();
+    }  catch (error:any) {
+      if(error.response.statusText==="Unauthorized"){
+        logout();
+      }
+      console.log(error);
     }
     
   };

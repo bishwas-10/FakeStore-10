@@ -141,8 +141,11 @@ const logout = useLogout();
       }
        toast.success(response.data.message);
     }
-  } catch (error) {
-    logout();
+  }  catch (error:any) {
+    if(error.response.statusText==="Unauthorized" ||"Forbidden"){
+      logout();
+    }
+    console.log(error);
   }
    
    
@@ -326,7 +329,7 @@ const logout = useLogout();
                   size="small"
                   className="w-full"
                 >
-                 <Link to="/products"> Back to Product</Link>
+                 <Link to="/admin/products"> Back to Product</Link>
                 </Button>
               </CardActions>
             </Card>

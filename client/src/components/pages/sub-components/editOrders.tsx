@@ -117,8 +117,11 @@ const {auth}= useAuth();
           toast.success("edited successfully");
         }
       }
-    } catch (error) {
-      logout();
+    }  catch (error:any) {
+      if(error.response.statusText==="Unauthorized" ||"Forbidden"){
+        logout();
+      }
+      console.log(error);
     }
   };
 
@@ -335,7 +338,7 @@ const {auth}= useAuth();
               </CardContent>
               <CardActions>
                 <Button variant="outlined" size="small" className="w-full">
-                  <Link to="/orders"> Back to Orders Listing</Link>
+                  <Link to="/admin/orders"> Back to Orders Listing</Link>
                 </Button>
               </CardActions>
             </Card>

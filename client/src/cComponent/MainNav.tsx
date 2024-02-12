@@ -70,13 +70,13 @@ const MainNav = () => {
           >
             <div className="w-full flex flex-col items-center gap-2 font-sans tracking-normal">
               <Link
-                to=""
+                to="/login"
                 className="w-[60%] bg-yellow-500 text-center text-md py-2"
               >
                 Sign In
               </Link>
               <span className="text-xs font-medium">
-                New customer? <span className="text-blue-500">Start here</span>
+                New customer? <Link to={"/signup"} className="text-blue-500">Start here</Link>
               </span>
             </div>
             <div className="w-full flex flex-col items-start mt-2">

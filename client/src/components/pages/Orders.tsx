@@ -65,8 +65,11 @@ const Order = () => {
       console.log(response.data.cart)
       dispatch(fetchAllCarts(response.data.cart));
     } 
-    } catch (error) {
-      logout();
+    }  catch (error:any) {
+      if(error.response.statusText==="Unauthorized"||"Forbidden"){
+        logout();
+      }
+      console.log(error);
     }
    
 

@@ -26,8 +26,11 @@ const customerCall =async()=>{
     
     dispatch(fetchAllCustomers(response.data.customers));
   }
-  } catch (error) {
-    logout();
+  } catch (error:any) {
+    if(error.response.statusText==="Unauthorized"||"Forbidden"){
+      logout();
+    }
+    console.log(error);
   }
   
 
