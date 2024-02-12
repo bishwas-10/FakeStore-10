@@ -6,6 +6,7 @@ import productReducer from "./productSlice";
 import customerReducer from "./customerSlice";
 import cartReducer from "./cartSlice";
 import tokenReducer from "./tokenSlice";
+import categoryReducer from "./categorySlice";
 import userReducer from "./userSlice";
 
 const rootReducer = combineReducers({
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   customer:customerReducer,
   cart:cartReducer,
   token:tokenReducer,
+  category:categoryReducer,
   user:userReducer
 });
 

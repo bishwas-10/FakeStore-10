@@ -89,7 +89,19 @@ for (const key in ROLES_LIST) {
             rounded-md transition-all hover:text-primary`}
             >
               Products
-            </Link>{" "}
+            </Link>
+            <Link
+              to="/admin/categories"
+              className={`p-2  
+            ${
+              pathname === "/admin/categories"
+                ? "font-semibold text-gray-600 bg-gray-300"
+                : "text-muted-foreground"
+            }
+            rounded-md transition-all hover:text-primary`}
+            >
+              Categories
+            </Link>
             <Link
               to="/admin/customers"
               className={`p-2 

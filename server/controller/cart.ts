@@ -55,37 +55,6 @@ export const addCart = async (req: Request, res: Response) => {
       return res.status(400).send({ sucess: false, message: validation.error });
     }
 
-    // const existingCart = await Cart.findOne({
-    //   customerId: req.body.customerId,
-    // });
-    //  console.log(existingCart)
-    //   if (existingCart) {
-
-    //       const updatedCart = await Cart.findOneAndUpdate(
-    //           { customerId: existingCart.customerId },
-    //           {
-    //             $addToSet: {
-
-    //               products: {
-    //                 $each: [
-    //                   {
-    //                     productId: 2,
-    //                     quantity: 1,
-    //                   },
-    //                 ],
-    //               },
-    //             },
-    //             $inc: {
-
-    //               quantity: 1,
-    //             },
-    //           },
-    //           {
-    //             new: true,
-    //             arrayFilters: [{ "elem.productId": req.body.productId }],
-    //           }
-    //         );
-    //   }
 
     const cart = await Cart.create({
       quantity: req.body.quantity,

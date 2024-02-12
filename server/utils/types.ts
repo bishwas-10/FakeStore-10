@@ -7,6 +7,15 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/png",
   "image/webp",
 ];
+export const categorySchema = z.object({
+  createdAt: z.string().optional(),
+  title: z.string({ required_error: "title is required" }),
+ 
+  
+  description: z.string({ required_error: "description is required" }),
+  image: z.string({ required_error: "image is required" }),
+  products: z.array(z.string().min(1,"product id is required")),
+});
 export const productSchema = z.object({
   createdAt: z.string().optional(),
   title: z.string({ required_error: "title is required" }),

@@ -15,7 +15,7 @@ export const getAllProducts = async(req: Request, res: Response) => {
 };
 
 export const getProduct = async (req: Request, res: Response) => {
-  console.log("aaipugyo")
+  
   try {
     const product = await Product.findOne({_id: req.params.id});
     if(!product){

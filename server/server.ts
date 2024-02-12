@@ -9,7 +9,8 @@ import { verifyJWT } from './middleware/verifyJWT';
 //router
 import authRouter from "./routes/auth";
 import productRouter from "./routes/product";
-import cartRouter from "./routes/cart"
+import cartRouter from "./routes/cart";
+import categoryRouter from "./routes/category";
 import customerRouter from "./routes/customer";
 import getRouter from "./routes/getRoute";
 import { handleRefreshToken } from './controller/refreshToken';
@@ -40,6 +41,8 @@ app.use('/api',getRouter);
 
 
 app.use(verifyJWT);
+app.use("/api",categoryRouter);
+
 app.use("/api",productRouter);
 app.use("/api",cartRouter);
 app.use("/api",customerRouter)

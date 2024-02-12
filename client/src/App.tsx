@@ -28,6 +28,7 @@ import { useTheme } from "./providers/theme-provider";
 import SignUpPage from "./components/pages/auth/signup";
 import Footer from "./cComponent/Footer";
 import BackToTop from "./cComponent/reusable/BackToTop";
+import Categories from "./components/pages/Categories";
 
 export interface RolesProps {
   [key: string]: number;
@@ -85,6 +86,10 @@ function App() {
                 <Route path="products">
                   <Route index element={<Products />} />
                   <Route path="addproducts" element={<AddProducts />} />
+                </Route>
+                <Route path="categories">
+                  <Route index element={<Categories />} />
+                  <Route path="editcategories" element={<AddProducts />} />
                 </Route>
                 <Route path="customers">
                   <Route index element={<Customers />} />
