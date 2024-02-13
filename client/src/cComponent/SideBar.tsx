@@ -15,16 +15,20 @@ import {
   Languages,
   LogInIcon,
   MailIcon,
+  Menu,
   Settings,
   ShoppingBag,
   User,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ListSubheader } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 const SideBar = () => {
+  const categories = useSelector((state:RootState)=>state.category.category)
   const navigate = useNavigate();
   const [state, setState] = React.useState({
     top: false,
@@ -55,13 +59,13 @@ const SideBar = () => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {categories.map((item, index) => (
+          <ListItem key={index} disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={item.title} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -69,10 +73,10 @@ const SideBar = () => {
       <Divider />
       <List>
         <ListSubheader>Shop by Department</ListSubheader>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
+        {categories.map((item, index) => (
           <ListItem key={index} disablePadding>
-            <ListItemButton onClick={() => navigate("/allproducts")}>
-              <ListItemText primary={text} />
+            <ListItemButton onClick={() => navigate(`/categories/${item.title}`)}>
+              <ListItemText primary={item.title} />
               <ListItemIcon>
                 <ChevronRight />
               </ListItemIcon>
@@ -120,8 +124,15 @@ const SideBar = () => {
 
   return (
     <div>
-      <Button onClick={toggleDrawer("left", true)} sx={{ color: "whitesmoke" }}>
-        sgdg
+      <Button onClick={toggleDrawer("left", true)}
+       sx={{ color: "whitesmoke" }} className="p-2 border-2">
+      <span
+        className="p-2 gap-1 flex items-center justify-center text-sm  md:font-small
+         hover:border-white hover:border-2  "
+      >
+       <Menu/>All
+      </span>
+          
       </Button>
       <Drawer
         anchor="left"

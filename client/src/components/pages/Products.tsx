@@ -125,7 +125,77 @@ const productCall =async()=>{
       </div>
 
       <div className=" flex items-center justify-center font-sans overflow-hidden p-3">
-        <div className="w-full">
+        <div className="w-full min-h-screen">
+        <div className="my-4  flex flex-row gap-2 justify-center items-center">
+        <FormControl className="w-40">
+          <InputLabel id="demo-simple-select-label">
+            Products per page
+          </InputLabel>
+          <Select
+            labelId="productsPerPage"
+            id="productsPerPage"
+            value={productsPerPage}
+            label="productsPerPage"
+            onChange={(e) => setProductsPerPage(e.target.value as number)}
+          >
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+          </Select>
+        </FormControl>
+        {currentPage > 1 && (
+          <>
+            <Button variant="text" onClick={() => handlePageSelection(1)}>
+              <ChevronsLeft />
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+            >
+              <ChevronLeft />
+            </Button>
+          </>
+        )}
+        {currentPage > 1 && (
+          <Button
+          variant="text"
+          onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+        >
+          {currentPage - 1}
+        </Button>
+        )}
+        
+        <Button variant="contained">{currentPage}</Button>
+        {currentPage < Math.ceil(products.length / productsPerPage) &&  <Button
+          variant="text"
+          onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+        >{currentPage + 1}
+        </Button>}
+       
+          
+        {currentPage < Math.ceil(products.length / productsPerPage) && (
+          <>
+            <Button
+              variant="text"
+              onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+            >
+              <ChevronRight />
+            </Button>
+            <Button
+              variant="text"
+              onClick={() =>
+                handlePageSelection(
+                  Math.ceil(products.length / productsPerPage)
+                )
+              }
+            >
+              <ChevronsRight />
+            </Button>
+          </>
+        )}
+      </div>
           <div className=" shadow-md rounded my-6">
             <table className="w-full">
               <thead>
@@ -232,76 +302,7 @@ const productCall =async()=>{
           </div>
         </div>
       </div>
-      <div className="my-4  flex flex-row gap-2 justify-center items-center">
-        <FormControl className="w-40">
-          <InputLabel id="demo-simple-select-label">
-            Products per page
-          </InputLabel>
-          <Select
-            labelId="productsPerPage"
-            id="productsPerPage"
-            value={productsPerPage}
-            label="productsPerPage"
-            onChange={(e) => setProductsPerPage(e.target.value as number)}
-          >
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={6}>6</MenuItem>
-            <MenuItem value={8}>8</MenuItem>
-          </Select>
-        </FormControl>
-        {currentPage > 1 && (
-          <>
-            <Button variant="text" onClick={() => handlePageSelection(1)}>
-              <ChevronsLeft />
-            </Button>
-            <Button
-              variant="text"
-              onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
-            >
-              <ChevronLeft />
-            </Button>
-          </>
-        )}
-        {currentPage > 1 && (
-          <Button
-          variant="text"
-          onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
-        >
-          {currentPage - 1}
-        </Button>
-        )}
-        
-        <Button variant="contained">{currentPage}</Button>
-        {currentPage < Math.ceil(products.length / productsPerPage) &&  <Button
-          variant="text"
-          onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
-        >{currentPage + 1}
-        </Button>}
-       
-          
-        {currentPage < Math.ceil(products.length / productsPerPage) && (
-          <>
-            <Button
-              variant="text"
-              onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
-            >
-              <ChevronRight />
-            </Button>
-            <Button
-              variant="text"
-              onClick={() =>
-                handlePageSelection(
-                  Math.ceil(products.length / productsPerPage)
-                )
-              }
-            >
-              <ChevronsRight />
-            </Button>
-          </>
-        )}
-      </div>
+     
       <ToastContainer />
     </div>
   );

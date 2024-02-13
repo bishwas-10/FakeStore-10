@@ -32,7 +32,11 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
 import { TCategorySchema } from "./sub-components/AddCategory";
-import { addCategory, fetchAllCategories, removeCategories } from "../../store/categorySlice";
+import {
+  addCategory,
+  fetchAllCategories,
+  removeCategories,
+} from "../../store/categorySlice";
 
 const Categories = () => {
   const categories = useSelector((state: RootState) => state.category.category);
@@ -67,7 +71,7 @@ const Categories = () => {
       }
     } catch (error: any) {
       if (error.response.statusText === "Unauthorized" || "Forbidden") {
-       // logout();
+        // logout();
       }
       console.log(error);
     }
@@ -97,7 +101,7 @@ const Categories = () => {
     }
   };
   const editCategpory = (category: TCategorySchema) => {
-   dispatch(addCategory(category));
+    dispatch(addCategory(category));
   };
 
   useEffect(() => {
@@ -114,8 +118,8 @@ const Categories = () => {
             Category section
           </h1>
           <p className="mt-2 ">
-            WHere you can add different category and check all the categories listed
-            below with pagination features
+            WHere you can add different category and check all the categories
+            listed below with pagination features
           </p>
         </div>
         <Button variant="outlined">
@@ -124,8 +128,84 @@ const Categories = () => {
       </div>
 
       <div className=" flex items-center justify-center font-sans overflow-hidden p-3">
-        <div className="w-full">
-          <div className=" shadow-md rounded my-6">
+        <div className="w-full min-h-screen">
+          <div className="my-4  flex flex-row gap-2 justify-center items-center">
+            <FormControl className="w-40">
+              <InputLabel id="demo-simple-select-label">
+                Categories per page
+              </InputLabel>
+              <Select
+                labelId="productsPerPage"
+                id="productsPerPage"
+                value={productsPerPage}
+                label="productsPerPage"
+                onChange={(e) => setProductsPerPage(e.target.value as number)}
+              >
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+              </Select>
+            </FormControl>
+            {currentPage > 1 && (
+              <>
+                <Button variant="text" onClick={() => handlePageSelection(1)}>
+                  <ChevronsLeft />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage - 1)
+                  }
+                >
+                  <ChevronLeft />
+                </Button>
+              </>
+            )}
+            {currentPage > 1 && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+              >
+                {currentPage - 1}
+              </Button>
+            )}
+
+            <Button variant="contained">{currentPage}</Button>
+            {currentPage < Math.ceil(categories.length / productsPerPage) && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+              >
+                {currentPage + 1}
+              </Button>
+            )}
+
+            {currentPage < Math.ceil(categories.length / productsPerPage) && (
+              <>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage + 1)
+                  }
+                >
+                  <ChevronRight />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    handlePageSelection(
+                      Math.ceil(categories.length / productsPerPage)
+                    )
+                  }
+                >
+                  <ChevronsRight />
+                </Button>
+              </>
+            )}
+          </div>
+          <div className="  shadow-md rounded my-6">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 uppercase text-sm leading-normal">
@@ -133,7 +213,7 @@ const Categories = () => {
                   <th className="py-3 px-0 text-center">Image</th>
                   <th className="py-3 px-0 text-center ">Title</th>
                   <th className="py-3 px-0 text-center">Description</th>
-                 <th className="py-3 px-0 text-center">Last Updated</th>
+                  <th className="py-3 px-0 text-center">Last Updated</th>
                   <th className="py-3 px-0 text-center">Edit</th>
                 </tr>
               </thead>
@@ -141,63 +221,61 @@ const Categories = () => {
               <tbody className=" text-sm font-medium">
                 {categories.length !== 0 && (
                   <>
-                    {categories?.map(
-                      (category, index) => {
-                        if (pageStartIndex <= index && pageEndIndex >= index) {
-                          return (
-                            <tr
-                              key={category.title}
-                              className="border-b border-gray-200 "
-                            >
-                              <td className="py-3 px-0 text-left whitespace-nowrap">
-                                <div className="flex items-center justify-center">
-                                  {index + 1}
+                    {categories?.map((category, index) => {
+                      if (pageStartIndex <= index && pageEndIndex >= index) {
+                        return (
+                          <tr
+                            key={category.title}
+                            className="border-b border-gray-200 "
+                          >
+                            <td className="py-3 px-0 text-left whitespace-nowrap">
+                              <div className="flex items-center justify-center">
+                                {index + 1}
+                              </div>
+                            </td>
+                            <td className="p-3 flex items-center justify-center">
+                              <img
+                                src={category.image}
+                                alt={category.title}
+                                className="w-40 object-contain"
+                              />
+                            </td>
+                            <td className="py-3 px-2 text-center">
+                              <span>{category.title}</span>
+                            </td>
+
+                            <td className="py-3 px-0 text-center max-w-30 break-words">
+                              {category.description}
+                            </td>
+
+                            <td className="py-3 px-0 text-center">
+                              <p className="text-center ">
+                                {dateFormatter(category.updatedAt as string)}
+                              </p>
+                            </td>
+
+                            <td className="py-3 px-0 text-center">
+                              <div className="flex item-center justify-center">
+                                <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120">
+                                  <Trash2
+                                    onClick={() =>
+                                      deleteCategory(category?.id as string)
+                                    }
+                                  />
                                 </div>
-                              </td>
-                              <td className="p-3 flex items-center justify-center">
-                                <img
-                                  src={category.image}
-                                  alt={category.title}
-                                  className="w-40 object-contain"
-                                />
-                              </td>
-                              <td className="py-3 px-0 text-center">
-                                <span>{category.title}</span>
-                              </td>
-
-                              <td className="py-3 px-0 text-center max-w-30 break-words">
-                                {category.description}
-                              </td>
-
-                              <td className="py-3 px-0 text-center">
-                                <p className="text-center ">
-                                  {dateFormatter(category.updatedAt as string)}
-                                </p>
-                              </td>
-
-                              <td className="py-3 px-0 text-center">
-                                <div className="flex item-center justify-center">
-                                  <div className="w-6 mr-4 transform hover:text-purple-500 hover:scale-120">
-                                    <Trash2
-                                      onClick={() =>
-                                        deleteCategory(category?.id as string)
-                                      }
+                                <div className="w-6 mr-2  transform hover:text-purple-500 hover:scale-120">
+                                  <Link to={"addcategory"}>
+                                    <PencilIcon
+                                      onClick={() => editCategpory(category)}
                                     />
-                                  </div>
-                                  <div className="w-6 mr-2  transform hover:text-purple-500 hover:scale-120">
-                                    <Link to={"addcategory"}>
-                                      <PencilIcon
-                                        onClick={() => editCategpory(category)}
-                                      />
-                                    </Link>
-                                  </div>
+                                  </Link>
                                 </div>
-                              </td>
-                            </tr>
-                          );
-                        }
+                              </div>
+                            </td>
+                          </tr>
+                        );
                       }
-                    )}
+                    })}
                   </>
                 )}
               </tbody>
@@ -205,78 +283,7 @@ const Categories = () => {
           </div>
         </div>
       </div>
-      <div className="my-4  flex flex-row gap-2 justify-center items-center">
-        <FormControl className="w-40">
-          <InputLabel id="demo-simple-select-label">
-            Categories per page
-          </InputLabel>
-          <Select
-            labelId="productsPerPage"
-            id="productsPerPage"
-            value={productsPerPage}
-            label="productsPerPage"
-            onChange={(e) => setProductsPerPage(e.target.value as number)}
-          >
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={6}>6</MenuItem>
-            <MenuItem value={8}>8</MenuItem>
-          </Select>
-        </FormControl>
-        {currentPage > 1 && (
-          <>
-            <Button variant="text" onClick={() => handlePageSelection(1)}>
-              <ChevronsLeft />
-            </Button>
-            <Button
-              variant="text"
-              onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
-            >
-              <ChevronLeft />
-            </Button>
-          </>
-        )}
-        {currentPage > 1 && (
-          <Button
-            variant="text"
-            onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
-          >
-            {currentPage - 1}
-          </Button>
-        )}
 
-        <Button variant="contained">{currentPage}</Button>
-        {currentPage < Math.ceil(categories.length / productsPerPage) && (
-          <Button
-            variant="text"
-            onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
-          >
-            {currentPage + 1}
-          </Button>
-        )}
-
-        {currentPage < Math.ceil(categories.length / productsPerPage) && (
-          <>
-            <Button
-              variant="text"
-              onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
-            >
-              <ChevronRight />
-            </Button>
-            <Button
-              variant="text"
-              onClick={() =>
-                handlePageSelection(
-                  Math.ceil(categories.length / productsPerPage)
-                )
-              }
-            >
-              <ChevronsRight />
-            </Button>
-          </>
-        )}
-      </div>
       <ToastContainer />
     </div>
   );

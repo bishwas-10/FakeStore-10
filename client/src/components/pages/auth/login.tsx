@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useRef, useState, useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button, TextField } from "@mui/material";
@@ -24,6 +24,7 @@ export const LoginSchema = z.object({
 export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
+
   const { auth, setAuth, persist, setPersist } = useAuth();
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -74,6 +75,13 @@ const LoginPage = () => {
       navigate(from, { replace: true });
     }
   }, [auth.token]);
+  const inputRef = useRef<HTMLInputElement>(null);;
+  useEffect(()=>{
+    if(inputRef.current){
+     inputRef.current.focus() ;
+    }
+    
+  },[])
   return (
     <div className="flex  items-center justify-center w-full h-screen">
       <div className="flex flex-col w-3/4 md:w-2/5">
@@ -93,6 +101,7 @@ const LoginPage = () => {
           <h1 className="text-2xl font-medium dark:text-gray-500 ">Sign In</h1>
           <div className="flex flex-col gap-1 ">
             <TextField
+            inputRef={inputRef}
               id="email"
               type="email"
               label="email"

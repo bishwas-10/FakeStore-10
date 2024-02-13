@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField } from '@mui/material';
 import { ShoppingBag } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -84,6 +84,13 @@ const SignUpPage = () => {
         navigate(from, { replace: true });
       }
     }, [auth.token]);
+    const inputRef = useRef<HTMLInputElement>(null);;
+  useEffect(()=>{
+    if(inputRef.current){
+     inputRef.current.focus() ;
+    }
+    
+  },[])
   return (
     <div className="flex  items-center justify-center w-full h-screen">
     <div className="flex flex-col w-3/4 md:w-2/5">
@@ -104,7 +111,7 @@ const SignUpPage = () => {
         <div className="flex flex-col gap-1 ">
           <TextField
             id="username"
-         
+          inputRef={inputRef}
             label="username"
             variant="outlined"
             onFocus={() => setErrMsg(null)}

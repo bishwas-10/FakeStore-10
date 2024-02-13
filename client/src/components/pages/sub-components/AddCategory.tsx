@@ -129,7 +129,7 @@ const AddCategory = () => {
               label="title"
               variant="outlined"
               error={!!errors.title}
-              helperText={errors.title ? "title is required" : ""}
+              helperText={errors.title ? errors.title.message : ""}
               {...register("title", { required: true })}
             />
           </div>
@@ -173,7 +173,7 @@ const AddCategory = () => {
               multiline
               maxRows={4}
               error={!!errors.description} // Set error prop based on the presence of errors
-              helperText={errors.description ? "Description is required" : ""} // Display error message if there are errors
+              helperText={errors.description ? errors.description.message : ""} // Display error message if there are errors
               {...register("description", { required: true })}
             />
           </div>

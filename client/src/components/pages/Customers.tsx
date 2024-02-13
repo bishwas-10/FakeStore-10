@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { PencilIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, PencilIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import {  addCustomer, fetchAllCustomers, fetchCustomers, removeCustomers } from "../../store/customerSlice";
@@ -10,11 +10,27 @@ import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
+import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
 const logout = useLogout();
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [productsPerPage, setProductsPerPage] = useState<number>(2);
+  const [pageStartIndex, setPageStartIndex] = useState<number>(0);
+  const [pageEndIndex, setPageEndIndex] = useState<number>(3);
+
+  const handlePageSelection = (page: number) => {
+    setCurrentPage(page);
+  };
+  useEffect(() => {
+    setPageStartIndex(productsPerPage * (currentPage - 1));
+    setPageEndIndex(productsPerPage * currentPage - 1);
+  }, [currentPage, productsPerPage]);
+
   const controller = new AbortController();
   const axiosPrivate = useAxiosPrivate();
 const customerCall =async()=>{
@@ -44,8 +60,97 @@ const customerCall =async()=>{
 
   return (
     <div className="px-4">
+      <div className="h-20 w-full p-4 flex flex-row items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold tracking-wide uppercase">
+            Customer section
+          </h1>
+          <p className="mt-2 ">
+            WHere you can all different customers and check all the customers
+            listed below with pagination features
+          </p>
+        </div>
+        
+      </div>
+
       <div className=" flex items-center justify-center font-sans overflow-hidden">
-        <div className="w-full">
+        <div className="w-full min-h-screen">
+        <div className="my-4  flex flex-row gap-2 justify-center items-center">
+            <FormControl className="w-40">
+              <InputLabel id="demo-simple-select-label">
+                Customers per page
+              </InputLabel>
+              <Select
+                labelId="customersPerPage"
+                id="customersPerPage"
+                value={productsPerPage}
+                label="customersPerPage"
+                onChange={(e) => setProductsPerPage(e.target.value as number)}
+              >
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+              </Select>
+            </FormControl>
+            {currentPage > 1 && (
+              <>
+                <Button variant="text" onClick={() => handlePageSelection(1)}>
+                  <ChevronsLeft />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage - 1)
+                  }
+                >
+                  <ChevronLeft />
+                </Button>
+              </>
+            )}
+            {currentPage > 1 && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+              >
+                {currentPage - 1}
+              </Button>
+            )}
+
+            <Button variant="contained">{currentPage}</Button>
+            {currentPage < Math.ceil(customers.length / productsPerPage) && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+              >
+                {currentPage + 1}
+              </Button>
+            )}
+
+            {currentPage < Math.ceil(customers.length / productsPerPage) && (
+              <>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage + 1)
+                  }
+                >
+                  <ChevronRight />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    handlePageSelection(
+                      Math.ceil(customers.length / productsPerPage)
+                    )
+                  }
+                >
+                  <ChevronsRight />
+                </Button>
+              </>
+            )}
+          </div>
           <div className=" shadow-md rounded my-6">
             <table className="w-full">
               <thead>
@@ -72,8 +177,10 @@ const customerCall =async()=>{
                 </tr>
               </thead>
               <tbody className=" text-sm font-medium">
-                {customers.length !== 0 &&
-                  customers.map((customer:TCustomerSchema, index:number) => {
+              {customers.length !== 0 && (
+                  <>
+                    {customers?.map((customer, index) => {
+                      if (pageStartIndex <= index && pageEndIndex >= index) {
                     return (
                       <tr key={index} className="border-b border-gray-200 ">
                         <td className="py-3 px-0 text-center whitespace-nowrap">
@@ -130,7 +237,7 @@ const customerCall =async()=>{
                         </td>
                       </tr>
                     );
-                  })}
+                  }})}</>)}
               </tbody>
             </table>
           </div>

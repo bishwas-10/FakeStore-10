@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { PencilIcon, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, PencilIcon, Trash } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
+import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
@@ -54,6 +55,22 @@ const Order = () => {
   const cartData = useSelector((state: RootState) => state.cart.carts);
   const {setAuth}= useAuth();
   const logout = useLogout();
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [productsPerPage, setProductsPerPage] = useState<number>(2);
+  const [pageStartIndex, setPageStartIndex] = useState<number>(0);
+  const [pageEndIndex, setPageEndIndex] = useState<number>(3);
+
+  const handlePageSelection = (page: number) => {
+    setCurrentPage(page);
+  };
+  useEffect(() => {
+    setPageStartIndex(productsPerPage * (currentPage - 1));
+    setPageEndIndex(productsPerPage * currentPage - 1);
+  }, [currentPage, productsPerPage]);
+
+
   const controller = new AbortController();
   const axiosPrivate = useAxiosPrivate();
   const cartCall =async()=>{
@@ -85,8 +102,96 @@ const Order = () => {
 
   return (
     <div className="px-4">
+       <div className="h-20 w-full p-4 flex flex-row items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold tracking-wide uppercase">
+            Orders section
+          </h1>
+          <p className="mt-2 ">
+            WHere you can all different orders ordered by customers and check all the orders
+            listed below with pagination features
+          </p>
+        </div>
+        
+      </div>
       <div className=" flex items-center justify-center font-sans overflow-hidden">
-        <div className="w-full">
+        <div className="w-full min-h-screen">
+        <div className="my-4  flex flex-row gap-2 justify-center items-center">
+            <FormControl className="w-40">
+              <InputLabel id="demo-simple-select-label">
+                Orders per page
+              </InputLabel>
+              <Select
+                labelId="ordersPerPage"
+                id="ordersPerPage"
+                value={productsPerPage}
+                label="ordersPerPage"
+                onChange={(e) => setProductsPerPage(e.target.value as number)}
+              >
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+              </Select>
+            </FormControl>
+            {currentPage > 1 && (
+              <>
+                <Button variant="text" onClick={() => handlePageSelection(1)}>
+                  <ChevronsLeft />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage - 1)
+                  }
+                >
+                  <ChevronLeft />
+                </Button>
+              </>
+            )}
+            {currentPage > 1 && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+              >
+                {currentPage - 1}
+              </Button>
+            )}
+
+            <Button variant="contained">{currentPage}</Button>
+            {currentPage < Math.ceil(cartData.length / productsPerPage) && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+              >
+                {currentPage + 1}
+              </Button>
+            )}
+
+            {currentPage < Math.ceil(cartData.length / productsPerPage) && (
+              <>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage + 1)
+                  }
+                >
+                  <ChevronRight />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    handlePageSelection(
+                      Math.ceil(cartData.length / productsPerPage)
+                    )
+                  }
+                >
+                  <ChevronsRight />
+                </Button>
+              </>
+            )}
+          </div>
           <div className=" shadow-md rounded my-6">here i will add delete button later which functionality would be 
                 sending an email to respective users with customizable message box
             <table className="w-full table-auto">
@@ -124,15 +229,17 @@ const Order = () => {
               </thead> 
               <tbody className=" text-sm font-medium">
                
-                {cartData?.length !== 0 &&
-                  cartData.map((cart, index) => {
+              {cartData.length !== 0 && (
+                  <>
+                    {cartData?.map((cart, index) => {
+                      if (pageStartIndex <= index && pageEndIndex >= index) {
                     return (
                       <tr key={index} className="border-b border-gray-200 ">
                         <td className="py-3 px-0 text-left whitespace-nowrap">
                           <span className="font-medium">{index + 1}</span>
                         </td>
                         <td className="py-3 px-0 text-left">
-                          <div className="flex items-center">
+                          <div className="flex items-center px-2">
                             <span>{cart.product?.title}</span>
                           </div>
                         </td>
@@ -205,8 +312,8 @@ const Order = () => {
                           </div>
                         </td>
                       </tr>
-                    );
-                  })}
+                   );
+                  }})}</>)}
               </tbody>
             </table>
           </div>

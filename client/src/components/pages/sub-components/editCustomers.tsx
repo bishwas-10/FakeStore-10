@@ -124,7 +124,7 @@ const EditCustomers = () => {
                 label="email"
                 variant="outlined"
                 error={!!errors.email}
-                helperText={errors.email ? "email is required" : ""}
+                helperText={errors.email ? errors.email.message : ""}
                 {...register("email", { required: true })}
               />
             </div>
@@ -134,7 +134,7 @@ const EditCustomers = () => {
                 label="username"
                 variant="outlined"
                 error={!!errors.username}
-                helperText={errors.username ? "username is required" : ""}
+                helperText={errors.username ?errors.username.message : ""}
                 {...register("username", { required: true })}
               />
             </div>
@@ -147,7 +147,7 @@ const EditCustomers = () => {
                 variant="outlined"
                 error={!!errors.name?.firstName}
                 helperText={
-                  errors.name?.firstName ? "firstname is required" : ""
+                  errors.name?.firstName ? errors.name.firstName.message : ""
                 }
                 {...register("name.firstName", { required: true })}
               />
@@ -158,7 +158,7 @@ const EditCustomers = () => {
                 label="lastName"
                 variant="outlined"
                 error={!!errors.name?.lastName}
-                helperText={errors.name?.lastName ? "lastName is required" : ""}
+                helperText={errors.name?.lastName ?errors.name.lastName.message : ""}
                 {...register("name.lastName", { required: true })}
               />
             </div>
@@ -169,7 +169,7 @@ const EditCustomers = () => {
               label="city"
               variant="outlined"
               error={!!errors.address?.city}
-              helperText={errors.address?.city ? "city is required" : ""}
+              helperText={errors.address?.city ? errors.address.city.message : ""}
               {...register("address.city", { required: true })}
             />
           </div>
@@ -196,7 +196,7 @@ const EditCustomers = () => {
               label="phone"
               variant="outlined"
               error={!!errors.phone} // Set error prop based on the presence of errors
-              helperText={errors.phone ? "phone is required" : ""} // Display error message if there are errors
+              helperText={errors.phone ?errors.phone.message : ""} // Display error message if there are errors
               {...register("phone", { required: true })}
             />
           </div>{" "}
