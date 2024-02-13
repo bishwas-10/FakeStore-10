@@ -62,9 +62,9 @@ const {id}= useParams();
       </div>
     </div>
     <div className="flex flex-col w-[80%] mt-8 h-max-content">
-      <div className=" flex flex-col  md:flex-row    bg-slate-100 ">
+      <div className=" flex flex-col  md:flex-row    ">
         <div className="w-full md:w-1/4 border-2 border-gray-200 shrink-0 ">
-          <div className="w-full h-full p-3 bg-white flex items-center justify-center">
+          <div className="w-full h-full p-3 flex items-center justify-center">
             <img
               src={data?.image}
               alt={data?.title}
@@ -74,7 +74,7 @@ const {id}= useParams();
             />
           </div>
         </div>
-        <div className="flex flex-col items-center w-full md:w-2/4 h-full ">
+        <div className="flex flex-col items-center border-gray-200 w-full md:w-2/4 h-full ">
           <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
             <p className="text-xl font-semibold pt-2 text-[#8A8888]">
               {data?.title}
@@ -90,10 +90,10 @@ const {id}= useParams();
             <p className="text-2xl font-semibold pt-2 text-red-400">
               $ {data?.price}
             </p>
-            <div className="w-full bg-gray-400 h-px mt-3 " />
+            <div className="w-full h-px mt-3 " />
           </div>
           <div className="flex flex-col w-full p-4">
-            <div className="flex flex-row items-center text-lg gap-6 text-gray-800">
+            <div className="flex flex-row items-center text-lg gap-6 dark:text-gray-600 ">
               <span>Quantity</span>
               <button
                 onClick={() =>
@@ -101,14 +101,14 @@ const {id}= useParams();
                     quantity > 1 ? quantity - 1 : quantity
                   )
                 }
-                className="px-2 border-2 border-gray-200 text-gray-800 bg-gray-200"
+                className="px-2 border-2 border-gray-200 dark:text-gray-600  "
               >
                 -
               </button>
               <p>{quantity}</p>
               <button
                 onClick={() => setQuantity((quantity:number) => quantity + 1)}
-                className="px-2 border-2 border-gray-200 text-white bg-gray-400"
+                className="px-2 border-2 border-gray-200 dark:text-gray-600"
               >
                 +
               </button>

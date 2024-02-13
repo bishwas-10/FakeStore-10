@@ -2,24 +2,31 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
+  FormControl,
   FormLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
 import { UploadIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
-import { instance } from "../../../../api/instance";
+import { axiosPrivate, instance } from "../../../../api/instance";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
 import useLogout from "../../../../hooks/useLogout";
+import { TCategorySchema } from "./AddCategory";
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -67,11 +74,36 @@ const AddProducts = () => {
   const [imageName, setImageName] = useState<string>("");
   const dispatch = useDispatch();
 const {auth}= useAuth();
-const logout = useLogout();
-  const product = useSelector(
+const logout = useLogout(); 
+const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
- 
+const [category, setCategory] = useState<string>(
+  product?.category as string
+);
+const handleOrderChange = (event: SelectChangeEvent) => {
+  setCategory(event.target.value as string);
+  setValue("category", event.target.value as string);
+};
+const [categories,setCategories]= useState<TCategorySchema[]>([]);
+ const controller = new AbortController();
+const categoryCall = async () => {
+  try {
+    const response = await axiosPrivate.get("/categories", {
+      signal: controller.signal,
+    });
+    if (response.data.success) {
+      console.log(response.data);
+      setCategories(response.data.categories);
+     
+    }
+  } catch (error: any) {
+    if (error.response.statusText === "Unauthorized" || "Forbidden") {
+      // logout();
+    }
+    console.log(error);
+  }
+};
   const {
     register,
     handleSubmit,
@@ -151,7 +183,9 @@ const logout = useLogout();
    
    
   };
-
+useEffect(()=>{
+  categoryCall();
+},[])
   // const editProduct = async (data: TProductSchema) => {
   //   console.log(data);
   //   const productData = await instance({
@@ -184,7 +218,8 @@ const logout = useLogout();
           className="flex flex-col gap-4 mt-4 ease-in-out w-[50%]"
         >
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
+          <div className="flex flex-row w-full gap-6 ">
+ <div className="flex flex-col gap-1">
               <TextField
                 id="title"
                 label="title"
@@ -194,16 +229,55 @@ const logout = useLogout();
                 {...register("title", { required: true })}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <TextField
-                id="category"
-                label="category"
-                variant="outlined"
+         
+            <div className="flex ">
+  <Box style={{ height: "20px" }} className="text-sm ">
+              <FormControl
+                variant="standard"
+                style={{
+                  fontSize: "14px",
+                  lineHeight: "10px",
+                  height: "20px",
+                }}
+                className="w-40"
                 error={!!errors.category}
-                helperText={errors.category ? errors.category.message:""}
-                {...register("category", { required: true })}
-              />
+              >
+                <InputLabel
+                  style={{
+                    fontSize: "14px",
+                    lineHeight: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                 Category
+                </InputLabel>
+                <Select
+                  className="text-sm"
+                  labelId="orderstatus labelid"
+                  id="order_status"
+                  value={category}
+                  label="Order Status"
+                  onChange={handleOrderChange}
+                >
+                
+                 {categories.length!==0 && categories.map((category,item)=>{
+                  return (
+                    <MenuItem
+                    style={{ fontSize: "14px", lineHeight: "10px" }}
+                    value={category.title}
+                  >
+                    {category.title}
+                  </MenuItem>
+                  )
+                 })}
+                 
+                </Select>
+              </FormControl>
+            </Box>
             </div>
+          </div>
+           
+          
             <div className="flex flex-col gap-1">
               <TextField
                 id="price"

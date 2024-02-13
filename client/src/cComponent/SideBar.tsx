@@ -123,9 +123,9 @@ const SideBar = () => {
   );
 
   return (
-    <div>
+    <>
       <Button onClick={toggleDrawer("left", true)}
-       sx={{ color: "whitesmoke" }} className="p-2 border-2">
+       sx={{ color: "whitesmoke" }} className=" border-2">
       <span
         className="p-2 gap-1 flex items-center justify-center text-sm  md:font-small
          hover:border-white hover:border-2  "
@@ -141,7 +141,7 @@ const SideBar = () => {
       >
         {list("left")}
       </Drawer>
-    </div>
+    </>
   );
 };
 

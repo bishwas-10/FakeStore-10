@@ -7,19 +7,16 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../providers/theme-provider";
-import { instance } from "../../api/instance";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { signOut } from "../store/userSlice";
+
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import { useState } from "react";
 import { JwtPayload, jwtDecode } from "jwt-decode";
-import { ROLES_LIST, RolesProps } from "../App";
-import { purple } from "@mui/material/colors";
-import { ArrowBigDown, ChevronDown } from "lucide-react";
+import { ROLES_LIST } from "../App";
+
+import {  ChevronDown } from "lucide-react";
 
 const Navbar = () => {
   const { theme, toggleDarkMode } = useTheme();

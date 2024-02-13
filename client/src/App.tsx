@@ -4,7 +4,7 @@ import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { indigo, amber,yellow } from "@mui/material/colors";
+import { indigo, amber } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -17,7 +17,6 @@ import Missing from "./components/Missing";
 import Unauthorized from "./components/UnAuthorized";
 import RequireAuth from "./components/RequireAuth";
 import PersistLogin from "./components/PersistLogin";
-import Dummy from "./components/pages/Dummy";
 import MainNav from "./cComponent/MainNav";
 import SubNavbar from "./cComponent/SubNavbar";
 import HomePage from "./cComponent/pages/HomePage";
@@ -27,7 +26,6 @@ import EachCategoryProduct from "./cComponent/pages/EachCategoryProduct";
 import { useTheme } from "./providers/theme-provider";
 import SignUpPage from "./components/pages/auth/signup";
 import Footer from "./cComponent/Footer";
-import BackToTop from "./cComponent/reusable/BackToTop";
 import Categories from "./components/pages/Categories";
 import AddCategory from "./components/pages/sub-components/AddCategory";
 
@@ -100,15 +98,12 @@ function App() {
                   <Route index element={<Order />} />
                   <Route path="editorders" element={<EditOrders />} />
                 </Route>
-
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Route>
           </Route>
-
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignUpPage />} />
-
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<Missing />} />
           {/* </Route> */}
