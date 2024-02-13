@@ -120,7 +120,7 @@ const productCall =async()=>{
           </p>
         </div>
         <Button variant="outlined">
-          <a href="/products/addproducts">add products</a>
+          <Link to="addproducts">add products</Link>
         </Button>
       </div>
 
@@ -165,7 +165,7 @@ const productCall =async()=>{
                                 {index + 1}
                               </div>
                             </td>
-                            <td className="p-3 text-center">
+                            <td className="p-3 flex items-center justify-center">
                               <img
                                 src={product.image}
                                 alt={product.title}

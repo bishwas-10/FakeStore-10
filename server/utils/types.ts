@@ -14,7 +14,7 @@ export const categorySchema = z.object({
   
   description: z.string({ required_error: "description is required" }),
   image: z.string({ required_error: "image is required" }),
-  products: z.array(z.string().min(1,"product id is required")),
+  products: z.array(z.string().min(1,"product id is required")).optional(),
 });
 export const productSchema = z.object({
   createdAt: z.string().optional(),

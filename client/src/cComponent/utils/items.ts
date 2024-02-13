@@ -1,6 +1,5 @@
 export interface AccountFieldProps {
   name: string;
-
   to: string;
 }
 
@@ -36,3 +35,4 @@ export const accountItems: AccountFieldProps[] = [
   },
  
 ];
+

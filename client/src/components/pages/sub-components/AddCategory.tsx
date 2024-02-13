@@ -14,6 +14,7 @@ import { addProduct } from '../../../store/productSlice';
 import { addCategory } from '../../../store/categorySlice';
 import { ToastContainer, toast } from 'react-toastify';
 import useLogout from '../../../../hooks/useLogout';
+import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 
 
 export const categorySchema = z.object({
@@ -27,7 +28,7 @@ export const categorySchema = z.object({
         // Check if the base64 data starts with 'data:image'
         return base64Data && base64Data.startsWith("data:image");
       }, "Only image files in base64 format are supported."),
-    products: z.array(z.string().min(1,"product id is required")),
+    products: z.array(z.string().min(1,"product id is required")).optional(),
   });
 
   export type TCategorySchema = z.infer<typeof categorySchema>
@@ -39,6 +40,7 @@ const AddCategory = () => {
     const category = useSelector(
         (state: RootState) => state.category.newlyAddedCategory
       );
+      const axiosPrivate = useAxiosPrivate();
     const {
         register,
         handleSubmit,
@@ -73,9 +75,10 @@ const AddCategory = () => {
         convert2base64(file);
       };
       const onSubmit = async (data: TCategorySchema) => {
+        console.log(data)
       try {
-         const response = await instance({
-          url: category?.id ? `/category/${category?.id}` : `/categories`,
+         const response = await axiosPrivate({
+          url: category?.id ? `/categories/${category?.id}` : `/categories`,
           method: category?.id ? "PUT" : "POST",
           headers: {
             "Content-type": "application/json",
@@ -101,8 +104,9 @@ const AddCategory = () => {
            toast.success(response.data.message);
         }
       }  catch (error:any) {
-        if(error.response.statusText==="Unauthorized" ||"Forbidden"){
-          logout();
+        if(error.response.status=== 403 || error.response.status=== 401){
+          console.log(error.response.status)
+         // logout();
         }
         console.log(error);
       }
@@ -172,7 +176,7 @@ const AddCategory = () => {
               helperText={errors.description ? "Description is required" : ""} // Display error message if there are errors
               {...register("description", { required: true })}
             />
-          </div>{" "}
+          </div>
         </div>
 
         <Button
@@ -215,7 +219,7 @@ const AddCategory = () => {
                 size="small"
                 className="w-full"
               >
-               <Link to="/admin/categories"> Back to Product</Link>
+               <Link to="/admin/categories"> Back to Category</Link>
               </Button>
             </CardActions>
           </Card>

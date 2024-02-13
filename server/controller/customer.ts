@@ -8,7 +8,7 @@ export const getAllCustomers=async(req:Request,res:Response)=>{
      
         const customer = await Customer.find();
         if(!customer){
-          return res.status(403).send({success:false,message:"customers not found",customer:null})
+          return res.status(404).send({success:false,message:"customers not found",customer:null})
         }
         return res.status(200).send({success:true,message:"customer found",customers:customer})
       } catch (error) {
@@ -20,7 +20,7 @@ export const getSpecificCustomer =async(req:Request,res:Response)=>{
     try {
         const existingCustomer = await Customer.findOne({_id: req.params.id});
         if(!existingCustomer){
-          return res.status(403).send({success:false,message:"customer not found",customer:null})
+          return res.status(404).send({success:false,message:"customer not found",customer:null})
         }
         const customerDetails = {
           _id: existingCustomer._id,
@@ -92,7 +92,7 @@ export const loginCustomer = async(req:Request, res:Response)=>{
     const { email, password } = req.body;
     if (!email || !password) {
       return res
-        .status(403)
+        .status(400)
         .send({ status: false, message: "all fields are mandatory" });
     }
 
@@ -100,7 +100,7 @@ export const loginCustomer = async(req:Request, res:Response)=>{
    
     if (!existingCustomer) {
       return res
-        .status(403)
+        .status(404)
         .send({ status: false, message: "user doesnt exist" });
     }
 
@@ -150,7 +150,7 @@ export const updateCustomer =async(req:Request,res:Response)=>{
         .send({ sucess: false, message: validation.error.issues[0].message });
     }
     if (req.params.id == null) {
-     return res.status(403).send({
+     return res.status(400).send({
         success: false,
         message: 'customer id should be provided',
         customer: null
@@ -158,7 +158,7 @@ export const updateCustomer =async(req:Request,res:Response)=>{
     const existingCustomer = await Customer.findOne({ _id: req.params.id });
     if (!existingCustomer) {
       return res
-        .status(400)
+        .status(404)
         .send({ success: false, message: "Customer not found" });
     };
     const editedProduct = await Customer.findOneAndUpdate({_id:req.params.id},{
@@ -178,7 +178,7 @@ export const updateCustomer =async(req:Request,res:Response)=>{
 export const deleteCustomer =async(req:Request,res:Response)=>{
   try {
     if (req.params.id == null) {
-      return res.status(403).send({
+      return res.status(400).send({
         success: false,
         message: 'customer id should be provided',
         customer: null

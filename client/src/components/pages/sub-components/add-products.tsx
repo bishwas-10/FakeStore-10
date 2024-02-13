@@ -142,7 +142,7 @@ const logout = useLogout();
        toast.success(response.data.message);
     }
   }  catch (error:any) {
-    if(error.response.statusText==="Unauthorized" ||"Forbidden"){
+    if(error.response.status=== 403 || error.response.status=== 401){
       logout();
     }
     console.log(error);
@@ -190,7 +190,7 @@ const logout = useLogout();
                 label="title"
                 variant="outlined"
                 error={!!errors.title}
-                helperText={errors.title ? "title is required" : ""}
+                helperText={errors.title ?errors.title.message:""}
                 {...register("title", { required: true })}
               />
             </div>
@@ -200,7 +200,7 @@ const logout = useLogout();
                 label="category"
                 variant="outlined"
                 error={!!errors.category}
-                helperText={errors.category ? "category is required" : ""}
+                helperText={errors.category ? errors.category.message:""}
                 {...register("category", { required: true })}
               />
             </div>
@@ -210,7 +210,7 @@ const logout = useLogout();
                 label="price"
                 variant="outlined"
                 error={!!errors.price}
-                helperText={errors.price ? "Price is required" : ""}
+                helperText={errors.price ? errors.price.message:""}
                 {...register("price", { required: true })}
               />
             </div>
@@ -275,7 +275,7 @@ const logout = useLogout();
                 multiline
                 maxRows={4}
                 error={!!errors.description} // Set error prop based on the presence of errors
-                helperText={errors.description ? "Description is required" : ""} // Display error message if there are errors
+                helperText={errors.description ? errors.description.message : ""} // Display error message if there are errors
                 {...register("description", { required: true })}
               />
             </div>{" "}

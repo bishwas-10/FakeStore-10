@@ -4,13 +4,12 @@ import Category from "../models/category";
 import Product from "../models/product";
 
 export const getAllCategories = async(req: Request, res: Response) => {
+console.log("yo aako ho")
   try {
-    const category = await Category.find().populate([
-        { path: "product", model: Product },
-       
-      ]);
+    const category = await Category.find();
+      
     if(!category){
-      return res.status(403).send({success:false,message:"categories not found",categories:null})
+      return res.status(404).send({success:false,message:"categories not found",categories:null})
     }
     return res.status(200).send({success:true,message:"category found",categories:category})
   } catch (error) {
@@ -26,7 +25,7 @@ export const getCategory = async (req: Request, res: Response) => {
        
       ]);;
     if(!category){
-      return res.status(403).send({success:false,message:"category not found",category:null})
+      return res.status(404).send({success:false,message:"category not found",category:null})
     }
     return res.status(200).send({success:true,message:"category found",category:category})
   } catch (error) {
@@ -35,19 +34,7 @@ export const getCategory = async (req: Request, res: Response) => {
 };
 
 
-// export const getAllCategories = async(req:Request,res:Response) => {
-//   console.log("aaipugyosdada")
-//   try {
-//     const categories = await Product.distinct('category');
-//     if(categories.length===0){
-//      return res.status(403).send({success:false,message:"failed to get your categories",categories:null})
-//     }else{
-//        return res.status(200).send({success:true,message:"got your categories",categories:categories});
-//     }
-//   } catch (error) {
-//     return res.status(500).send({success:false,message:"internal server error"});
-//   }
-// };
+
 
 export const getCategoryProduct = async(req:Request,res:Response) => {
 
@@ -57,7 +44,7 @@ try {
   const categoryProduct = await Product.find({category:category});
 
   if(categoryProduct.length===0){
-    return res.status(403).send({success:false, message:"couldnt find any product of your category"});
+    return res.status(404).send({success:false, message:"couldnt find any product of your category"});
   }
 
   return res.status(200).send({succes:true, message:"got your category products", products:categoryProduct});
@@ -99,6 +86,7 @@ export const addCategory = async (req: Request, res: Response) => {
   }
 };
 export const editCategory =async (req:Request, res:Response) => {
+
   try {
     const validation = categorySchema.safeParse(req.body);
     if (!validation.success) {
@@ -107,7 +95,7 @@ export const editCategory =async (req:Request, res:Response) => {
         .send({ sucess: false, message: validation.error.issues[0].message });
     }
     if (req.params.id == null) {
-     return res.status(403).send({
+     return res.status(404).send({
         success: false,
         message: 'category id should be provided',
         product: null
@@ -136,7 +124,7 @@ export const editCategory =async (req:Request, res:Response) => {
 export const deleteCategory = async(req:Request,res:Response) => {
   try {
     if (req.params.id == null) {
-      return res.status(403).send({
+      return res.status(404).send({
         success: false,
         message: 'category id should be provided',
         product: null

@@ -6,7 +6,7 @@ export const getAllProducts = async(req: Request, res: Response) => {
   try {
     const product = await Product.find();
     if(!product){
-      return res.status(403).send({success:false,message:"products not found",products:null})
+      return res.status(404).send({success:false,message:"products not found",products:null})
     }
     return res.status(200).send({success:true,message:"product found",products:product})
   } catch (error) {
@@ -19,7 +19,7 @@ export const getProduct = async (req: Request, res: Response) => {
   try {
     const product = await Product.findOne({_id: req.params.id});
     if(!product){
-      return res.status(403).send({success:false,message:"product not found",product:null})
+      return res.status(404).send({success:false,message:"product not found",product:null})
     }
     return res.status(200).send({success:true,message:"product found",product:product})
   } catch (error) {
@@ -33,7 +33,7 @@ export const getAllCategories = async(req:Request,res:Response) => {
   try {
     const categories = await Product.distinct('category');
     if(categories.length===0){
-     return res.status(403).send({success:false,message:"failed to get your categories",categories:null})
+     return res.status(404).send({success:false,message:"failed to get your categories",categories:null})
     }else{
        return res.status(200).send({success:true,message:"got your categories",categories:categories});
     }
@@ -50,7 +50,7 @@ try {
   const categoryProduct = await Product.find({category:category});
 
   if(categoryProduct.length===0){
-    return res.status(403).send({success:false, message:"couldnt find any product of your category"});
+    return res.status(404).send({success:false, message:"couldnt find any product of your category"});
   }
 
   return res.status(200).send({succes:true, message:"got your category products", products:categoryProduct});
@@ -103,7 +103,7 @@ export const editProduct =async (req:Request, res:Response) => {
         .send({ sucess: false, message: validation.error.issues[0].message });
     }
     if (req.params.id == null) {
-     return res.status(403).send({
+     return res.status(400).send({
         success: false,
         message: 'product id should be provided',
         product: null
@@ -136,7 +136,7 @@ export const editProduct =async (req:Request, res:Response) => {
 export const deleteProduct = async(req:Request,res:Response) => {
   try {
     if (req.params.id == null) {
-      return res.status(403).send({
+      return res.status(400).send({
         success: false,
         message: 'cart id should be provided',
         product: null

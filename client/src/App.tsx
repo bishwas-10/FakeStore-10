@@ -29,6 +29,7 @@ import SignUpPage from "./components/pages/auth/signup";
 import Footer from "./cComponent/Footer";
 import BackToTop from "./cComponent/reusable/BackToTop";
 import Categories from "./components/pages/Categories";
+import AddCategory from "./components/pages/sub-components/AddCategory";
 
 export interface RolesProps {
   [key: string]: number;
@@ -89,7 +90,7 @@ function App() {
                 </Route>
                 <Route path="categories">
                   <Route index element={<Categories />} />
-                  <Route path="editcategories" element={<AddProducts />} />
+                  <Route path="addcategory" element={<AddCategory />} />
                 </Route>
                 <Route path="customers">
                   <Route index element={<Customers />} />

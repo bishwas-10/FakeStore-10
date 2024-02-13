@@ -12,7 +12,7 @@ export const getAllCarts = async (req: Request, res: Response) => {
     ]);
     if (!cart) {
       return res
-        .status(403)
+        .status(404)
         .send({ success: false, message: "carts not found", carts: null });
     }
     return res
@@ -34,7 +34,7 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
     console.log(cart);
     if (cart.length === 0) {
       return res
-        .status(403)
+        .status(404)
         .send({ success: false, message: "couldn't find any cart" });
     }
     return res
@@ -113,7 +113,7 @@ export const editCart = async (req: Request, res: Response) => {
         .send({ success: true, messsage: "cart  found", cart: result });
     } else {
       return res
-        .status(403)
+        .status(404)
         .send({ success: false, messsage: "cart not found", cart: null });
     }
   } catch (error) {
