@@ -48,7 +48,7 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
 };
 
 export const addCart = async (req: Request, res: Response) => {
-  console.log(req.body);
+
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {

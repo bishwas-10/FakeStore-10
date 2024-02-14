@@ -6,9 +6,16 @@ import { Box, FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 
 const MainNav = () => {
   const { auth } = useAuth();
+  
+ let decoded;
+ if(auth.token){
+    decoded = jwtDecode<JwtPayload>(auth?.token as string) as any;
+ }
+    
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
   return (
@@ -68,7 +75,7 @@ const MainNav = () => {
           onMouseLeave={() => setShowDiv(false)}
           className="flex flex-col items-start hover:border-2 cursor-pointer p-2"
         >
-          <span className="text-xs">Hello, sign in</span>
+          <span className="text-xs">   {decoded ? `Hello,${decoded.UserInfo.username}`:"Hello, Sign In" }</span>
           <span className={`text-sm font-bold flex flex-row items-center`}>
             Accounts and Lists
             <ChevronDown height={16} />
@@ -81,11 +88,12 @@ const MainNav = () => {
             className="z-10 w-[20%] h-max flex flex-col absolute top-[72px] right-20 bg-white dark:bg-gray-700  shadow-md p-4"
           >
             <div className="w-full flex flex-col items-center gap-2 font-sans tracking-normal">
+             
               <Link
                 to="/login"
                 className="w-[60%] bg-yellow-500 text-center text-md py-2"
               >
-                Sign In
+               {decoded ? `Hello,${decoded.UserInfo.username}`:"Hello, Sign In" }
               </Link>
               <span className="text-xs font-medium">
                 New customer?{" "}

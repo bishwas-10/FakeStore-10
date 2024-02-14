@@ -19,7 +19,7 @@ import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
 import useLogout from "../../../../hooks/useLogout";
 export const customerSchema = z.object({
-    id: z.string().optional(),
+    _id: z.string().optional(),
     updatedAt: z.string().optional(),
     addedAt: z.string().optional(),
     email: z.string().email().min(1,"email is required"),
@@ -71,10 +71,11 @@ const EditCustomers = () => {
     },
   });
   const onSubmit = async (data: TCustomerSchema) => {
+    
   try {
-    if (customer?.id) {
+    
       const response = await axiosPrivate({
-        url: `/customers/${customer.id}`,
+        url: `/customers/${customer?._id}`,
         method: "PUT",
         headers: {
           "Content-type": "application/json",
@@ -101,9 +102,9 @@ const EditCustomers = () => {
         dispatch(addCustomer(response.data.customer));
         toast.success(response.data.message);
       }
-    }
+    
   }  catch (error:any) {
-    if(error.response.statusText==="Unauthorized" ||"Forbidden"){
+    if(error.response.status=== 403 || error.response.status=== 401){
       logout();
     }
     console.log(error);

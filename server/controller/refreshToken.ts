@@ -74,6 +74,7 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
             UserInfo: {
               username: decoded?.payload.username,
               roles: roles,
+              userId:decoded?.payload.userId
             },
           },
           process.env.TOKEN_KEY as string,

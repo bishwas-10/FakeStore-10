@@ -6,7 +6,16 @@ export interface UserProps extends Document{
      username?:string;
     email:string;
     password?:string;
-    confirmPassword?:string;
+    name: {
+        firstName: string;
+        lastName: string;
+      };
+      address: {
+        city: string;
+        street?: string;
+        zipcode?: string;
+      };
+      phone: string;
     roles:{
         customer:number,
         admin: number
@@ -30,6 +39,28 @@ const userSchema = new Schema<UserProps>({
         type:String,
         required:[true, 'is required field']
     },
+    name: {
+        firstName: {
+          type: String,
+          required: [true, "first name is required"],
+        },
+        lastName: {
+          type: String,
+          required:  [true, "last name is required"],
+        },
+      },
+      address: {
+        city: {
+          type: String,
+          required: true,
+        },
+        street: String,
+        zipcode: String,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
     roles:{
         customer: {
             type: Number,

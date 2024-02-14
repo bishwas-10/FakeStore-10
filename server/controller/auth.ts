@@ -28,6 +28,16 @@ const signUpSchema = z
       .string({ required_error: "confirmPassword is required" })
       .min(8)
       .max(16),
+    name: z.object({
+      firstName: z.string().min(1, "first name is required"),
+      lastName: z.string().min(1, "last name is required"),
+    }),
+    address: z.object({
+      city: z.string().min(1, "city is required"),
+      street: z.string().optional(),
+      zipcode: z.string().optional(),
+    }),
+    phone: z.string().min(1, "phone is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["password"],
@@ -40,6 +50,7 @@ export const signUp = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("herte")
   const validation = signUpSchema.safeParse(req.body);
   if (!validation.success) {
     return res
@@ -65,14 +76,27 @@ export const signUp = async (
     const hashedPwd = await bcrypt.hash(password, 10);
 
     //create and store the new user
-    const result = await User.create({
-      username: username,
-      email: email,
+    const customer = await User.create({
+          
+      email: req.body.email,
+      username: req.body.username,
       password: hashedPwd,
+      name:{
+        firstName:req.body.name.firstName,
+        lastName:req.body.name.lastName
+      },
+      address:{
+        city:req.body.address.city,
+        street:req.body.address.street,
+        zipcode:req.body.address.zipcode
+      },
+      phone: req.body.phone,
     });
+    console.log(customer)
+    await customer.save();
 
    
-    res.status(201).json({ success: `New user ${username} created!` });
+    res.status(201).json({ success:true,message: `New user ${username} created!` });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
@@ -98,13 +122,16 @@ export const logIn = async (req: Request, res: Response) => {
   // evaluate password
   const match = await bcrypt.compare(password, foundUser.password as string);
   if (match) {
-    const roles = Object.values(foundUser.roles).filter(Boolean);
+    
+    const roles = Object.values(foundUser.roles).filter((value)=>!!value===true);
     // create JWTs
+    
     const accessToken = jwt.sign(
       {
         UserInfo: {
           username: foundUser.username,
           roles: roles,
+          userId:foundUser._id
         },
       },
       process.env.TOKEN_KEY as string,

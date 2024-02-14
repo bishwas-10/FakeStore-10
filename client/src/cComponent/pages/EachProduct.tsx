@@ -42,6 +42,9 @@ const EachProduct = () => {
       autoClose: 2000,
     });
   };
+  const addToCart=async()=>{
+    console.log(data,id)
+  }
 
   if (isLoading) {
     return <Loading />;
@@ -123,7 +126,7 @@ const EachProduct = () => {
                 >
                   BUY NOW
                 </button>
-                <button className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md">
+                <button onClick={()=>addToCart()} className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md">
                   ADD TO CART
                 </button>
               </div>

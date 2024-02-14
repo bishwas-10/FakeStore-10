@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
-import Customer from "../models/customer";
+
 import { customerSchema} from "../utils/types";
 import { hashPassword, verifyPassword } from "../utils/password";
+import User from "../models/users";
 
 export const getAllCustomers=async(req:Request,res:Response)=>{
     try {
      
-        const customer = await Customer.find();
+        const customer = await User.find();
         if(!customer){
           return res.status(404).send({success:false,message:"customers not found",customer:null})
         }
@@ -18,7 +19,7 @@ export const getAllCustomers=async(req:Request,res:Response)=>{
 
 export const getSpecificCustomer =async(req:Request,res:Response)=>{
     try {
-        const existingCustomer = await Customer.findOne({_id: req.params.id});
+        const existingCustomer = await User.findOne({_id: req.params.id});
         if(!existingCustomer){
           return res.status(404).send({success:false,message:"customer not found",customer:null})
         }
@@ -53,7 +54,7 @@ export const addCustomer =async(req:Request,res:Response)=>{
         }
        
     
-        const existingCustomer = await Customer.findOne({email:req.body.email });
+        const existingCustomer = await User.findOne({email:req.body.email });
         if (existingCustomer) {
           return res
             .status(400)
@@ -61,7 +62,7 @@ export const addCustomer =async(req:Request,res:Response)=>{
         }
      const hashedPassword =  await hashPassword(req.body.password);
    
-        const customer = await Customer.create({
+        const customer = await User.create({
           
           email: req.body.email,
           username: req.body.username,
@@ -96,7 +97,7 @@ export const loginCustomer = async(req:Request, res:Response)=>{
         .send({ status: false, message: "all fields are mandatory" });
     }
 
-    const existingCustomer = await Customer.findOne({ email:email });
+    const existingCustomer = await User.findOne({ email:email });
    
     if (!existingCustomer) {
       return res
@@ -142,6 +143,8 @@ export const loginCustomer = async(req:Request, res:Response)=>{
   }
 }
 export const updateCustomer =async(req:Request,res:Response)=>{
+ 
+  
   try {
     const validation = customerSchema.safeParse(req.body);
     if (!validation.success) {
@@ -155,13 +158,14 @@ export const updateCustomer =async(req:Request,res:Response)=>{
         message: 'customer id should be provided',
         customer: null
       })};
-    const existingCustomer = await Customer.findOne({ _id: req.params.id });
+    const existingCustomer = await User.findOne({ _id: req.params.id });
     if (!existingCustomer) {
       return res
         .status(404)
         .send({ success: false, message: "Customer not found" });
     };
-    const editedProduct = await Customer.findOneAndUpdate({_id:req.params.id},{
+  
+    const editedProduct = await User.findOneAndUpdate({_id:req.params.id},{
       ...req.body
     }, {
       new: true,
@@ -183,7 +187,7 @@ export const deleteCustomer =async(req:Request,res:Response)=>{
         message: 'customer id should be provided',
         customer: null
       })};
-      await Customer.findOneAndDelete({_id:req.params.id});
+      await User.findOneAndDelete({_id:req.params.id});
       res.status(200).send({success:true,message:"Customer deleted successfully"})
   } catch (error) {
     return res.status(500).send({success:false,message:"internal server error"});

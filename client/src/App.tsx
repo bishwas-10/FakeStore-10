@@ -105,7 +105,12 @@ function App() {
               path="categories/:category"
               element={<EachCategoryProduct />}
             />
+            <Route element={<PersistLogin/>}>
+          <Route element={<RequireAuth allowedRoles={[ROLES_LIST.customer,ROLES_LIST.admin]}/>}>
             <Route path="carts" element={<CartPage/>}/>
+          </Route>
+            </Route>
+          
           </Route>
           <Route path="/admin">
             <Route element={<PersistLogin />}>
