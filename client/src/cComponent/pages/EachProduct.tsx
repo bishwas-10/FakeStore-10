@@ -1,5 +1,5 @@
+import  { useState } from 'react'
 import { ChevronRight, DollarSign, Info, MapPin, ShieldMinus, Truck, Undo2 } from 'lucide-react'
-import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ratingStars } from '../reusable/utils'
 import Loading from '../reusable/Loading'

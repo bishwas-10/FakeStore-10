@@ -3,8 +3,8 @@ import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { indigo, amber } from "@mui/material/colors";
+import { CssBaseline, PaletteMode, ThemeProvider, createTheme } from "@mui/material";
+import { indigo, amber, grey } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -28,6 +28,7 @@ import SignUpPage from "./components/pages/auth/signup";
 import Footer from "./cComponent/Footer";
 import Categories from "./components/pages/Categories";
 import AddCategory from "./components/pages/sub-components/AddCategory";
+import CartPage from "./cComponent/pages/CartPage";
 
 export interface RolesProps {
   [key: string]: number;
@@ -43,12 +44,45 @@ function App() {
   // State to manage the current theme mode
   const { theme } = useTheme();
   // Create custom theme based on the current mode
-  const themeUi = createTheme({
+  const getDesignTokens = (mode: PaletteMode) => ({
     palette: {
-      mode: theme === "dark" ? "dark" : "light",
-      primary: theme === "dark" ? amber : indigo, // Customize primary color based on theme
+      mode,
+      primary: {
+        ...amber,
+        ...(mode === 'dark' && {
+          main: amber[300],
+        }),
+      },
+      ...(mode === 'dark' && {
+        background: {
+          main:"#000202",
+          black: "#000202",
+          default: grey[900],
+          paper: grey[600],
+        },
+      }),
+      ...(mode === 'light' && {
+        background: {
+          main: grey[200],
+          black:"#ffffff",
+          default: grey[200],
+          paper: grey[300],
+        },
+      }),
+      text: {
+        ...(mode === 'light'
+          ? {
+              primary: grey[900],
+              secondary: grey[800],
+            }
+          : {
+              primary: '#fff',
+              secondary: grey[500],
+            }),
+      },
     },
   });
+  const themeUi = createTheme(getDesignTokens(theme));
 
   return (
     <ThemeProvider theme={themeUi}>
@@ -71,6 +105,7 @@ function App() {
               path="categories/:category"
               element={<EachCategoryProduct />}
             />
+            <Route path="carts" element={<CartPage/>}/>
           </Route>
           <Route path="/admin">
             <Route element={<PersistLogin />}>

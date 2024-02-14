@@ -1,33 +1,45 @@
 import React, { useState } from "react";
-import { ChevronDown, Search, ShoppingBag } from "lucide-react";
+import { ChevronDown, Search, ShoppingBag, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import Cart from "./Cart";
-import { FormControlLabel, Switch } from "@mui/material";
+import { Box, FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
 
 const MainNav = () => {
-  const {auth} = useAuth();
+  const { auth } = useAuth();
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
   return (
-    <div className="w-full h-full p-4 flex flex-row items-center justify-between bg-slate-700 text-white">
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        paddingX: 9,
+        paddingY: 2,
+        alignItems: "center",
+        justifyContent: "space-between",
+        bgcolor: "#000202",
+        color: "#fff",
+      }}
+      className=" flex flex-row"
+    >
       <div className="flex items-center">
         <Link
           to="/"
-          className="flex flex-row items-center text-lg md:text-xl font-semibold tracking-wider text-gray-200"
+          className="flex flex-row items-center text-lg md:text-xl font-semibold tracking-wider "
         >
           Fake
           <span className="text-yellow-500">Store</span>
           <ShoppingBag className="text-2xl mx-1" />
         </Link>
       </div>
-      <div className="relative flex flex-row w-60 md:w-96">
+      <div className="relative flex flex-row w-60 shadow-md md:w-96">
         <input
           type="text"
           placeholder="search for items"
-          className="px-4 py-1 w-full text-sm focus:outline-none text-black rounded-l"
+          className="px-4 py-1 w-full text-sm focus:outline-none text-black  rounded-l"
         />
         <button className="p-2 text-lg bg-yellow-500 text-black rounded-r ">
           <Search />
@@ -76,7 +88,10 @@ const MainNav = () => {
                 Sign In
               </Link>
               <span className="text-xs font-medium">
-                New customer? <Link to={"/signup"} className="text-blue-500">Start here</Link>
+                New customer?{" "}
+                <Link to={"/signup"} className="text-blue-500">
+                  Start here
+                </Link>
               </span>
             </div>
             <div className="w-full flex flex-col items-start mt-2">
@@ -99,10 +114,12 @@ const MainNav = () => {
           </div>
         )}
         <span className="flex flex-row  items-center">
-          <Cart />
+          <Link to={"/carts"}>
+            <ShoppingCart height={30} width={30} />
+          </Link>
         </span>
       </div>
-    </div>
+    </Box>
   );
 };
 

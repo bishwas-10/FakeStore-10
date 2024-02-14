@@ -154,7 +154,10 @@ const LoginPage = () => {
             </span>
             <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
           </span>
-          <Link to={'/signup'} className="w-full mt-2 py-1  border-2 shadow-md hover:bg-gray-200 transition-all text-center">Create your FakeStore Account</Link>
+          <Link  to={'/signup'} className="w-full mt-2 font-bold  shadow-md  transition-all text-center">
+          <Button sx={{width:"100%",fontSize:"15px",fontWeight:500}}>Create your FakeStore Account</Button>
+            
+            </Link>
         </div>
       </div>
     </div>
