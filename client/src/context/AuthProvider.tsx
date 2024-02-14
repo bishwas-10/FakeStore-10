@@ -8,6 +8,10 @@ interface AuthState {
 interface UserState{
   username:string | null;
   roles:RolesProps[];
+  userId:string | null;
+  }
+  export interface UserInfoProps{
+    UserInfo:UserState;
   }
 interface PersistState {
   persist: boolean;
@@ -31,7 +35,8 @@ const initialPersistState: PersistState = {
 };
 const initialUserState: UserState = {
   username:null,
-  roles:[]
+  roles:[],
+  userId:null
 };
 
 

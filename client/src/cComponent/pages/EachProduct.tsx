@@ -8,13 +8,17 @@ import {
   Truck,
   Undo2,
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ratingStars } from "../reusable/utils";
 import Loading from "../reusable/Loading";
 import { instance } from "../../../api/instance";
 import { useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
+import { JwtPayload, jwtDecode } from "jwt-decode";
+import { UserInfoProps } from "../../context/AuthProvider";
 
 const fetchProductDetails = async (id: string) => {
   const response = await instance({
@@ -32,10 +36,18 @@ const fetchProductDetails = async (id: string) => {
 const EachProduct = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
+  const {auth}= useAuth();
+  let decoded:UserInfoProps;
+  if(auth.token){
+    decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps
+  };
+  const navigate = useNavigate();
+
   const { isLoading, data, isError, error } = useQuery<any>({
     queryKey: ["product-details", id],
     queryFn: () => fetchProductDetails(id as string),
   });
+  const axiosPrivate = useAxiosPrivate();
   const buyNowHandler = () => {
     toast.success("Item bought successfully", {
       position: "top-center",
@@ -43,7 +55,36 @@ const EachProduct = () => {
     });
   };
   const addToCart=async()=>{
-    console.log(data,id)
+if(!auth.token){
+  navigate("/login");
+  }else{
+  try {
+  
+  const response = await axiosPrivate({
+    url:`/carts`,
+    method:'POST',
+    data:{
+      quantity:quantity.toString(),
+      totalAmount:data.price,
+      customer:decoded.UserInfo.userId,
+      product:id,
+      shippingAddress:{
+        city:"kathmandu",
+        street:"banechor road",
+        zipcode:"293282"
+      },
+      orderStatus:"pending",
+      paymentMethod:"onsite",
+      paymentStatus:"not paid"
+    }
+   
+  });
+  console.log(response);
+} catch (error) {
+  console.log(error);
+}  
+  }
+
   }
 
   if (isLoading) {

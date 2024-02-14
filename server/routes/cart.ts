@@ -20,8 +20,8 @@ router.post("/carts",verifyRoles(ROLES_LIST.admin), addCart);
 
 // //eachCArt
 // router.get("/products/:id", getProduct);
- router.put("/carts/:id",verifyRoles(ROLES_LIST.admin), editCart);
- router.delete("/carts/:id",verifyRoles(ROLES_LIST.admin), deleteCart);
+ router.put("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), editCart);
+ router.delete("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), deleteCart);
 
 // //customer
 router.get("/carts/customers/:id",verifyRoles(ROLES_LIST.admin), getCartByCustomerId);

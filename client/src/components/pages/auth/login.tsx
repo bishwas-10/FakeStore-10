@@ -51,7 +51,6 @@ const LoginPage = () => {
         },
       });
       if (response.data.success) {
-        console.log(response)
         setAuth({ token: response.data.accessToken });
 
         navigate(from, { replace: true });

@@ -94,7 +94,7 @@ const Categories = () => {
         toast.error(response.data.message);
       }
     } catch (error: any) {
-      if (error.response.status === "Unauthorized") {
+      if(error.response.status=== 403 || error.response.status=== 401){
         logout();
       }
       console.log(error);

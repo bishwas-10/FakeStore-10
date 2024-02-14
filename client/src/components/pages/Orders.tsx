@@ -83,7 +83,7 @@ const Order = () => {
       dispatch(fetchAllCarts(response.data.cart));
     } 
     }  catch (error:any) {
-      if(error.response.statusText==="Unauthorized"||"Forbidden"){
+      if(error.response.status=== 403 || error.response.status=== 401){
         logout();
       }
       console.log(error);

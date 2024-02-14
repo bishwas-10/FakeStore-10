@@ -2,13 +2,13 @@ import { Request, Response, request } from "express";
 import Cart from "../models/cart";
 import { CartPropsSchema } from "../utils/types";
 import Product from "../models/product";
-import Customer from "../models/customer";
+import User from "../models/users";
 
 export const getAllCarts = async (req: Request, res: Response) => {
   try {
     const cart = await Cart.find().populate([
       { path: "product", model: Product },
-      { path: "customer", model: Customer },
+      { path: "customer", model: User },
     ]);
     if (!cart) {
       return res
@@ -73,7 +73,7 @@ export const addCart = async (req: Request, res: Response) => {
     const doc = await cart.save();
     const populatedCart = await doc.populate([
       { path: "product", model: Product },
-      { path: "customer", model: Customer },
+      { path: "customer", model: User },
     ]);
     res.status(200).send({ success: true, message: "cart added" });
   } catch (error) {
@@ -105,7 +105,7 @@ export const editCart = async (req: Request, res: Response) => {
     if (cart) {
       const result = await cart.populate([
         { path: "product", model: Product },
-        { path: "customer", model: Customer },
+        { path: "customer", model: User },
       ]);
    console.log(result);
       return res
