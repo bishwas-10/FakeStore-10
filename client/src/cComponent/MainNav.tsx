@@ -16,7 +16,7 @@ const MainNav = () => {
       sx={{
         width: "100%",
         height: "100%",
-        paddingX: 9,
+        paddingX: 5,
         paddingY: 2,
         alignItems: "center",
         justifyContent: "space-between",

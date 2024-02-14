@@ -19,7 +19,7 @@ const SubNavbar = () => {
     
   }
   return (
-    <div className=" relative flex items-center p-4 w-full h-12 bg-slate-500 text-white">
+    <div className=" relative flex items-center p-6 w-full h-12 bg-slate-800 text-white">
     <div className="w-content flex flex-row  items-center ">
     <SideBar/>
       <Link

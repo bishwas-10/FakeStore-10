@@ -53,7 +53,7 @@ const SideBar = () => {
 
   const list = (anchor: Anchor) => (
     <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 350 }}
+      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 350,bgcolor:"background.main" }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
@@ -72,7 +72,7 @@ const SideBar = () => {
       </List>
       <Divider />
       <List>
-        <ListSubheader>Shop by Department</ListSubheader>
+        <ListSubheader sx={{bgcolor:"background.paper",color:"text.primary"}}>Shop by Department</ListSubheader>
         {categories.map((item, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton onClick={() => navigate(`/categories/${item.title}`)}>

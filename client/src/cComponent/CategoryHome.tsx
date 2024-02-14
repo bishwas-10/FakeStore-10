@@ -54,8 +54,8 @@ const CategoryHome = ({ categories }: CategoriesProps) => {
           key={index}
           to={"/categories/" + item.title}
           className="m-4 p-2 flex flex-col items-center  
-            grow basis-56 rounded-lg hover:shadow-lg shadow-sm
-             shadow-gray-600 dark:hover:shadow-gray-200 cursor-pointer hover:scale-103 transition-all"
+            grow border-2 border-gray-400 basis-56 rounded-lg hover:shadow-md shadow-sm
+            hover:shadow-gray-300 cursor-pointer hover:scale-103 transition-all"
         >
           <p className="text-sm tracking-wide  uppercase">{item.title}</p>
           <img src={item.image} alt={item.title} className="w-70 h-60 rounded-sm" />

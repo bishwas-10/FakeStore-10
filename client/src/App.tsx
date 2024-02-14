@@ -58,7 +58,7 @@ function App() {
           main:"#000202",
           black: "#000202",
           default: grey[900],
-          paper: grey[600],
+          paper: grey[800],
         },
       }),
       ...(mode === 'light' && {
