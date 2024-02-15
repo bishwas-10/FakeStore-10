@@ -12,6 +12,7 @@ import { RootState } from "../../../store/store";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../../../hooks/useAuth";
 import { ShoppingBag } from "lucide-react";
+import useRefreshToken from "../../../../hooks/useRefreshToken";
 export const LoginSchema = z.object({
   email: z.string().email({
     message: "Email is required",
@@ -24,12 +25,11 @@ export const LoginSchema = z.object({
 export type TLoginSchema = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
-
   const { auth, setAuth, persist, setPersist } = useAuth();
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const refresh = useRefreshToken();
   const from = location.state?.from?.pathname || "/";
   const {
     register,
@@ -69,18 +69,29 @@ const LoginPage = () => {
   useEffect(() => {
     localStorage.setItem("persist", JSON.stringify(persist));
   }, [persist]);
+  const authCheck = async () => {
+    try {
+      console.log("run vayo")
+      await refresh();
+      navigate(from, { replace: true });
+    } catch (error) {
+      setAuth({ token: null });
+  
+    }
+  };
   useEffect(() => {
-    if (auth.token) {
+    if (!auth.token) {
+      authCheck();
+    } else {
       navigate(from, { replace: true });
     }
-  }, [auth.token]);
-  const inputRef = useRef<HTMLInputElement>(null);;
-  useEffect(()=>{
-    if(inputRef.current){
-     inputRef.current.focus() ;
+  }, []);
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
-    
-  },[])
+  }, []);
   return (
     <div className="flex  items-center justify-center w-full h-screen">
       <div className="flex flex-col w-3/4 md:w-2/5">
@@ -100,7 +111,7 @@ const LoginPage = () => {
           <h1 className="text-2xl font-medium dark:text-gray-500 ">Sign In</h1>
           <div className="flex flex-col gap-1 ">
             <TextField
-            inputRef={inputRef}
+              inputRef={inputRef}
               id="email"
               type="email"
               label="email"
@@ -153,10 +164,14 @@ const LoginPage = () => {
             </span>
             <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
           </span>
-          <Link  to={'/signup'} className="w-full mt-2 font-bold  shadow-md  transition-all text-center">
-          <Button sx={{width:"100%",fontSize:"15px",fontWeight:500}}>Create your FakeStore Account</Button>
-            
-            </Link>
+          <Link
+            to={"/signup"}
+            className="w-full mt-2 font-bold  shadow-md  transition-all text-center"
+          >
+            <Button sx={{ width: "100%", fontSize: "15px", fontWeight: 500 }}>
+              Create your FakeStore Account
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

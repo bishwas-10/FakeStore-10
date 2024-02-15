@@ -126,7 +126,7 @@ const {auth}= useAuth();
   };
 
   return (
-    <div className="w-full h-max flex md:flex-row flex-col gap-4">
+    <div className="w-full min-h-screen flex md:flex-row flex-col gap-4 ">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex w-full  flex-col gap-4 mt-4 p-4 ease-in-out md:w-1/2"
@@ -146,11 +146,11 @@ const {auth}= useAuth();
             </div>
             <div className="flex flex-col gap-1  w-1/2">
               <TextField
-                id="totalAmount"
-                label="totalAmount"
+                id="perProduct"
+                label="perProduct"
                 variant="outlined"
                 error={!!errors.totalAmount}
-                helperText={errors.totalAmount ? "totalAmount is required" : ""}
+                helperText={errors.totalAmount ? errors.totalAmount.message : ""}
                 {...register("totalAmount", { required: true })}
               />
             </div>

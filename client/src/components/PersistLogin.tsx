@@ -9,7 +9,7 @@ const PersistLogin = () => {
     const refresh = useRefreshToken();
     const { auth,setAuth } = useAuth();
     const [persist] = useLocalStorage('persist', true);
-
+console.log(auth)
     useEffect(() => {
         let isMounted = true;
 

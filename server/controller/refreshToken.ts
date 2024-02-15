@@ -6,17 +6,16 @@ require("dotenv").config();
 export const handleRefreshToken = async (req: Request, res: Response) => {
   const cookies = req.cookies;
 
-  if (!cookies?.jwt){
+  if (!cookies?.jwt) {
     return res
       .status(401)
       .send({ success: false, message: "no token available" });
   }
-    
 
   const refreshToken = cookies.jwt as string;
- // res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-  
-  const foundUser = await User.findOne({ refreshToken :refreshToken});
+  // res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
+
+  const foundUser = await User.findOne({ refreshToken: refreshToken });
 
   // Detected refresh token reuse!
   if (!foundUser) {
@@ -61,11 +60,11 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
           console.log("expired refresh token");
           foundUser.refreshToken = [...newRefreshTokenArray];
           const result = await foundUser.save();
-     
         }
-      
-        if (error || foundUser?.username !== decoded?.payload.username)
+
+        if (error || foundUser?.username !== decoded?.payload.username) {
           return res.sendStatus(403);
+        }
 
         // Refresh token was still valid
         const roles = Object.values(foundUser.roles);
@@ -74,13 +73,13 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
             UserInfo: {
               username: decoded?.payload.username,
               roles: roles,
-              userId:decoded?.payload.userId
+              userId: decoded?.payload.userId,
             },
           },
           process.env.TOKEN_KEY as string,
           { expiresIn: "10m" }
         );
-
+console.log(decoded)
         // const newRefreshToken = jwt.sign(
         //   { username: foundUser.username },
         //   process.env.REFRESH_TOKEN_KEY as string,
@@ -93,12 +92,10 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
         // Creates Secure Cookie with refresh token
         res.status(201).send({ success: true, accessToken });
 
-//res.status(200).send({message:"bdasjbdnj"})
-
+        //res.status(200).send({message:"bdasjbdnj"})
       }
     );
   }
-
 
   // evaluate jwt
 };

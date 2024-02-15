@@ -16,31 +16,30 @@ import { useState } from "react";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { ROLES_LIST } from "../App";
 
-import {  ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const Navbar = () => {
   const { theme, toggleDarkMode } = useTheme();
   const { pathname } = useLocation();
 
   const { auth } = useAuth();
- 
+
   const logout = useLogout();
   let decoded;
-  if(auth.token){
-   decoded=jwtDecode<JwtPayload>(auth.token as string) as any;
-
+  if (auth.token) {
+    decoded = jwtDecode<JwtPayload>(auth.token as string) as any;
   }
-  const valuesToFind =decoded?.UserInfo.roles;
-const keys = [];
+  const valuesToFind = decoded?.UserInfo.roles;
+  const keys = [];
 
-for (const key in ROLES_LIST) {
-  if (Object.prototype.hasOwnProperty.call(ROLES_LIST, key)) {
-    const value = ROLES_LIST[key];
-    if (valuesToFind?.includes(value)) {
-      keys.push(key);
+  for (const key in ROLES_LIST) {
+    if (Object.prototype.hasOwnProperty.call(ROLES_LIST, key)) {
+      const value = ROLES_LIST[key];
+      if (valuesToFind?.includes(value)) {
+        keys.push(key);
+      }
     }
   }
-}
 
   //mui
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -55,8 +54,6 @@ for (const key in ROLES_LIST) {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
-
 
   return (
     <div className="border-b p-2 ">
@@ -135,7 +132,14 @@ for (const key in ROLES_LIST) {
             >
               Settings
             </Link>
+            <Link
+              to="/"
+              className={` p-2 
            
+            rounded-md transition-all hover:text-primary`}
+            >
+              Customer Section
+            </Link>
             <button
               onClick={() => logout()}
               className={`p-2 
@@ -164,21 +168,22 @@ for (const key in ROLES_LIST) {
             label="Dark Mode"
           />
           <div className="flex  items-center justify-center">
-      
             <Button
               aria-describedby={id}
               variant="outlined"
               onClick={handleClick}
               size="medium"
               sx={{
-                fontWeight: '600',
+                fontWeight: "600",
 
-                border: '2px solid #hhhgf',
-                borderRadius: '8px',
-                
+                border: "2px solid #hhhgf",
+                borderRadius: "8px",
               }}
             >
-              <span className="capitalize flex flex-row gap-2">{decoded?.UserInfo.username}<ChevronDown /></span>
+              <span className="capitalize flex flex-row gap-2">
+                {decoded?.UserInfo.username}
+                <ChevronDown />
+              </span>
             </Button>
             <Popover
               id={id}
@@ -186,23 +191,30 @@ for (const key in ROLES_LIST) {
               anchorEl={anchorEl}
               onClose={handleClose}
               anchorOrigin={{
-                vertical: 'bottom', 
-                horizontal: 'center', 
+                vertical: "bottom",
+                horizontal: "center",
               }}
-             
             >
-             <div className="flex flex-col gap-2 p-2">
-             <Typography sx={{  }}>Roles:</Typography>
-              {keys?.map((key,i)=>{
-                return(<span key={i}>
-                  {i+1}.{" "}{key}
-                </span>)
-                
-              })}
-
-              <Button variant="outlined">User Profile</Button>
-              
-             </div>
+              <div className="flex flex-col gap-2 p-2">
+                <Typography sx={{}}>Roles:</Typography>
+                {keys?.map((key, i) => {
+                  return (
+                    <span key={i}>
+                      {i + 1}. {key}
+                    </span>
+                  );
+                })}
+                <Button
+                  variant="contained"
+                  onClick={() => logout()}
+                  className={`p-2 
+            
+            rounded-md `}
+                >
+                  logout
+                </Button>
+                <Button variant="outlined">User Profile</Button>
+              </div>
             </Popover>
           </div>
         </div>

@@ -3,7 +3,12 @@ import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
-import { CssBaseline, PaletteMode, ThemeProvider, createTheme } from "@mui/material";
+import {
+  CssBaseline,
+  PaletteMode,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
 import { indigo, amber, grey } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
@@ -49,34 +54,34 @@ function App() {
       mode,
       primary: {
         ...amber,
-        ...(mode === 'dark' && {
+        ...(mode === "dark" && {
           main: amber[300],
         }),
       },
-      ...(mode === 'dark' && {
+      ...(mode === "dark" && {
         background: {
-          main:"#000202",
+          main: "#000202",
           black: "#000202",
           default: grey[900],
           paper: grey[800],
         },
       }),
-      ...(mode === 'light' && {
+      ...(mode === "light" && {
         background: {
           main: grey[200],
-          black:"#ffffff",
+          black: "#ffffff",
           default: grey[200],
           paper: grey[300],
         },
       }),
       text: {
-        ...(mode === 'light'
+        ...(mode === "light"
           ? {
               primary: grey[900],
               secondary: grey[800],
             }
           : {
-              primary: '#fff',
+              primary: "#fff",
               secondary: grey[500],
             }),
       },
@@ -105,21 +110,22 @@ function App() {
               path="categories/:category"
               element={<EachCategoryProduct />}
             />
-            <Route element={<PersistLogin/>}>
-          <Route element={<RequireAuth allowedRoles={[ROLES_LIST.customer,ROLES_LIST.admin]}/>}>
-            <Route path="carts" element={<CartPage/>}/>
-          </Route>
-            </Route>
-          
-          </Route>
-          <Route path="/admin">
             <Route element={<PersistLogin />}>
               <Route
                 element={
                   <RequireAuth
-                    allowedRoles={[ROLES_LIST.admin]}
+                    allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
                   />
                 }
+              >
+                <Route path="carts" element={<CartPage />} />
+              </Route>
+            </Route>
+          </Route>
+          <Route path="/admin">
+            <Route element={<PersistLogin />}>
+              <Route
+                element={<RequireAuth allowedRoles={[ROLES_LIST.admin]} />}
               >
                 <Route index element={<Dashboard />} />
                 <Route path="products">
@@ -148,8 +154,8 @@ function App() {
           <Route path="*" element={<Missing />} />
           {/* </Route> */}
         </Routes>
-       
-    <Footer/>
+
+        <Footer />
       </div>
     </ThemeProvider>
   );

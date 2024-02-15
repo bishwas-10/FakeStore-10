@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronRight,
   DollarSign,
@@ -19,6 +19,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../../context/AuthProvider";
+import useRefreshToken from "../../../hooks/useRefreshToken";
 
 const fetchProductDetails = async (id: string) => {
   const response = await instance({
@@ -36,12 +37,15 @@ const fetchProductDetails = async (id: string) => {
 const EachProduct = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
-  const {auth}= useAuth();
-  let decoded:UserInfoProps;
-  if(auth.token){
-    decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps
-  };
+  const { auth, setAuth } = useAuth();
+  let decoded: UserInfoProps;
+  if (auth.token) {
+    decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps;
+  }
   const navigate = useNavigate();
+  const location = useLocation();
+  const refresh = useRefreshToken();
+  const from = location.state?.from?.pathname || "/";
 
   const { isLoading, data, isError, error } = useQuery<any>({
     queryKey: ["product-details", id],
@@ -54,54 +58,65 @@ const EachProduct = () => {
       autoClose: 2000,
     });
   };
-  const addToCart=async()=>{
-if(!auth.token){
-  navigate("/login");
-  }else{
-  try {
-  
-  const response = await axiosPrivate({
-    url:`/carts`,
-    method:'POST',
-    data:{
-      quantity:quantity.toString(),
-      totalAmount:data.price,
-      customer:decoded.UserInfo.userId,
-      product:id,
-      shippingAddress:{
-        city:"kathmandu",
-        street:"banechor road",
-        zipcode:"293282"
-      },
-      orderStatus:"pending",
-      paymentMethod:"onsite",
-      paymentStatus:"not paid"
+  const authCheck = async () => {
+    try {
+      console.log("run vayo");
+      await refresh();
+    
+    } catch (error) {
+      setAuth({ token: null });
     }
-   
-  });
-  console.log(response);
-} catch (error) {
-  console.log(error);
-}  
-  }
-
-  }
+  };
+  useEffect(() => {
+    if (!auth.token) {
+      authCheck();
+    } else {
+      navigate("/login");
+    }
+  }, []);
+  const addToCart = async () => {
+    try {
+      console.log(decoded);
+      const response = await axiosPrivate({
+        url: `/carts`,
+        method: "POST",
+        data: {
+          quantity: quantity.toString(),
+          totalAmount: data.price.toString(),
+          customer: decoded.UserInfo.userId?.toString(),
+          product: id,
+          shippingAddress: {
+            city: "kathmandu",
+            street: "banechor road",
+            zipcode: "293282",
+          },
+          orderStatus: "pending",
+          paymentMethod: "onsite",
+          paymentStatus: "not paid",
+        },
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (isLoading) {
     return <Loading />;
   }
-  console.log(error);
+
 
   if (isError) {
     return <p>Error occured 404 {error.message}</p>;
   }
+
   return (
     <div className="p-10 flex flex-col items-center">
       <div className="w-full">
         <div className=" flex flex-row gap-2 text-lg capitalize">
           <Link to="/">home</Link>
           <ChevronRight />
-          <Link to={"/" + data.category}>{data.category}</Link>
+          <Link to={"/categories/" + data.category}>{data.category}</Link>
           <ChevronRight />
           {data.title}
         </div>
@@ -167,7 +182,10 @@ if(!auth.token){
                 >
                   BUY NOW
                 </button>
-                <button onClick={()=>addToCart()} className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md">
+                <button
+                  onClick={() => addToCart()}
+                  className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md"
+                >
                   ADD TO CART
                 </button>
               </div>

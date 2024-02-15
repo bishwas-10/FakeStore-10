@@ -18,7 +18,11 @@ const logout = useLogout();
                  
                 }
                 return config;
-            }, (error) => Promise.reject(error)
+            }, (error) =>{
+                console.log(error)
+                Promise.reject(error)
+            
+            }
         );
 
         const responseIntercept = axiosPrivate.interceptors.response.use(

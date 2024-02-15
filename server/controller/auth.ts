@@ -138,7 +138,8 @@ export const logIn = async (req: Request, res: Response) => {
       { expiresIn: "10m" }
     );
     const newRefreshToken = jwt.sign(
-      { username: foundUser.username },
+      { username: foundUser.username,
+        userId:foundUser._id },
       process.env.REFRESH_TOKEN_KEY as string,
       { expiresIn: "1h" }
     );
