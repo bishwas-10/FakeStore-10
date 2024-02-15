@@ -61,15 +61,16 @@ const EachProduct = () => {
       await refresh();
     
     } catch (error) {
+       navigate("/login");
+    
       setAuth({ token: null });
     }
   };
   useEffect(() => {
     if (!auth.token) {
       authCheck();
-    } else {
-      navigate("/login");
-    }
+    } 
+     
   }, []);
   let decoded: UserInfoProps;
   if (auth.token) {

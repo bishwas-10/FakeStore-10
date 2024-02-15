@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import {  Route, Routes, useLocation } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
@@ -9,7 +9,7 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { indigo, amber, grey } from "@mui/material/colors";
+import { amber, grey } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";

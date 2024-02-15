@@ -73,37 +73,34 @@ export type TProductSchema = z.infer<typeof productSchema>;
 const AddProducts = () => {
   const [imageName, setImageName] = useState<string>("");
   const dispatch = useDispatch();
-const {auth}= useAuth();
-const logout = useLogout(); 
-const product = useSelector(
+  const { auth } = useAuth();
+  const logout = useLogout();
+  const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
-const [category, setCategory] = useState<string>(
-  product?.category as string
-);
-const handleOrderChange = (event: SelectChangeEvent) => {
-  setCategory(event.target.value as string);
-  setValue("category", event.target.value as string);
-};
-const [categories,setCategories]= useState<TCategorySchema[]>([]);
- const controller = new AbortController();
-const categoryCall = async () => {
-  try {
-    const response = await axiosPrivate.get("/categories", {
-      signal: controller.signal,
-    });
-    if (response.data.success) {
-      console.log(response.data);
-      setCategories(response.data.categories);
-     
+  const [category, setCategory] = useState<string>(product?.category as string);
+  const handleOrderChange = (event: SelectChangeEvent) => {
+    setCategory(event.target.value as string);
+    setValue("category", event.target.value as string);
+  };
+  const [categories, setCategories] = useState<TCategorySchema[]>([]);
+  const controller = new AbortController();
+  const categoryCall = async () => {
+    try {
+      const response = await axiosPrivate.get("/categories", {
+        signal: controller.signal,
+      });
+      if (response.data.success) {
+        console.log(response.data);
+        setCategories(response.data.categories);
+      }
+    } catch (error: any) {
+      if (error.response.statusText === "Unauthorized" || "Forbidden") {
+        // logout();
+      }
+      console.log(error);
     }
-  } catch (error: any) {
-    if (error.response.statusText === "Unauthorized" || "Forbidden") {
-      // logout();
-    }
-    console.log(error);
-  }
-};
+  };
   const {
     register,
     handleSubmit,
@@ -142,50 +139,46 @@ const categoryCall = async () => {
     convert2base64(file);
   };
   const onSubmit = async (data: TProductSchema) => {
-  try {
-     const response = await instance({
-      url: product?.id ? `/products/${product?.id}` : `/products`,
-      method: product?.id ? "PUT" : "POST",
-      headers: {
-        "Content-type": "application/json",
+    try {
+      const response = await instance({
+        url: product?.id ? `/products/${product?.id}` : `/products`,
+        method: product?.id ? "PUT" : "POST",
+        headers: {
+          "Content-type": "application/json",
           authorization: `Bearer ${auth.token}`,
-      },
-      data: {
-        title: data.title,
-        category: data.category,
-        price: data.price,
-        image: data.image,
-        description: data.description,
-        rating: {
-          rate: data.rating.rate,
-          count: data.rating.count,
         },
-      },
-    });
-    
-    if(response.data.success){
-      if(response.data.message==="edited successfully"){
-         dispatch(addProduct(response.data.product));
-        
-      }else{
-        dispatch(addProduct(data)); 
-        reset();
+        data: {
+          title: data.title,
+          category: data.category,
+          price: data.price,
+          image: data.image,
+          description: data.description,
+          rating: {
+            rate: data.rating.rate,
+            count: data.rating.count,
+          },
+        },
+      });
+
+      if (response.data.success) {
+        if (response.data.message === "edited successfully") {
+          dispatch(addProduct(response.data.product));
+        } else {
+          dispatch(addProduct(data));
+          reset();
+        }
+        toast.success(response.data.message);
       }
-       toast.success(response.data.message);
+    } catch (error: any) {
+      if (error.response.status === 403 || error.response.status === 401) {
+        logout();
+      }
+      console.log(error);
     }
-  }  catch (error:any) {
-    if(error.response.status=== 403 || error.response.status=== 401){
-      logout();
-    }
-    console.log(error);
-  }
-   
-   
-   
   };
-useEffect(()=>{
-  categoryCall();
-},[])
+  useEffect(() => {
+    categoryCall();
+  }, []);
   // const editProduct = async (data: TProductSchema) => {
   //   console.log(data);
   //   const productData = await instance({
@@ -218,73 +211,70 @@ useEffect(()=>{
           className="flex flex-col gap-4 mt-4 ease-in-out w-[50%]"
         >
           <div className="flex flex-col gap-4">
-          <div className="flex flex-row w-full gap-6 ">
- <div className="flex flex-col gap-1">
-              <TextField
-                id="title"
-                label="title"
-                variant="outlined"
-                error={!!errors.title}
-                helperText={errors.title ?errors.title.message:""}
-                {...register("title", { required: true })}
-              />
-            </div>
-         
-            <div className="flex ">
-  <Box style={{ height: "20px" }} className="text-sm ">
-              <FormControl
-                variant="standard"
-                style={{
-                  fontSize: "14px",
-                  lineHeight: "10px",
-                  height: "20px",
-                }}
-                className="w-40"
-                error={!!errors.category}
-              >
-                <InputLabel
-                  style={{
-                    fontSize: "14px",
-                    lineHeight: "10px",
-                    textAlign: "center",
-                  }}
-                >
-                 Category
-                </InputLabel>
-                <Select
-                  className="text-sm"
-                  labelId="orderstatus labelid"
-                  id="order_status"
-                  value={category}
-                  label="Order Status"
-                  onChange={handleOrderChange}
-                >
-                
-                 {categories.length!==0 && categories.map((category,item)=>{
-                  return (
-                    <MenuItem
-                    style={{ fontSize: "14px", lineHeight: "10px" }}
-                    value={category.title}
+            <div className="flex flex-row w-full gap-6 ">
+              <div className="flex flex-col gap-1">
+                <TextField
+                  id="title"
+                  label="title"
+                  variant="outlined"
+                  error={!!errors.title}
+                  helperText={errors.title ? errors.title.message : ""}
+                  {...register("title", { required: true })}
+                />
+              </div>
+
+              <div className="flex ">
+                <Box style={{ height: "20px" }} className="text-sm ">
+                  <FormControl
+                    variant="standard"
+                    style={{
+                      fontSize: "14px",
+                      lineHeight: "10px",
+                      height: "20px",
+                    }}
+                    className="w-40"
+                    error={!!errors.category}
                   >
-                    {category.title}
-                  </MenuItem>
-                  )
-                 })}
-                 
-                </Select>
-              </FormControl>
-            </Box>
+                    <InputLabel
+                      style={{
+                        fontSize: "14px",
+                        lineHeight: "10px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Category
+                    </InputLabel>
+                    <Select
+                      className="text-sm"
+                      labelId="orderstatus labelid"
+                      id="order_status"
+                      value={category}
+                      label="Order Status"
+                      onChange={handleOrderChange}
+                    >
+                      {categories.length !== 0 &&
+                        categories.map((category, index) => {
+                          return (
+                            <MenuItem key={index}
+                              style={{ fontSize: "14px", lineHeight: "10px" }}
+                              value={category.title}
+                            >
+                              {category.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </div>
             </div>
-          </div>
-           
-          
             <div className="flex flex-col gap-1">
               <TextField
                 id="price"
                 label="price"
                 variant="outlined"
                 error={!!errors.price}
-                helperText={errors.price ? errors.price.message:""}
+                helperText={errors.price ? errors.price.message : ""}
                 {...register("price", { required: true })}
               />
             </div>
@@ -323,10 +313,10 @@ useEffect(()=>{
                 id="rate"
                 label="rate"
                 variant="outlined"
-                error={!!errors.rating?.rate} // Update error check to reflect nested structure
+                error={!!errors.rating?.rate} 
                 helperText={
                   errors.rating?.rate ? errors.rating.rate?.message : ""
-                } // Update helper text to access nested error message
+                } 
                 {...register("rating.rate", { required: true })}
               />
 
@@ -334,10 +324,10 @@ useEffect(()=>{
                 id="count"
                 label="count"
                 variant="outlined"
-                error={!!errors.rating?.count} // Update error check to reflect nested structure
+                error={!!errors.rating?.count}
                 helperText={
                   errors.rating?.count ? errors.rating.count?.message : ""
-                } // Update helper text to access nested error message
+                }
                 {...register("rating.count", { required: true })}
               />
             </div>
@@ -348,8 +338,10 @@ useEffect(()=>{
                 variant="outlined"
                 multiline
                 maxRows={4}
-                error={!!errors.description} // Set error prop based on the presence of errors
-                helperText={errors.description ? errors.description.message : ""} // Display error message if there are errors
+                error={!!errors.description} 
+                helperText={
+                  errors.description ? errors.description.message : ""
+                }
                 {...register("description", { required: true })}
               />
             </div>{" "}
@@ -366,7 +358,6 @@ useEffect(()=>{
       <div className=" w-full md:w-1/2 p-4">
         {product && (
           <div className="flex flex-col items-center justify-center gap-4 w-full">
-           
             <Card sx={{ maxWidth: "100%", padding: "10px" }}>
               <div className="w-full flex items-center justify-center">
                 <img
@@ -397,20 +388,15 @@ useEffect(()=>{
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button
-                 
-                  variant="outlined"
-                  size="small"
-                  className="w-full"
-                >
-                 <Link to="/admin/products"> Back to Product</Link>
+                <Button variant="outlined" size="small" className="w-full">
+                  <Link to="/admin/products"> Back to Product</Link>
                 </Button>
               </CardActions>
             </Card>
           </div>
         )}
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

@@ -207,9 +207,7 @@ const Navbar = () => {
                 <Button
                   variant="contained"
                   onClick={() => logout()}
-                  className={`p-2 
-            
-            rounded-md `}
+                  className={`p-2 rounded-md `}
                 >
                   logout
                 </Button>

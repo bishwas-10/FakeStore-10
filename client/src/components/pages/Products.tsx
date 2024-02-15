@@ -19,7 +19,7 @@ import { RootState } from "../../store/store";
 import {
   addProduct,
   fetchAllProducts,
-  fetchProducts,
+  
   removeProducts,
 } from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
@@ -40,7 +40,7 @@ const logout = useLogout();
   const [productsPerPage, setProductsPerPage] = useState<number>(2);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
- const {auth,setAuth}= useAuth();
+ const {auth}= useAuth();
   const handlePageSelection = (page: number) => {
     setCurrentPage(page);
   };

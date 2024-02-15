@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField } from "@mui/material";
 import { ShoppingBag } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";

@@ -7,12 +7,12 @@ import {
   Card,
   CardActions,
   CardContent,
-  FormLabel,
+  
   TextField,
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { axiosPrivate, instance } from "../../../../api/instance";
+import { axiosPrivate } from "../../../../api/instance";
 import { z } from "zod";
 import { addCustomer } from "../../../store/customerSlice";
 import { ToastContainer, toast } from "react-toastify";
@@ -43,7 +43,7 @@ const EditCustomers = () => {
   const {auth}= useAuth();
   const dispatch =useDispatch();
   const logout = useLogout();
-  const token = useSelector((state:RootState)=>state.token.token);
+ 
   const customer = useSelector(
     (state: RootState) => state.customer.selectedCustomer
   );

@@ -1,14 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button, TextField } from "@mui/material";
 import { instance } from "../../../../api/instance";
-import { jwtDecode } from "jwt-decode";
-import { signInSuccess } from "../../../store/userSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { setToken } from "../../../store/tokenSlice";
-import { RootState } from "../../../store/store";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../../../hooks/useAuth";
 import { ShoppingBag } from "lucide-react";
@@ -50,6 +46,7 @@ const LoginPage = () => {
           password: data.password,
         },
       });
+      reset();
       if (response.data.success) {
         setAuth({ token: response.data.accessToken });
 

@@ -11,30 +11,57 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 const CartPage = () => {
   // const [quantity, setQuantity] = useState<number>(1);
   const { userId } = useParams();
-  console.log(userId);
+
   const axiosPrivate = useAxiosPrivate();
   const fetchCartByUserId = async () => {
     const response = await axiosPrivate({
-      url: `/carts/customers/${userId}`,
+      url: `/carts/${userId}`,
       method: "GET",
     });
 
     return response.data.cart;
   };
-  const { isLoading, data } = useQuery<any[]>({
+  const { isLoading, data , refetch} = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
     queryFn: fetchCartByUserId,
     staleTime: 30000,
   });
   const [selectedQuantities, setSelectedQuantities] = useState<{ [productId: string]: number }>({});
 
-  const handleQuantityChange = (productId: string, quantity: number) => {
+  const handleQuantityChange =async (productId: string,cartId:string, quantity: number) => {
     setSelectedQuantities({ ...selectedQuantities, [productId]: quantity });
+   try {
+  
+    const response = await axiosPrivate({
+      url: `/carts/${cartId}`,
+      method: "PATCH",
+      data:{
+        quantity:quantity,
+        product:productId
+      }
+    });
+refetch();
+   } catch (error) {
+    console.log(error)
+   }
   };
 
   if (isLoading) {
     return <Loading />;
   }
+const cancelOrder=async(cartId:string)=>{
+try {
+  const response = await axiosPrivate({
+    url: `/carts/${cartId}`,
+    method: "DELETE",
+   
+  });
+refetch();
+} catch (error) {
+  console.log(error)
+}
+}
+
   const buyNowHandler = () => {
     toast.success("Item bought successfully", {
       position: "top-center",
@@ -142,6 +169,7 @@ const CartPage = () => {
                             onChange={(e) =>
                               handleQuantityChange(
                                 item.product.id,
+                                item._id,
                                 e.target.value
                               )
                             }
@@ -155,7 +183,7 @@ const CartPage = () => {
                          
                         </div>
                         <div className="w-full mt-2 text-white ">
-                          <button className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md">
+                          <button onClick={()=>cancelOrder(item._id)} className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md">
                             DELETE
                           </button>
                           <button

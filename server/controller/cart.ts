@@ -124,6 +124,41 @@ export const editCart = async (req: Request, res: Response) => {
       .send({ success: false, message: "internal server error" });
   }
 };
+export const updateQuantity = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  console.log(req.body,id)
+  try {
+   
+    const cart = await Cart.findOneAndUpdate(
+      { _id: id,product:req.body.product },
+      { $set: { quantity: req.body.quantity }},
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+ console.log(cart)
+  //   if (cart) {
+  //     const result = await cart.populate([
+  //       { path: "product", model: Product },
+  //       { path: "customer", model: User },
+  //     ]);
+  //  console.log(result);
+  //     return res
+  //       .status(200)
+  //       .send({ success: true, messsage: "cart  found", cart: result });
+  //   } else {
+  //     return res
+  //       .status(404)
+  //       .send({ success: false, messsage: "cart not found", cart: null });
+  //   }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .send({ success: false, message: "internal server error" });
+  }
+};
 
 export const deleteCart = async (req: Request, res: Response) => {
   const id = req.params.id;

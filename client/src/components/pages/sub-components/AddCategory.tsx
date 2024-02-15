@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card, CardActions, CardContent, FormLabel, TextField, Typography } from '@mui/material';
-import { watch } from 'fs';
 import { UploadIcon } from 'lucide-react';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
@@ -8,9 +7,7 @@ import { Link } from 'react-router-dom';
 import { z } from 'zod';
 import { RootState } from '../../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { instance } from '../../../../api/instance';
 import useAuth from '../../../../hooks/useAuth';
-import { addProduct } from '../../../store/productSlice';
 import { addCategory } from '../../../store/categorySlice';
 import { ToastContainer, toast } from 'react-toastify';
 import useLogout from '../../../../hooks/useLogout';
@@ -106,7 +103,7 @@ const AddCategory = () => {
       }  catch (error:any) {
         if(error.response.status=== 403 || error.response.status=== 401){
           console.log(error.response.status)
-         // logout();
+          logout();
         }
         console.log(error);
       }
@@ -172,8 +169,8 @@ const AddCategory = () => {
               variant="outlined"
               multiline
               maxRows={4}
-              error={!!errors.description} // Set error prop based on the presence of errors
-              helperText={errors.description ? errors.description.message : ""} // Display error message if there are errors
+              error={!!errors.description} 
+              helperText={errors.description ? errors.description.message : ""} 
               {...register("description", { required: true })}
             />
           </div>

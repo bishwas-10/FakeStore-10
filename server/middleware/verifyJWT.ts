@@ -21,7 +21,7 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
         
         req.body.username = decoded.payload.UserInfo.username;
         req.body.roles = decoded.payload.UserInfo.roles;
-       console.log(req.body)
+      
         next();
       } //invalid token
     }

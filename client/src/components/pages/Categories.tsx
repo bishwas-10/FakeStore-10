@@ -37,6 +37,8 @@ import {
   fetchAllCategories,
   removeCategories,
 } from "../../store/categorySlice";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../cComponent/reusable/Loading";
 
 const Categories = () => {
   const categories = useSelector((state: RootState) => state.category.category);
@@ -66,17 +68,22 @@ const Categories = () => {
         signal: controller.signal,
       });
       if (response.data.success) {
-        console.log(response.data);
+        
         dispatch(fetchAllCategories(response.data.categories));
       }
-    } catch (error: any) {
-      if (error.response.statusText === "Unauthorized" || "Forbidden") {
-        // logout();
+    }  catch (error:any) {
+      if(error.response.status=== 403 || error.response.status=== 401){
+        logout();
       }
       console.log(error);
     }
   };
-  //products
+
+  const { isLoading, data, isError, error,refetch } = useQuery<any>({
+    queryKey: ["all categories"],
+    queryFn: categoryCall,
+  });
+
   const deleteCategory = async (id: string) => {
     try {
       const response = await axiosPrivate({
@@ -88,11 +95,12 @@ const Categories = () => {
         },
       });
       if (response.data.success) {
-        categoryCall();
+       
         toast.info(response.data.message);
       } else {
         toast.error(response.data.message);
       }
+      refetch();
     } catch (error: any) {
       if(error.response.status=== 403 || error.response.status=== 401){
         logout();
@@ -103,13 +111,16 @@ const Categories = () => {
   const editCategpory = (category: TCategorySchema) => {
     dispatch(addCategory(category));
   };
+ 
+  if (isLoading) {
+    return <Loading />;
+  }
 
-  useEffect(() => {
-    categoryCall();
-    return () => {
-      dispatch(removeCategories());
-    };
-  }, []);
+
+  if (isError) {
+    return <p>Error occured 404 {error.message}</p>;
+  }
+  
   return (
     <div className="px-4">
       <div className="h-20 w-full p-4 flex flex-row items-center justify-between">

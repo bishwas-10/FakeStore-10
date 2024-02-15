@@ -9,19 +9,19 @@ const RequireAuth = ({ allowedRoles }: { allowedRoles: number[] }) => {
   if (auth.token) {
     const decoded = jwtDecode<JwtPayload>(auth?.token as string) as any;
     
- // setUser({username:decoded.UserInfo.username,roles:decoded.UserInfo.roles});
+
     if (decoded) {
       return decoded.UserInfo.roles.find((role: number) =>
         allowedRoles?.includes(role)
       ) ? (
         <Outlet />
-      ) : auth?.token ? ( //changed from user to accessToken to persist login after refresh
+      ) : auth?.token ? ( 
         <Navigate to="/unauthorized" state={{ from: location }} replace />
       ) : (
         <Navigate to="/login" state={{ from: location }} replace />
       );
     }else{
-     return   <Navigate to="/login" state={{ from: location }} replace />;
+     return <Navigate to="/login" state={{ from: location }} replace />;
  
     }
   } else {

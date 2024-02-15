@@ -5,7 +5,7 @@ import {
   editCart,
   getAllCarts,
   getCartByCustomerId,
-  
+  updateQuantity
 
 } from "../controller/cart";
 import authUser from "../middleware/authUser";
@@ -22,9 +22,9 @@ router.post("/carts",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), addCart)
 // router.get("/products/:id", getProduct);
  router.put("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), editCart);
  router.delete("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), deleteCart);
-
+ router.patch("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), updateQuantity);
 // //customer
-router.get("/carts/customers/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), getCartByCustomerId);
+router.get("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), getCartByCustomerId);
 // router.get("/products/category/:category", getCategoryProduct);
 
 export default router;
