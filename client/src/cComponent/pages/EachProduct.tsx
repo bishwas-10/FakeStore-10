@@ -11,7 +11,6 @@ import {
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ratingStars } from "../reusable/utils";
 import Loading from "../reusable/Loading";
-import { instance } from "../../../api/instance";
 import { useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,37 +20,35 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../../context/AuthProvider";
 import useRefreshToken from "../../../hooks/useRefreshToken";
 
-const fetchProductDetails = async (id: string) => {
-  const response = await instance({
-    url: `/products/${id}`,
-    method: "GET",
-  });
 
-  if (response.data.success) {
-    return response.data.product;
-  } else {
-    throw new Error(response.data.message);
-  }
-};
 
 const EachProduct = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
   const { auth, setAuth } = useAuth();
-  let decoded: UserInfoProps;
-  if (auth.token) {
-    decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps;
-  }
+ 
   const navigate = useNavigate();
   const location = useLocation();
   const refresh = useRefreshToken();
   const from = location.state?.from?.pathname || "/";
-
+  const axiosPrivate = useAxiosPrivate();
+  const fetchProductDetails = async (id: string) => {
+    const response = await axiosPrivate({
+      url: `/products/${id}`,
+      method: "GET",
+    });
+  
+    if (response.data.success) {
+      return response.data.product;
+    } else {
+      throw new Error(response.data.message);
+    }
+  };
   const { isLoading, data, isError, error } = useQuery<any>({
     queryKey: ["product-details", id],
     queryFn: () => fetchProductDetails(id as string),
   });
-  const axiosPrivate = useAxiosPrivate();
+
   const buyNowHandler = () => {
     toast.success("Item bought successfully", {
       position: "top-center",
@@ -74,6 +71,10 @@ const EachProduct = () => {
       navigate("/login");
     }
   }, []);
+  let decoded: UserInfoProps;
+  if (auth.token) {
+    decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps;
+  }
   const addToCart = async () => {
     try {
       console.log(decoded);

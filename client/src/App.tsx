@@ -118,7 +118,7 @@ function App() {
                   />
                 }
               >
-                <Route path="carts" element={<CartPage />} />
+                <Route path="carts/:userId" element={<CartPage />} />
               </Route>
             </Route>
           </Route>

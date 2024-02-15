@@ -27,11 +27,12 @@ export const getAllCarts = async (req: Request, res: Response) => {
 
 export const getCartByCustomerId = async (req: Request, res: Response) => {
   const id = req.params.id;
+  console.log(id)
   try {
     const cart = await Cart.find({
-      customerId: id,
+      customer: id,
     }).populate([{ path: "product", model: Product }]);
-    console.log(cart);
+    
     if (cart.length === 0) {
       return res
         .status(404)

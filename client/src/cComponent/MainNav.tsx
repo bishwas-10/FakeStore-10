@@ -122,7 +122,7 @@ const MainNav = () => {
           </div>
         )}
         <span className="flex flex-row  items-center">
-          <Link to={"/carts"}>
+          <Link to={`/carts/${decoded?.UserInfo.userId}`}>
             <ShoppingCart height={30} width={30} />
           </Link>
         </span>
