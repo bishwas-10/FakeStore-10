@@ -13,7 +13,7 @@ export const getAllCarts = async (req: Request, res: Response) => {
     if (!cart) {
       return res
         .status(404)
-        .send({ success: false, message: "carts not found", carts: null });
+        .send({ success: false, message: "carts not found", cart: null });
     }
     return res
       .status(200)
@@ -95,12 +95,12 @@ export const editCart = async (req: Request, res: Response) => {
   const id = req.params.id;
   console.log(req.body)
   try {
-    const validation = CartPropsSchema.safeParse(req.body);
-    if (!validation.success) {
-      return res
-        .status(400)
-        .send({ sucess: false, message: validation.error.issues[0].message });
-    }
+    // const validation = CartPropsSchema.safeParse(req.body);
+    // if (!validation.success) {
+    //   return res
+    //     .status(400)
+    //     .send({ sucess: false, message: validation.error.issues[0].message });
+    // }
     const cart = await Cart.findOneAndUpdate(
       { _id: id },
       req.body,

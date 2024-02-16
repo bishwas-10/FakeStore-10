@@ -9,35 +9,36 @@ import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "../../store/soldOrderSlice";
 import { RootState } from "../../store/store";
-
+import { Box, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const {auth}= useAuth();
-const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { auth } = useAuth();
+  const dispatch = useDispatch();
   const logout = useLogout();
-  const orderstatus = useSelector((state:RootState)=>state.order);
-  console.log(orderstatus)
+  const orderstatus = useSelector((state: RootState) => state.order);
+  console.log(orderstatus);
   const controller = new AbortController();
-  const saleCall =async()=>{
+  const saleCall = async () => {
     try {
       const response = await instance({
-        url:'/carts',
-        method:'GET',
-        headers:{
-          Authorization:`Bearer ${auth.token}`
-        }
-      })
-     
-      console.log(response.data.cart)
+        url: "/carts",
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+
+      console.log(response.data.cart);
       dispatch(fetchAllOrders(response.data.cart));
-      
+
       return response.data.cart;
-     console.log(response)
+      console.log(response);
     } catch (error: any) {
-    
       console.log(error);
     }
-  }
+  };
   const { isLoading, data, isError, error, refetch } = useQuery<any>({
     queryKey: ["sold-carts"],
     queryFn: saleCall,
@@ -53,21 +54,16 @@ const dispatch = useDispatch();
     <>
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight ">
-            Dashboard
-          </h2>
+          <h2 className="text-3xl font-bold tracking-tight ">Dashboard</h2>
           <div className="flex items-center space-x-2">
-           
             <button>Download</button>
           </div>
         </div>
         <div defaultValue="overview" className="space-y-4">
-         
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <span className="text-sm font-medium">Total Revenue</span>
                     <svg
@@ -84,7 +80,9 @@ const dispatch = useDispatch();
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold">${orderstatus.totalRevenue}</h1>
+                    <h1 className="text-2xl font-bold">
+                      ${orderstatus.totalRevenue}
+                    </h1>
                     <p className="text-xs text-muted-foreground">
                       +20.1% from last month
                     </p>
@@ -94,7 +92,6 @@ const dispatch = useDispatch();
 
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                  
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="text-sm font-medium">Sales</div>
                     <svg
@@ -112,7 +109,9 @@ const dispatch = useDispatch();
                     </svg>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">+{orderstatus.totalSales}</div>
+                    <div className="text-2xl font-bold">
+                      +{orderstatus.totalSales}
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       +19% from last month
                     </p>
@@ -121,7 +120,6 @@ const dispatch = useDispatch();
               </Card>
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                 
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <h1 className="text-sm font-medium">Active Now</h1>
                     <svg
@@ -155,12 +153,27 @@ const dispatch = useDispatch();
                   <Overview />
                 </div>
               </div>
-              <div className="col-span-3">
+              <div className="col-span-3 border-2 border-gray-300 h-max p-2">
                 <span>
-                  <h2>Recent Sales</h2>
-                  <p>You made 265 sales this month.</p>
+                  <Typography variant="h5" fontWeight={600}>Recent Sales</Typography>
+                  <p>You made {orderstatus.orders.filter((item)=>item.paymentStatus==="paid").length} sales this month.</p>
                 </span>
-                <div>{/* //  <RecentSales /> */}</div>
+                <div className="pt-4" onClick={()=>navigate("orders")}>
+                  {orderstatus.orders.map((order, index) => {
+                    return (
+                      order.paymentStatus === "paid" && (
+                        <Box
+                          key={index}
+                          className="flex flex-row justify-between"
+                        >
+                         
+                         <Typography fontSize={"14px"} fontWeight={600}> {order.product.title}</Typography>
+                        <span>{order.updatedAt}</span>
+                        </Box>
+                      )
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

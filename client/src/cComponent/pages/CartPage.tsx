@@ -10,16 +10,18 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { z } from "zod";
 import { customerSchema } from "../../components/pages/sub-components/editCustomers";
 import { productSchema } from "../../components/pages/sub-components/add-products";
+import { instance } from "../../../api/instance";
+import useAuth from "../../../hooks/useAuth";
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
   createdAt: z.string().optional(),
-  quantity:  z
-  .string()
-  .min(1, "quantity is required")
-  .refine((value) => /^\d+$/.test(value), {
-    message: "quantity must contain only numeric characters",
-  }),
+  quantity: z
+    .string()
+    .min(1, "quantity is required")
+    .refine((value) => /^\d+$/.test(value), {
+      message: "quantity must contain only numeric characters",
+    }),
   totalAmount: z
     .string()
     .min(1, "Price is required")
@@ -29,24 +31,28 @@ export const CartPropsSchema = z.object({
   customer: customerSchema,
   product: productSchema,
   shippingAddress: z.object({
-    city: z.string().min(1,"city is required"),
-    street: z.string().min(1,"street is required"),
+    city: z.string().min(1, "city is required"),
+    street: z.string().min(1, "street is required"),
     zipcode: z.string().optional(),
   }),
-  orderStatus: z.string().min(1,"order status is required"),
-  paymentMethod: z.string().min(1,"order method is required"),
-  paymentStatus: z.string().min(1,"payment status is required"),
+  orderStatus: z.string().min(1, "order status is required"),
+  paymentMethod: z.string().min(1, "order method is required"),
+  paymentStatus: z.string().min(1, "payment status is required"),
 });
-export type TCartSchema = z.infer<typeof CartPropsSchema>
+export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const CartPage = () => {
+  const {auth} = useAuth();
   // const [quantity, setQuantity] = useState<number>(1);
   const { userId } = useParams();
 
   const axiosPrivate = useAxiosPrivate();
   const fetchCartByUserId = async () => {
-    const response = await axiosPrivate({
+    const response = await instance({
       url: `/carts/${userId}`,
       method: "GET",
+      headers:{
+        Authorization:`Bearer ${auth.token}`
+      }
     });
 
     return response.data.cart;
@@ -54,7 +60,6 @@ const CartPage = () => {
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
     queryFn: fetchCartByUserId,
-  
   });
   if (isError) {
     return (
@@ -103,21 +108,21 @@ const CartPage = () => {
     }
   };
 
-  const buyNowHandler = async(cartItem:TCartSchema) => {
+  const buyNowHandler = async (cartItem: TCartSchema) => {
     //console.log(cartItem)
     try {
       const response = await axiosPrivate({
         url: `/carts/${cartItem.id}`,
         method: "PUT",
-        data:{ 
+        data: {
           ...cartItem,
           quantity: cartItem.quantity.toString(),
-          product:cartItem.product.id,
-          customer:userId,
-          paymentStatus:"paid"
-        }
+          product: cartItem.product.id,
+          customer: userId,
+          paymentStatus: "paid",
+        },
       });
-      console.log(response)
+      console.log(response);
       refetch();
     } catch (error) {
       console.log(error);
@@ -240,20 +245,24 @@ const CartPage = () => {
                             ))}
                           </Select>
                         </div>
-                        <div className="w-full mt-2 text-white ">
-                          <button
-                            onClick={() => cancelOrder(item._id)}
-                            className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
-                          >
-                            DELETE
-                          </button>
-                          <button
-                            onClick={() => buyNowHandler(item)}
-                            className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all rounded-r-md"
-                          >
-                            BUY NOW
-                          </button>
-                        </div>
+                        {item.paymentStatus === "paid" ? (
+                          <Typography variant="h6" className="text-secondary">Item bought</Typography>
+                        ) : (
+                          <div className="w-full mt-2 text-white ">
+                            <button
+                              onClick={() => cancelOrder(item._id)}
+                              className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
+                            >
+                              DELETE
+                            </button>
+                            <button
+                              onClick={() => buyNowHandler(item)}
+                              className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all rounded-r-md"
+                            >
+                              BUY NOW
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -114,7 +114,10 @@ const {auth}= useAuth();
         });
         if(response.data.success){
           dispatch(addCart(response.data.cart));
-          toast.success("edited successfully");
+          toast.success("edited successfully", {
+            position: "top-center",
+            autoClose: 2000,
+          });
         }
       }
     }  catch (error:any) {
