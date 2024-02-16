@@ -1,7 +1,54 @@
 import { Overview } from "./sub-components/overview";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../cComponent/reusable/Loading";
+import { axiosPrivate, instance } from "../../../api/instance";
+import useLogout from "../../../hooks/useLogout";
+import useAuth from "../../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllOrders } from "../../store/soldOrderSlice";
+import { RootState } from "../../store/store";
+
+
 const Dashboard = () => {
+  const {auth}= useAuth();
+const dispatch = useDispatch();
+  const logout = useLogout();
+  const orderstatus = useSelector((state:RootState)=>state.order);
+  console.log(orderstatus)
+  const controller = new AbortController();
+  const saleCall =async()=>{
+    try {
+      const response = await instance({
+        url:'/carts',
+        method:'GET',
+        headers:{
+          Authorization:`Bearer ${auth.token}`
+        }
+      })
+     
+      console.log(response.data.cart)
+      dispatch(fetchAllOrders(response.data.cart));
+      
+      return response.data.cart;
+     console.log(response)
+    } catch (error: any) {
+    
+      console.log(error);
+    }
+  }
+  const { isLoading, data, isError, error, refetch } = useQuery<any>({
+    queryKey: ["sold-carts"],
+    queryFn: saleCall,
+  });
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <p>Error occured 404 {error.message}</p>;
+  }
   return (
     <>
       <div className="flex-1 space-y-4 p-8 pt-6">
@@ -37,7 +84,7 @@ const Dashboard = () => {
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold">$45,231.89</h1>
+                    <h1 className="text-2xl font-bold">${orderstatus.totalRevenue}</h1>
                     <p className="text-xs text-muted-foreground">
                       +20.1% from last month
                     </p>
@@ -65,7 +112,7 @@ const Dashboard = () => {
                     </svg>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">+12,234</div>
+                    <div className="text-2xl font-bold">+{orderstatus.totalSales}</div>
                     <p className="text-xs text-muted-foreground">
                       +19% from last month
                     </p>

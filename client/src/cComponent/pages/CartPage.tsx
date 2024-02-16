@@ -54,7 +54,7 @@ const CartPage = () => {
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
     queryFn: fetchCartByUserId,
-    staleTime: 3000,
+  
   });
   if (isError) {
     return (

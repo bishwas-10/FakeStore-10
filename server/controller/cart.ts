@@ -180,3 +180,20 @@ export const deleteCart = async (req: Request, res: Response) => {
       .send({ success: false, message: "internal server error" });
   }
 };
+
+
+export const soldProduct = async(req:Request,res:Response)=>{
+  try {
+    const soldOrder = await Cart.find({paymentStatus:"paid"});
+   
+    if(soldOrder.length===0){
+      return res.status(204);
+    }
+    return res.status(200).send({success:true,message:"got all sold order",soldOrder:soldOrder})
+  } catch (error:any) {
+    console.log(error);
+     res
+    .status(500)
+    .send({ success: false, message: error.message ||"internal server error" });
+  }
+}

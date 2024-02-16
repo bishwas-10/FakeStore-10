@@ -7,13 +7,14 @@ import customerReducer from "./customerSlice";
 import cartReducer from "./cartSlice";
 import categoryReducer from "./categorySlice";
 import userReducer from "./userSlice";
-
+import orderReducer from "./soldOrderSlice";
 const rootReducer = combineReducers({
   product:productReducer,
   customer:customerReducer,
   cart:cartReducer,
   category:categoryReducer,
-  user:userReducer
+  user:userReducer,
+  order:orderReducer
 });
 
 const persistConfig = {
