@@ -27,6 +27,7 @@ const LoginPage = () => {
   const location = useLocation();
   const refresh = useRefreshToken();
   const from = location.state?.from?.pathname || "/";
+  
   const {
     register,
     handleSubmit,
@@ -68,12 +69,11 @@ const LoginPage = () => {
   }, [persist]);
   const authCheck = async () => {
     try {
-      console.log("run vayo")
+      console.log("run vayo");
       await refresh();
       navigate(from, { replace: true });
     } catch (error) {
       setAuth({ token: null });
-  
     }
   };
   useEffect(() => {
@@ -90,7 +90,7 @@ const LoginPage = () => {
     }
   }, []);
   return (
-    <div className="flex  items-center justify-center w-full h-screen">
+    <div className="flex  items-center justify-center w-full min-h-screen">
       <div className="flex flex-col w-3/4 md:w-2/5">
         <Link
           to="/"
@@ -143,33 +143,37 @@ const LoginPage = () => {
             />
             <label htmlFor="persist">Trust This Device</label>
           </div>
-          <button
+          <Button
+          variant="contained"
             type="submit"
-            className="  w-full bg-yellow-500 text-white py-2 rounded-md focus:outline-none focus:bg-yellow-600 hover:bg-yellow-600"
+            className="  w-full  py-2 rounded-md " 
           >
-            Sign in
-          </button>
+            Sign in {from === "/admin" && "as an Admin"}
+          </Button>
         </form>
-        <div className="flex flex-col items-center mt-6 w-full">
-          <span
-            className="text-gray-400 text-xs my-2 flex
+        {from !== "/admin" && (
+          <div className="flex flex-col items-center mt-6 w-full">
+            <span
+              className="text-gray-400 text-xs my-2 flex
          flex-row items-center w-full"
-          >
-            <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
-            <span className="flex-grow w-80 text-center  border-gray-400">
-              New to FakeStore?
+            >
+              <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
+              <span className="flex-grow w-80 text-center  border-gray-400">
+                New to FakeStore?
+              </span>
+              <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
             </span>
-            <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
-          </span>
-          <Link
-            to={"/signup"}
-            className="w-full mt-2 font-bold  shadow-md  transition-all text-center"
-          >
-            <Button sx={{ width: "100%", fontSize: "15px", fontWeight: 500 }}>
-              Create your FakeStore Account
-            </Button>
-          </Link>
-        </div>
+
+            <Link
+              to={"/signup"}
+              className="w-full mt-2 font-bold  shadow-md  transition-all text-center"
+            >
+              <Button sx={{ width: "100%", fontSize: "15px", fontWeight: 500 }}>
+                Create your FakeStore Account
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

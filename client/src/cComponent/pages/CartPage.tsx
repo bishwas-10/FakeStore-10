@@ -7,7 +7,37 @@ import { toast, ToastContainer } from "react-toastify";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-
+import { z } from "zod";
+import { customerSchema } from "../../components/pages/sub-components/editCustomers";
+import { productSchema } from "../../components/pages/sub-components/add-products";
+export const CartPropsSchema = z.object({
+  id: z.string().optional(),
+  updatedAt: z.string().optional(),
+  createdAt: z.string().optional(),
+  quantity:  z
+  .string()
+  .min(1, "quantity is required")
+  .refine((value) => /^\d+$/.test(value), {
+    message: "quantity must contain only numeric characters",
+  }),
+  totalAmount: z
+    .string()
+    .min(1, "Price is required")
+    .refine((value) => /^\d+(\.\d+)?$/.test(value), {
+      message: "Price must contain only numeric characters",
+    }),
+  customer: customerSchema,
+  product: productSchema,
+  shippingAddress: z.object({
+    city: z.string().min(1,"city is required"),
+    street: z.string().min(1,"street is required"),
+    zipcode: z.string().optional(),
+  }),
+  orderStatus: z.string().min(1,"order status is required"),
+  paymentMethod: z.string().min(1,"order method is required"),
+  paymentStatus: z.string().min(1,"payment status is required"),
+});
+export type TCartSchema = z.infer<typeof CartPropsSchema>
 const CartPage = () => {
   // const [quantity, setQuantity] = useState<number>(1);
   const { userId } = useParams();
@@ -21,48 +51,77 @@ const CartPage = () => {
 
     return response.data.cart;
   };
-  const { isLoading, data , refetch} = useQuery<any[]>({
+  const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
     queryFn: fetchCartByUserId,
-    staleTime: 30000,
+    staleTime: 3000,
   });
-  const [selectedQuantities, setSelectedQuantities] = useState<{ [productId: string]: number }>({});
+  if (isError) {
+    return (
+      <span>
+        Error occured 404<p className="text-md font-medium ">{error.message}</p>{" "}
+      </span>
+    );
+  }
+  const [selectedQuantities, setSelectedQuantities] = useState<{
+    [productId: string]: number;
+  }>({});
 
-  const handleQuantityChange =async (productId: string,cartId:string, quantity: number) => {
+  const handleQuantityChange = async (
+    productId: string,
+    cartId: string,
+    quantity: number
+  ) => {
     setSelectedQuantities({ ...selectedQuantities, [productId]: quantity });
-   try {
-  
-    const response = await axiosPrivate({
-      url: `/carts/${cartId}`,
-      method: "PATCH",
-      data:{
-        quantity:quantity,
-        product:productId
-      }
-    });
-refetch();
-   } catch (error) {
-    console.log(error)
-   }
+    try {
+      const response = await axiosPrivate({
+        url: `/carts/${cartId}`,
+        method: "PATCH",
+        data: {
+          quantity: quantity,
+          product: productId,
+        },
+      });
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (isLoading) {
     return <Loading />;
   }
-const cancelOrder=async(cartId:string)=>{
-try {
-  const response = await axiosPrivate({
-    url: `/carts/${cartId}`,
-    method: "DELETE",
-   
-  });
-refetch();
-} catch (error) {
-  console.log(error)
-}
-}
+  const cancelOrder = async (cartId: string) => {
+    try {
+      const response = await axiosPrivate({
+        url: `/carts/${cartId}`,
+        method: "DELETE",
+      });
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const buyNowHandler = () => {
+  const buyNowHandler = async(cartItem:TCartSchema) => {
+    //console.log(cartItem)
+    try {
+      const response = await axiosPrivate({
+        url: `/carts/${cartItem.id}`,
+        method: "PUT",
+        data:{ 
+          ...cartItem,
+          quantity: cartItem.quantity.toString(),
+          product:cartItem.product.id,
+          customer:userId,
+          paymentStatus:"paid"
+        }
+      });
+      console.log(response)
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
     toast.success("Item bought successfully", {
       position: "top-center",
       autoClose: 2000,
@@ -157,7 +216,7 @@ refetch();
                       <div className="flex flex-col w-full p-4">
                         <div className="flex flex-row items-center text-lg gap-6 dark:text-gray-400 ">
                           <span>Quantity</span>
-                        
+
                           <Select
                             labelId="Quantity"
                             id={`quantity-${index}`}
@@ -174,20 +233,22 @@ refetch();
                               )
                             }
                           >
-                            {[...Array(9).keys()].map((quantity) => (
+                            {[...Array(15).keys()].map((quantity) => (
                               <MenuItem key={quantity} value={quantity + 1}>
                                 {quantity + 1}
                               </MenuItem>
                             ))}
                           </Select>
-                         
                         </div>
                         <div className="w-full mt-2 text-white ">
-                          <button onClick={()=>cancelOrder(item._id)} className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md">
+                          <button
+                            onClick={() => cancelOrder(item._id)}
+                            className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
+                          >
                             DELETE
                           </button>
                           <button
-                            onClick={() => buyNowHandler()}
+                            onClick={() => buyNowHandler(item)}
                             className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all rounded-r-md"
                           >
                             BUY NOW

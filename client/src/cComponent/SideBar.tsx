@@ -20,15 +20,24 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { ListSubheader } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { ListSubheader, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import useAuth from "../../hooks/useAuth";
+import { JwtPayload, jwtDecode } from "jwt-decode";
+import { UserInfoProps } from "../context/AuthProvider";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 const SideBar = () => {
-  const categories = useSelector((state:RootState)=>state.category.category)
+  const { auth } = useAuth();
+
+  let decoded: UserInfoProps;
+  if (auth.token) {
+    decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps;
+  }
+  const categories = useSelector((state: RootState) => state.category.category);
   const navigate = useNavigate();
   const [state, setState] = React.useState({
     top: false,
@@ -53,29 +62,43 @@ const SideBar = () => {
 
   const list = (anchor: Anchor) => (
     <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 350,bgcolor:"background.main" }}
+      sx={{
+        width: anchor === "top" || anchor === "bottom" ? "auto" : 350,
+        bgcolor: "background.main",
+      }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
+      <Typography
+        variant="h5"
+        className="text-center h-16 p-3 "
+        sx={{ width: "100%", bgcolor: "background.paper" }}
+      >
+       <Link to={"/login"}> Hello,{decoded ? `${decoded.UserInfo.username}` :"Sign In"}</Link>
+      </Typography>
       <List>
-        {categories.map((item, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton onClick={()=>navigate("/allproducts")}>
+            <ListItemIcon>
+              <ShoppingBag />
+            </ListItemIcon>
+            <ListItemText primary="All Products" />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        <ListSubheader sx={{bgcolor:"background.paper",color:"text.primary"}}>Shop by Department</ListSubheader>
+        <ListSubheader
+          sx={{ bgcolor: "background.paper", color: "text.primary" }}
+        >
+          Shop by Department
+        </ListSubheader>
         {categories.map((item, index) => (
           <ListItem key={index} disablePadding>
-            <ListItemButton onClick={() => navigate(`/categories/${item.title}`)}>
+            <ListItemButton
+              onClick={() => navigate(`/categories/${item.title}`)}
+            >
               <ListItemText primary={item.title} />
               <ListItemIcon>
                 <ChevronRight />
@@ -124,15 +147,18 @@ const SideBar = () => {
 
   return (
     <>
-      <Button onClick={toggleDrawer("left", true)}
-       sx={{ color: "whitesmoke" }} className=" border-2">
-      <span
-        className="p-2 gap-1 flex items-center justify-center text-sm  md:font-small
-         hover:border-white hover:border-2  "
+      <Button
+        onClick={toggleDrawer("left", true)}
+        sx={{ color: "whitesmoke" }}
+        className=" border-2"
       >
-       <Menu/>All
-      </span>
-          
+        <span
+          className="p-2 gap-1 flex items-center justify-center text-sm  md:font-small
+         hover:border-white hover:border-2  "
+        >
+          <Menu />
+          All
+        </span>
       </Button>
       <Drawer
         anchor="left"

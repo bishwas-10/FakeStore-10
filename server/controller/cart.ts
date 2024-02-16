@@ -49,13 +49,20 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
 };
 
 export const addCart = async (req: Request, res: Response) => {
-console.log(req.body)
+
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {
       return res.status(400).send({ sucess: false, message: validation.error });
     }
-
+const existingCart = await Cart.findOne({product:req.body.product});
+if(existingCart){
+  
+  existingCart.quantity += parseInt(req.body.quantity);
+ 
+  await existingCart.save();
+  return res.status(200).send({ success: true, message: "cart updated" });
+}
 
     const cart = await Cart.create({
       quantity: req.body.quantity,
@@ -86,7 +93,7 @@ console.log(req.body)
 };
 export const editCart = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(req.body);
+  console.log(req.body)
   try {
     const validation = CartPropsSchema.safeParse(req.body);
     if (!validation.success) {

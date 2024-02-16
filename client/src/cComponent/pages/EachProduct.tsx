@@ -49,12 +49,7 @@ const EachProduct = () => {
     queryFn: () => fetchProductDetails(id as string),
   });
 
-  const buyNowHandler = () => {
-    toast.success("Item bought successfully", {
-      position: "top-center",
-      autoClose: 2000,
-    });
-  };
+ 
   const authCheck = async () => {
     try {
       console.log("run vayo");
@@ -100,7 +95,7 @@ const EachProduct = () => {
       console.log(error);
     }
   };
-
+  
   if (isLoading) {
     return <Loading />;
   }
@@ -176,12 +171,7 @@ const EachProduct = () => {
                 </button>
               </div>
               <div className="w-full mt-4 text-white ">
-                <button
-                  onClick={buyNowHandler}
-                  className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
-                >
-                  BUY NOW
-                </button>
+               
                 <button
                   onClick={() => addToCart()}
                   className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md"

@@ -7,13 +7,14 @@ import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
+import { UserInfoProps } from "../context/AuthProvider";
 
 const MainNav = () => {
   const { auth } = useAuth();
   
  let decoded;
  if(auth.token){
-    decoded = jwtDecode<JwtPayload>(auth?.token as string) as any;
+    decoded = jwtDecode<JwtPayload>(auth?.token as string) as UserInfoProps;
  }
     
   const { theme, toggleDarkMode } = useTheme();

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { ShoppingBag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -109,7 +109,7 @@ const SignUpPage = () => {
     }
   }, []);
   return (
-    <div className="flex  items-center justify-center w-full h-screen">
+    <div className="flex  items-center justify-center w-full h-max py-10">
       <div className="flex flex-col w-3/4 md:w-2/5">
         <Link
           to="/"
@@ -253,12 +253,13 @@ const SignUpPage = () => {
           </div>
           {errMsg && <span className="text-red-500">{errMsg}</span>}
 
-          <button
+          <Button
             type="submit"
-            className="  w-full bg-yellow-500 text-white py-2 rounded-md focus:outline-none focus:bg-yellow-600 hover:bg-yellow-600"
+            variant="contained"
+            className="  w-full  py-2 rounded-md "
           >
             Sign up
-          </button>
+          </Button>
         </form>
         <div className="flex flex-col items-center mt-6 w-full">
           <span
@@ -271,12 +272,13 @@ const SignUpPage = () => {
             </span>
             <span className="flex-grow border-2 w-full border-gray-300 dark:border-gray-400" />
           </span>
-          <Link
-            to={"/login"}
-            className="w-full mt-2 py-1  border-2 shadow-md hover:bg-gray-200 transition-all text-center"
+          <Button
+          variant="outlined"
+            onClick={()=>navigate("/login")}
+            className="w-full mt-2 py-1  border-2 shadow-md text-center"
           >
             Sign in
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

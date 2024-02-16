@@ -5,7 +5,11 @@ export default {
   ],
   theme: {
     extend: {
-      
+      colors: {
+        'primary': '#ffc107',
+        'semiprimary': ' #e0e0e0',
+        'secondary':'#3f51b5'
+      },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
       },

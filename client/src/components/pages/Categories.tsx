@@ -233,7 +233,7 @@ const Categories = () => {
               <tbody className=" text-sm font-medium">
                 {categories.length !== 0 && (
                   <>
-                    {categories?.map((category, index) => {
+                    {categories?.map((category:TCategorySchema, index:number) => {
                       if (pageStartIndex <= index && pageEndIndex >= index) {
                         return (
                           <tr

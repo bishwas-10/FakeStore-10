@@ -62,7 +62,7 @@ const Navbar = () => {
           <nav className={"flex items-center space-x-4 lg:space-x-6 text-md"}>
             <Link
               to="/admin"
-              className={`p-2 rounded-md transition-all  hover:text-primary
+              className={`p-2 rounded-md transition-all 
             ${
               pathname === "/admin"
                 ? "font-semibold text-gray-600 bg-gray-300"
@@ -80,7 +80,7 @@ const Navbar = () => {
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all `}
             >
               Products
             </Link>
@@ -92,7 +92,7 @@ const Navbar = () => {
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all `}
             >
               Categories
             </Link>
@@ -104,7 +104,7 @@ const Navbar = () => {
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all `}
             >
               Customers
             </Link>
@@ -116,7 +116,7 @@ const Navbar = () => {
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all `}
             >
               Orders
             </Link>
@@ -128,7 +128,7 @@ const Navbar = () => {
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all `}
             >
               Settings
             </Link>
@@ -136,7 +136,7 @@ const Navbar = () => {
               to="/"
               className={` p-2 
            
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all`}
             >
               Customer Section
             </Link>
@@ -148,7 +148,7 @@ const Navbar = () => {
                 ? "font-semibold text-gray-600 bg-gray-300"
                 : "text-muted-foreground"
             }
-            rounded-md transition-all hover:text-primary`}
+            rounded-md transition-all `}
             >
               logout
             </button>
