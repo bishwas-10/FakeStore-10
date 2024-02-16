@@ -119,7 +119,7 @@ const productCall =async()=>{
             below with pagination features
           </p>
         </div>
-        <Button variant="outlined">
+        <Button variant="contained" >
           <Link to="addproducts">add products</Link>
         </Button>
       </div>

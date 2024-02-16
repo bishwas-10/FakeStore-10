@@ -11,6 +11,8 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
 import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../cComponent/reusable/Loading";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
@@ -39,8 +41,9 @@ const customerCall =async()=>{
       signal: controller.signal
   })
   if(response.data.success){
-    
     dispatch(fetchAllCustomers(response.data.customers));
+    return response.data.customers;
+    
   }
   } catch (error:any) {
     if(error.response.status=== 403 || error.response.status=== 401){
@@ -52,11 +55,20 @@ const customerCall =async()=>{
 
     
 }
-  useEffect(() => {
-   customerCall();
+const { isLoading, data, isError, error,refetch } = useQuery<any>({
+  queryKey: ["all categories"],
+  queryFn: customerCall,
+});
 
-   return ()=>{dispatch(removeCustomers());}
-  }, []);
+
+if (isLoading) {
+  return <Loading />;
+}
+
+
+if (isError) {
+  return <p>Error occured 404 {error.message}</p>;
+}
 
   return (
     <div className="px-4">

@@ -11,12 +11,7 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import {
-  addCart,
-  fetchAllCarts,
-  fetchCarts,
-  removeCarts,
-} from "../../store/cartSlice";
+import { addCart, fetchAllCarts } from "../../store/cartSlice";
 import { RootState } from "../../store/store";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -29,6 +24,8 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import Loading from "../../cComponent/reusable/Loading";
+import { useQuery } from "@tanstack/react-query";
 
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
@@ -71,7 +68,7 @@ export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const Order = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const cartData = useSelector((state: RootState) => state.cart.carts);
-  const { auth, setAuth } = useAuth();
+  const { auth } = useAuth();
   const logout = useLogout();
 
   //pagination
@@ -96,8 +93,8 @@ const Order = () => {
         signal: controller.signal,
       });
       if (response.data.success) {
-        console.log(response.data.cart);
         dispatch(fetchAllCarts(response.data.cart));
+        return response.data.cart;
       }
     } catch (error: any) {
       if (error.response.status === 403 || error.response.status === 401) {
@@ -106,13 +103,18 @@ const Order = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    cartCall();
+  const { isLoading, data, isError, error, refetch } = useQuery<any>({
+    queryKey: ["all-carts"],
+    queryFn: cartCall,
+  });
 
-    return () => {
-      dispatch(removeCarts());
-    };
-  }, []);
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <p>Error occured 404 {error.message}</p>;
+  }
 
   const deleteOrders = async (id: string) => {
     try {
@@ -124,7 +126,7 @@ const Order = () => {
           authorization: `Bearer ${auth.token}`,
         },
       });
-      console.log(response);
+      refetch();
     } catch (error: any) {
       if (error.response.status === 403 || error.response.status === 401) {
         logout();

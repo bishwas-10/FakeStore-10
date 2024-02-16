@@ -9,7 +9,7 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { amber, grey } from "@mui/material/colors";
+import { amber, grey, indigo } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -49,44 +49,33 @@ function App() {
   // State to manage the current theme mode
   const { theme } = useTheme();
   // Create custom theme based on the current mode
-  const getDesignTokens = (mode: PaletteMode) => ({
-    palette: {
-      mode,
-      primary: {
-        ...amber,
-        ...(mode === "dark" && {
-          main: amber[300],
-        }),
-      },
-      ...(mode === "dark" && {
-        background: {
-          main: "#000202",
-          black: "#000202",
-          default: grey[900],
-          paper: grey[800],
-        },
-      }),
-      ...(mode === "light" && {
-        background: {
-          main: grey[200],
-          black: "#ffffff",
-          default: grey[200],
-          paper: grey[300],
-        },
-      }),
-      text: {
-        ...(mode === "light"
-          ? {
-              primary: grey[900],
-              secondary: grey[800],
-            }
-          : {
-              primary: "#fff",
-              secondary: grey[500],
-            }),
-      },
+ const getDesignTokens = (mode: PaletteMode) => ({
+  palette: {
+    mode,
+    primary: {
+      main: mode === 'dark' ? amber[500] : indigo[500],
     },
-  });
+    background: mode === 'dark' ? {
+      main: '#000202',
+      black: '#000202',
+      default: grey[900],
+      paper: grey[800],
+    } : {
+      main: grey[200],
+      black: '#ffffff',
+      default: grey[200],
+      paper: grey[300],
+    },
+    text: mode === 'light' ? {
+      primary: grey[900],
+      secondary: grey[800],
+    } : {
+      primary: '#fff',
+      secondary: grey[500],
+    },
+  },
+});
+
   const themeUi = createTheme(getDesignTokens(theme));
 
   return (

@@ -68,8 +68,9 @@ const Categories = () => {
         signal: controller.signal,
       });
       if (response.data.success) {
-        
         dispatch(fetchAllCategories(response.data.categories));
+        return response.data.categories;
+       
       }
     }  catch (error:any) {
       if(error.response.status=== 403 || error.response.status=== 401){
@@ -133,7 +134,7 @@ const Categories = () => {
             listed below with pagination features
           </p>
         </div>
-        <Button variant="outlined">
+        <Button variant="contained">
           <Link to="addcategory">add categories</Link>
         </Button>
       </div>

@@ -5,7 +5,6 @@ import storage from "redux-persist/lib/storage";
 import productReducer from "./productSlice";
 import customerReducer from "./customerSlice";
 import cartReducer from "./cartSlice";
-import tokenReducer from "./tokenSlice";
 import categoryReducer from "./categorySlice";
 import userReducer from "./userSlice";
 
@@ -13,7 +12,6 @@ const rootReducer = combineReducers({
   product:productReducer,
   customer:customerReducer,
   cart:cartReducer,
-  token:tokenReducer,
   category:categoryReducer,
   user:userReducer
 });
@@ -22,7 +20,7 @@ const persistConfig = {
   key: "admin",
   version: 1,
   storage,
-  whitelist:['token','user']
+  whitelist:['user']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

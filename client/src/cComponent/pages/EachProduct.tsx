@@ -66,18 +66,16 @@ const EachProduct = () => {
       setAuth({ token: null });
     }
   };
-  useEffect(() => {
-    if (!auth.token) {
-      authCheck();
-    } 
-     
-  }, []);
+
   let decoded: UserInfoProps;
   if (auth.token) {
     decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps;
   }
   const addToCart = async () => {
     try {
+      if (!auth.token) {
+      await  authCheck();
+      } 
       console.log(decoded);
       const response = await axiosPrivate({
         url: `/carts`,
