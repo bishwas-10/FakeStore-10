@@ -106,16 +106,16 @@ const EachProduct = () => {
   }
 
   return (
-    <div className="p-10 flex flex-col items-center">
-      <div className="w-full">
-        <div className=" flex flex-row gap-2 text-lg capitalize">
+    <div className="px-10 py-10 flex flex-col items-start">
+      
+        <div className=" flex flex-row items-center gap-2 text-lg capitalize">
           <Link to="/">home</Link>
           <ChevronRight />
           <Link to={"/categories/" + data.category}>{data.category}</Link>
           <ChevronRight />
           {data.title}
         </div>
-      </div>
+      
       <div className="flex flex-col w-full  mt-8  h-max-content">
         <div className=" flex flex-col  md:flex-row  border-2 border-gray-400  ">
           <div className="w-full md:w-1/4 border-r-2 border-gray-400 shrink-0 ">

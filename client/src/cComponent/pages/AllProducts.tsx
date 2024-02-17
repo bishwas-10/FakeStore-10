@@ -28,8 +28,8 @@ export default function AllProducts() {
     return <span>Error occured 404<p className="text-md font-medium ">{error.message}</p> </span>;
   }
   return (
-    <>
-      <Typography variant="h6" fontWeight={500} className="py-6 px-10">
+    <> 
+      <Typography  fontWeight={500} fontSize={"20px"} className="py-6 px-10 tracking-wide capitalize">
         All products available at FakeStore
       </Typography>
       <div className="px-8 my-12 flex flex-wrap items-center justify-center gap-4">

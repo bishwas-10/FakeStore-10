@@ -41,7 +41,7 @@ export const CartPropsSchema = z.object({
 });
 export type TCartSchema = z.infer<typeof CartPropsSchema>;
 const CartPage = () => {
-  const {auth} = useAuth();
+  const { auth } = useAuth();
   // const [quantity, setQuantity] = useState<number>(1);
   const { userId } = useParams();
 
@@ -50,9 +50,9 @@ const CartPage = () => {
     const response = await instance({
       url: `/carts/${userId}`,
       method: "GET",
-      headers:{
-        Authorization:`Bearer ${auth.token}`
-      }
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
     });
 
     return response.data.cart;
@@ -246,7 +246,12 @@ const CartPage = () => {
                           </Select>
                         </div>
                         {item.paymentStatus === "paid" ? (
-                          <Typography variant="h6" className="text-secondary">Item bought</Typography>
+                          <Typography
+                            fontSize={"18px"}
+                            className="text-white p-2 text-center bg-green-600 rounded-md"
+                          >
+                            Item bought
+                          </Typography>
                         ) : (
                           <div className="w-full mt-2 text-white ">
                             <button

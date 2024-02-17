@@ -1,5 +1,6 @@
 import React from "react";
 import { ratingStars } from "./reusable/utils";
+import { Box } from "@mui/material";
 
 export interface ProductsProps {
   id?: number;
@@ -18,9 +19,9 @@ const Card = ({ product }: { product: ProductsProps }) => {
   
 
   return (
-    <div className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
+    <Box sx={{bgcolor:"background.main"}} className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
       <div className="w-full h-44 relative  rounded-t-md p-4">
-        <div className="absolute  top-2 right-2 flex flex-row items-center justify-center h-6 py-3 px-2 bg-red-500 rounded-full">
+        <div className="absolute  top-2 right-2 flex flex-row items-center justify-center h-6 py-3 px-2 bg-primary rounded-full">
           <p className="text-sm font-semibold ">$ {product.price}</p>
         </div>
         <div className="w-full h-full">
@@ -49,7 +50,7 @@ const Card = ({ product }: { product: ProductsProps }) => {
           </span>
         </div>
       </div>
-    </div>
+    </Box>
   );
 };
 

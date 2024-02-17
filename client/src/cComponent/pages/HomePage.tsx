@@ -26,12 +26,7 @@ const IMAGES = [
   { url: pic7, alt: "pic 7" },
   { url: pic8, alt: "pic 8" },
 ];
-const CATEGORIES = [
-  { name: "electronics", url: electronics, alt: "electronics" },
-  { name: "men's clothing", url: mens, alt: "mens" },
-  { name: "women's clothing", url: womens, alt: "womens" },
-  { name: "jewelery", url: jewellery, alt: "jewellery" },
-];
+
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -44,7 +39,7 @@ const HomePage = () => {
         <h2 className="text-2xl font-bold capitalize tracking-wide text-center">
           Categories for you
         </h2>
-        <CategoryHome categories={CATEGORIES} />
+        <CategoryHome />
       </div>
       <div className="h-40 mx-4 my-2 flex flex-col items-center justify-center shadow-sm  border-2 border-gray-400 rounded-lg ">
         <p>See Personalized Recommendation</p>

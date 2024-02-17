@@ -169,6 +169,7 @@ const AddProducts = () => {
         }
         toast.success(response.data.message);
       }
+      reset();
     } catch (error: any) {
       if (error.response.status === 403 || error.response.status === 401) {
         logout();
@@ -205,10 +206,10 @@ const AddProducts = () => {
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-2 p-4">
-      <div className=" w-full md:w-1/2">
+      <div className=" w-full">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 mt-4 ease-in-out w-[50%]"
+          className="flex flex-col gap-4 mt-4 ease-in-out "
         >
           <div className="flex flex-col gap-4">
             <div className="flex flex-row w-full gap-6 ">

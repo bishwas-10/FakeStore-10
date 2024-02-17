@@ -49,9 +49,9 @@ const EachCategoryProduct = () => {
         return <span>Error occured 404<p className="text-md font-medium ">{error.message}</p> </span>;
       }
   return (
-    <div className="p-4 my-2 flex flex-wrap items-center justify-center gap-4 ">
+    <div className="p-10 my-2 flex flex-wrap items-center justify-center gap-4 ">
        <div className="w-full ">
-        <div className="mt-6 flex flex-row gap-2 text-lg capitalize">
+        <div className=" flex flex-row items-center gap-2 text-lg capitalize">
           <Link to="/">home</Link>
           <ChevronRight />
           <p>{category}</p>

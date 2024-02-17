@@ -239,7 +239,7 @@ const productCall =async()=>{
                               <img
                                 src={product.image}
                                 alt={product.title}
-                                className="w-40 object-contain"
+                                className="w-40 h-40 object-contain"
                               />
                             </td>
                             <td className="py-3 px-0 text-center">

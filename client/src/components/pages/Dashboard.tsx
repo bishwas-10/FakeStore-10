@@ -9,8 +9,9 @@ import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "../../store/soldOrderSlice";
 import { RootState } from "../../store/store";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { dateFormatter } from "../../../utils/dateFormatter";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight ">Dashboard</h2>
           <div className="flex items-center space-x-2">
-            <button>Download</button>
+            <Button variant="contained">Download</Button>
           </div>
         </div>
         <div defaultValue="overview" className="space-y-4">
@@ -93,7 +94,9 @@ const Dashboard = () => {
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
                   <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <div className="text-sm font-medium">Sales</div>
+                    <div className="text-sm font-medium">
+                      Total Sold Product
+                    </div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -144,31 +147,62 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <div className="col-span-4">
-                <h1>
-                  <p>Overview</p>
-                </h1>
-                <div className="">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
+              <div className="col-span-4 border-2 border-gray-300  p-4 shadow-lg">
+                <Typography variant="h5" fontWeight={600}>
+                  Overview
+                </Typography>
+                <div className="mt-4">
                   <Overview />
                 </div>
               </div>
-              <div className="col-span-3 border-2 border-gray-300 h-max p-2">
+              <div className="col-span-3 border-2 border-gray-300 h-max p-4 shadow-lg">
                 <span>
-                  <Typography variant="h5" fontWeight={600}>Recent Sales</Typography>
-                  <p>You made {orderstatus.orders.filter((item)=>item.paymentStatus==="paid").length} sales this month.</p>
+                  <Typography variant="h5" fontWeight={600}>
+                    Recent Sales
+                  </Typography>
+                  <p>You made {orderstatus.totalSales} sales this month.</p>
                 </span>
-                <div className="pt-4" onClick={()=>navigate("orders")}>
+                <div
+                  className="pt-4 flex flex-col gap-2"
+                  onClick={() => navigate("orders")}
+                >
                   {orderstatus.orders.map((order, index) => {
                     return (
                       order.paymentStatus === "paid" && (
                         <Box
                           key={index}
-                          className="flex flex-row justify-between"
+                          className="flex flex-row items-center justify-between"
                         >
-                         
-                         <Typography fontSize={"14px"} fontWeight={600}> {order.product.title}</Typography>
-                        <span>{order.updatedAt}</span>
+                          <Box className="flex flex-col  items-start w-60">
+                            <Typography fontSize={"14px"} fontWeight={600}>
+                              {order.product.title}
+                            </Typography>
+                            <Typography fontSize={"12px"}>
+                              {order.customer.email}
+                            </Typography>
+                          </Box>
+                          <Box className="flex flex-col  items-center">
+                            <Typography fontSize={"14px"} fontWeight={500}>
+                              Qty: {order.quantity}
+                            </Typography>
+                            <span className="text-sm">
+                              Per Product:{" "}
+                              <span className="font-bold">
+                                ${order.totalAmount}
+                              </span>
+                            </span>
+                          </Box>
+                          <Box className="flex flex-col  items-end">
+                            <Typography fontSize={"14px"} fontWeight={600}>
+                              $
+                              {parseInt(order.quantity) *
+                                parseInt(order.totalAmount)}
+                            </Typography>
+                            <span>
+                              {dateFormatter(order.updatedAt as string)}
+                            </span>
+                          </Box>
                         </Box>
                       )
                     );

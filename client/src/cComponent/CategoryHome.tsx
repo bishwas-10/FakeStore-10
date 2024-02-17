@@ -6,6 +6,7 @@ import Loading from "./reusable/Loading";
 import { TCategorySchema } from "../components/pages/sub-components/AddCategory";
 import { useDispatch } from "react-redux";
 import { fetchAllCategories } from "../store/categorySlice";
+import { Box } from "@mui/material";
 
 type CategoriesProps = {
   categories: {
@@ -15,50 +16,51 @@ type CategoriesProps = {
   }[];
 };
 
-
-const CategoryHome = ({ categories }: CategoriesProps) => {
+const CategoryHome = () => {
   const dispatch = useDispatch();
   const fetchCategories = async () => {
     const response = await instance({
-        url: `/categories`,
-        method: "GET",
-      });
-   
-      if(response.data.success){
-        dispatch(fetchAllCategories(response.data.categories));
-         return response.data.categories;
-      }else{
-       
-          throw new Error(response.data.message);
-      
-      }
-     
+      url: `/categories`,
+      method: "GET",
+    });
+
+    if (response.data.success) {
+      dispatch(fetchAllCategories(response.data.categories));
+      return response.data.categories;
+    } else {
+      throw new Error(response.data.message);
+    }
   };
-  const { isLoading, data ,isError,error} = useQuery({
+  const { isLoading, data, isError, error } = useQuery({
     queryKey: [`categories`],
     queryFn: () => fetchCategories(),
   });
 
-  
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
-  if (isError ) {
-    return <span>Error occured 404<p className="text-md font-medium ">{error.message}</p> </span>;
+  if (isError) {
+    return (
+      <span>
+        Error occured 404<p className="text-md font-medium ">{error.message}</p>{" "}
+      </span>
+    );
   }
   return (
-    <div className="flex flex-wrap">
-      
-      {data?.map((item:TCategorySchema, index:number) => (
-        <Link
-          key={index}
-          to={"/categories/" + item.title}
-          className="m-4 p-2 flex flex-col items-center  
-            grow border-2 border-gray-400 basis-56 rounded-lg hover:shadow-md shadow-sm
-            hover:shadow-gray-300 cursor-pointer hover:scale-103 transition-all"
-        >
-          <p className="text-sm tracking-wide  uppercase">{item.title}</p>
-          <img src={item.image} alt={item.title} className="w-70 h-60 rounded-sm" />
+    <div className="px-16 mt-4 flex flex-wrap items-center justify-center gap-10 ">
+      {data?.map((item: TCategorySchema, index: number) => (
+        <Link key={index} to={"/categories/" + item.title}>
+          <Box
+            sx={{ bgcolor: "background.main" }}
+            className="w-80 border p-2 flex flex-col gap-2 border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer"
+          >
+            <p className="text-sm tracking-wide  uppercase">{item.title}</p>
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-70 h-60 rounded-sm"
+            />
+          </Box>
         </Link>
       ))}
     </div>

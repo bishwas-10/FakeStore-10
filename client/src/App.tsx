@@ -63,7 +63,7 @@ function App() {
     } : {
       main: grey[200],
       black: '#ffffff',
-      default: grey[200],
+      default:'#ffffff',
       paper: grey[300],
     },
     text: mode === 'light' ? {
