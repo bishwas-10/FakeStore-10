@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { instance } from "../../api/instance";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./reusable/Loading";
 import { TCategorySchema } from "../components/pages/sub-components/AddCategory";
 import { useDispatch } from "react-redux";
 import { fetchAllCategories } from "../store/categorySlice";
 import { Box } from "@mui/material";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 type CategoriesProps = {
   categories: {
@@ -17,9 +17,10 @@ type CategoriesProps = {
 };
 
 const CategoryHome = () => {
+  const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const fetchCategories = async () => {
-    const response = await instance({
+    const response = await axiosPrivate({
       url: `/categories`,
       method: "GET",
     });
@@ -58,7 +59,7 @@ const CategoryHome = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="w-70 h-60 rounded-sm"
+              className="w-70 h-60 rounded-sm object-cover"
             />
           </Box>
         </Link>

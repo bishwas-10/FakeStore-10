@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "../../store/soldOrderSlice";
 import { RootState } from "../../store/store";
 import { Box, Button, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { dateFormatter } from "../../../utils/dateFormatter";
 
 const Dashboard = () => {
@@ -40,7 +40,7 @@ const Dashboard = () => {
       console.log(error);
     }
   };
-  const { isLoading, data, isError, error, refetch } = useQuery<any>({
+  const { isLoading, data, isError, error } = useQuery<any>({
     queryKey: ["sold-carts"],
     queryFn: saleCall,
   });
@@ -123,8 +123,11 @@ const Dashboard = () => {
               </Card>
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">
                 <CardContent>
-                  <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <h1 className="text-sm font-medium">Active Now</h1>
+                  <Link
+                    to={"orders"}
+                    className="flex flex-row items-center justify-between space-y-0 pb-2"
+                  >
+                    <h1 className="text-sm font-medium">Unsold Product</h1>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -137,13 +140,16 @@ const Dashboard = () => {
                     >
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                     </svg>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">+573</div>
-                    <p className="text-xs text-muted-foreground">
-                      +201 since last hour
-                    </p>
-                  </div>
+                  </Link>
+                  <Box>
+                    <div className="text-2xl font-bold">
+                      {
+                        orderstatus.orders.filter(
+                          (order) => order.paymentStatus === "paid"
+                        ).length
+                      }
+                    </div>
+                  </Box>
                 </CardContent>
               </Card>
             </div>

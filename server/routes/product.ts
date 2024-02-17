@@ -1,5 +1,5 @@
 import express from 'express';
-import { addProduct, deleteProduct, editProduct, getAllCategories, getCategoryProduct } from '../controller/product';
+import { addProduct, deleteProduct, editProduct } from '../controller/product';
 import { ROLES_LIST } from '../config/roles_list';
 import { verifyRoles } from '../middleware/verifyRoles';
 

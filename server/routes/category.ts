@@ -1,9 +1,7 @@
 import express from 'express';
-
 import { verifyRoles } from '../middleware/verifyRoles';
 import { ROLES_LIST } from '../config/roles_list';
 import { addCategory, deleteCategory, editCategory, getAllCategories, getCategoryProduct } from '../controller/category';
-
 const router = express.Router();
 
 //allProducts

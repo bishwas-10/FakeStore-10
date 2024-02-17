@@ -4,7 +4,7 @@ import Category from "../models/category";
 import Product from "../models/product";
 
 export const getAllCategories = async(req: Request, res: Response) => {
-console.log("yo aako ho")
+
   try {
     const category = await Category.find();
       
@@ -55,13 +55,7 @@ try {
 
 export const addCategory = async (req: Request, res: Response) => {
   try {
-    // const validation = productSchema.safeParse(req.body);
-    // if (!validation.success) {
-    //   console.log(typeof(req.body.rating.rate))
-    //   return res
-    //     .status(400)
-    //     .send({ sucess: false, message: validation.error.issues[0].message });
-    // }
+   
     const existingCategory = await Category.findOne({title:req.body.title });
     if (existingCategory) {
       return res

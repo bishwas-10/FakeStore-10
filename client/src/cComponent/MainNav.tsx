@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, Search, ShoppingBag, ShoppingCart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cart from "./Cart";
 import { Box, FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
@@ -8,17 +8,17 @@ import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../context/AuthProvider";
+import useRefreshToken from "../../hooks/useRefreshToken";
 
 const MainNav = () => {
   const { auth } = useAuth();
-  
- let decoded;
- if(auth.token){
-    decoded = jwtDecode<JwtPayload>(auth?.token as string) as UserInfoProps;
- }
-    
+  const navigate = useNavigate();
+  const refresh = useRefreshToken();
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
+  const decoded: UserInfoProps | undefined = auth.token ? jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps : undefined;
+
+ 
   return (
     <Box
       sx={{
@@ -76,7 +76,10 @@ const MainNav = () => {
           onMouseLeave={() => setShowDiv(false)}
           className="flex flex-col items-start hover:border-2 cursor-pointer p-2"
         >
-          <span className="text-xs">   {decoded ? `Hello,${decoded.UserInfo.username}`:"Hello, Sign In" }</span>
+          <span className="text-xs">
+            {" "}
+            {decoded ? `Hello,${decoded.UserInfo.username}` : "Hello, Sign In"}
+          </span>
           <span className={`text-sm font-bold flex flex-row items-center`}>
             Accounts and Lists
             <ChevronDown height={16} />
@@ -89,12 +92,13 @@ const MainNav = () => {
             className="z-10 w-[20%] h-max flex flex-col absolute top-[72px] right-20 bg-white dark:bg-gray-700  shadow-md p-4"
           >
             <div className="w-full flex flex-col items-center gap-2 font-sans tracking-normal">
-             
               <Link
                 to="/login"
                 className="w-[60%] bg-yellow-500 text-center text-md py-2"
               >
-               {decoded ? `Hello,${decoded.UserInfo.username}`:"Hello, Sign In" }
+                {decoded
+                  ? `Hello,${decoded.UserInfo.username}`
+                  : "Hello, Sign In"}
               </Link>
               <span className="text-xs font-medium">
                 New customer?{" "}
@@ -124,8 +128,9 @@ const MainNav = () => {
         )}
         <span className="flex flex-row  items-center">
           <Link to={`/carts/${decoded?.UserInfo.userId}`}>
-            <ShoppingCart height={30} width={30} />
+          <ShoppingCart  height={30} width={30} />
           </Link>
+          
         </span>
       </div>
     </Box>

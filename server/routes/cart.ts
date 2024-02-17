@@ -9,7 +9,6 @@ import {
   updateQuantity
 
 } from "../controller/cart";
-import authUser from "../middleware/authUser";
 import { verifyRoles } from "../middleware/verifyRoles";
 import { ROLES_LIST } from "../config/roles_list";
 

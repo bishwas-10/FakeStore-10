@@ -79,23 +79,12 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
           process.env.TOKEN_KEY as string,
           { expiresIn: "10m" }
         );
-console.log(decoded)
-        // const newRefreshToken = jwt.sign(
-        //   { username: foundUser.username },
-        //   process.env.REFRESH_TOKEN_KEY as string,
-        //   { expiresIn: "1d" }
-        // );
-        // // Saving refreshToken with current user
-        // foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-        // const result = await foundUser.save();
 
-        // Creates Secure Cookie with refresh token
+      
         res.status(201).send({ success: true, accessToken });
 
-        //res.status(200).send({message:"bdasjbdnj"})
       }
     );
   }
 
-  // evaluate jwt
 };

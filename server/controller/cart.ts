@@ -93,14 +93,9 @@ if(existingCart){
 };
 export const editCart = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(req.body)
+ 
   try {
-    // const validation = CartPropsSchema.safeParse(req.body);
-    // if (!validation.success) {
-    //   return res
-    //     .status(400)
-    //     .send({ sucess: false, message: validation.error.issues[0].message });
-    // }
+  
     const cart = await Cart.findOneAndUpdate(
       { _id: id },
       req.body,
@@ -115,7 +110,7 @@ export const editCart = async (req: Request, res: Response) => {
         { path: "product", model: Product },
         { path: "customer", model: User },
       ]);
-   console.log(result);
+ 
       return res
         .status(200)
         .send({ success: true, messsage: "cart  found", cart: result });
@@ -133,7 +128,7 @@ export const editCart = async (req: Request, res: Response) => {
 };
 export const updateQuantity = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(req.body,id)
+
   try {
    
     const cart = await Cart.findOneAndUpdate(
@@ -144,21 +139,8 @@ export const updateQuantity = async (req: Request, res: Response) => {
         runValidators: true,
       }
     );
- console.log(cart)
-  //   if (cart) {
-  //     const result = await cart.populate([
-  //       { path: "product", model: Product },
-  //       { path: "customer", model: User },
-  //     ]);
-  //  console.log(result);
-  //     return res
-  //       .status(200)
-  //       .send({ success: true, messsage: "cart  found", cart: result });
-  //   } else {
-  //     return res
-  //       .status(404)
-  //       .send({ success: false, messsage: "cart not found", cart: null });
-  //   }
+
+  
   } catch (error) {
     console.log(error);
     return res

@@ -1,6 +1,5 @@
 import express from 'express';
 import { addCustomer, deleteCustomer, getAllCustomers, getSpecificCustomer, loginCustomer, updateCustomer } from '../controller/customer';
-import authUser from '../middleware/authUser';
 import { verifyRoles } from '../middleware/verifyRoles';
 import { ROLES_LIST } from '../config/roles_list';
 

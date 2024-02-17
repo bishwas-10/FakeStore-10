@@ -37,12 +37,8 @@ app.use("/api/users",authRouter);
 app.get('/api/refresh',handleRefreshToken);
 /*getproducts and categories */
 app.use('/api',getRouter);
-
-
-
 app.use(verifyJWT);
 app.use("/api",categoryRouter);
-
 app.use("/api",productRouter);
 app.use("/api",cartRouter);
 app.use("/api",customerRouter)

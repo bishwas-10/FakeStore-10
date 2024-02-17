@@ -12,6 +12,9 @@ import { customerSchema } from "../../components/pages/sub-components/editCustom
 import { productSchema } from "../../components/pages/sub-components/add-products";
 import { instance } from "../../../api/instance";
 import useAuth from "../../../hooks/useAuth";
+import { AxiosInstance } from "axios";
+import { UserInfoProps } from "../../context/AuthProvider";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
@@ -40,26 +43,34 @@ export const CartPropsSchema = z.object({
   paymentStatus: z.string().min(1, "payment status is required"),
 });
 export type TCartSchema = z.infer<typeof CartPropsSchema>;
-const CartPage = () => {
-  const { auth } = useAuth();
-  // const [quantity, setQuantity] = useState<number>(1);
-  const { userId } = useParams();
 
-  const axiosPrivate = useAxiosPrivate();
-  const fetchCartByUserId = async () => {
-    const response = await instance({
+const fetchCartByUserId = async (userId: string,axiosPrivate:AxiosInstance) => {
+
+  try {
+    const response = await axiosPrivate({
       url: `/carts/${userId}`,
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${auth.token}`,
-      },
     });
-
     return response.data.cart;
-  };
+  } catch (error) {
+    throw new Error("Failed to fetch cart data");
+  }
+};
+
+const CartPage = () => {
+  const [selectedQuantities, setSelectedQuantities] = useState<{
+    [productId: string]: number;
+  }>({});
+  const { auth } = useAuth();
+  const decoded: UserInfoProps | undefined = auth.token ? jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps : undefined;
+
+
+
+  const axiosPrivate = useAxiosPrivate();
+
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
-    queryFn: fetchCartByUserId,
+    queryFn: () => fetchCartByUserId(decoded?.UserInfo.userId as string,axiosPrivate),
   });
   if (isError) {
     return (
@@ -68,9 +79,9 @@ const CartPage = () => {
       </span>
     );
   }
-  const [selectedQuantities, setSelectedQuantities] = useState<{
-    [productId: string]: number;
-  }>({});
+  if (isLoading) {
+    return <Loading />;
+  }
 
   const handleQuantityChange = async (
     productId: string,
@@ -93,9 +104,6 @@ const CartPage = () => {
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
   const cancelOrder = async (cartId: string) => {
     try {
       const response = await axiosPrivate({
@@ -118,7 +126,7 @@ const CartPage = () => {
           ...cartItem,
           quantity: cartItem.quantity.toString(),
           product: cartItem.product.id,
-          customer: userId,
+          customer: decoded?.UserInfo.userId,
           paymentStatus: "paid",
         },
       });

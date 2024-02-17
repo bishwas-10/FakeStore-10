@@ -141,7 +141,7 @@ export const logIn = async (req: Request, res: Response) => {
       { username: foundUser.username,
         userId:foundUser._id },
       process.env.REFRESH_TOKEN_KEY as string,
-      { expiresIn: "1h" }
+      { expiresIn: "2h" }
     );
 
     // Changed to let keyword
@@ -183,12 +183,11 @@ export const logIn = async (req: Request, res: Response) => {
         httpOnly: false,
         secure: true,
         sameSite: "none",
-        maxAge:60 * 60 * 1000,
+        maxAge:2 * 60 * 60 * 1000,
       })
       .status(201)
       .send({ success: true, message: "sign in successful", accessToken });
 
-    // Send authorization roles and access token to user
   } else {
    return res.status(401).send({ success: false, message: "password doesnt match" });
   }
@@ -198,7 +197,7 @@ export const logIn = async (req: Request, res: Response) => {
 
 export const signOut = async (req: Request, res: Response) => {
   try {
-    console.log("aaipugyo");
+
     const cookies = req.cookies;
     if (!cookies?.jwt) {
       return res
