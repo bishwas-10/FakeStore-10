@@ -71,7 +71,7 @@ const EachProduct = () => {
       if (!auth.token) {
       await  authCheck();
       } 
-      console.log(decoded);
+      
       const response = await axiosPrivate({
         url: `/carts`,
         method: "POST",
@@ -90,7 +90,13 @@ const EachProduct = () => {
           paymentStatus: "not paid",
         },
       });
-      console.log(response);
+ if(response.data.success){
+  toast.success("Item added to cart successfully", {
+    position: "top-center",
+    autoClose: 1000,
+  });
+ setTimeout(()=>navigate(`/carts/${decoded?.UserInfo.userId}`),1000) 
+ }
     } catch (error) {
       console.log(error);
     }

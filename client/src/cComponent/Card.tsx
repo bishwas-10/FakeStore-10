@@ -1,21 +1,10 @@
 import React from "react";
 import { ratingStars } from "./reusable/utils";
 import { Box } from "@mui/material";
+import { TProductSchema } from "../components/pages/sub-components/add-products";
 
-export interface ProductsProps {
-  id?: number;
-  title: string;
-  price: number;
-  category: string;
-  description: string;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-}
 
-const Card = ({ product }: { product: ProductsProps }) => {
+const Card = ({ product }: { product: TProductSchema }) => {
   
 
   return (
@@ -35,7 +24,7 @@ const Card = ({ product }: { product: ProductsProps }) => {
       <div className="w-full h-32 rounded-b-md flex flex-col border-t border-gray-600 ">
         <div className="flex flex-row w-full pt-1 px-2">
           <div className="flex items-center ">
-            {ratingStars(product.rating.rate)}
+            {ratingStars(parseInt(product.rating.rate))}
             <p className="text-sm font-semibold ml-2">{product.rating.rate}</p>
           </div>
         </div>

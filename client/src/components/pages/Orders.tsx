@@ -97,9 +97,7 @@ const Order = () => {
         return response.data.cart;
       }
     } catch (error: any) {
-      if (error.response.status === 403 || error.response.status === 401) {
-        logout();
-      }
+     
       console.log(error);
     }
   };

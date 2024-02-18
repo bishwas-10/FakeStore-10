@@ -28,12 +28,7 @@ import useAuth from "../../../../hooks/useAuth";
 import useLogout from "../../../../hooks/useLogout";
 import { TCategorySchema } from "./AddCategory";
 
-const ACCEPTED_IMAGE_MIME_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+
 
 export const productSchema = z.object({
   id: z.string().optional(),

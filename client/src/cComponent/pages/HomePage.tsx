@@ -16,6 +16,8 @@ import CategoryHome from "../CategoryHome";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import useAuth from "../../../hooks/useAuth";
+import TopPicksForYou from "../TopPicksForYou";
+import Personalized from "../personalized";
 
 const IMAGES = [
   { url: pic1, alt: "pic 1" },
@@ -42,20 +44,13 @@ const HomePage = () => {
         </h2>
         <CategoryHome />
       </div>
-      {!auth?.token && (
-        <div className="h-40 mx-4 my-2 flex flex-col items-center justify-center shadow-sm  border-2 border-gray-400 rounded-lg ">
-          <p>See Personalized Recommendation</p>
-          <Button onClick={() => navigate("/login")} variant="contained">
-            Sign In
-          </Button>
-          <span className="text-sm">
-            New Customer?{" "}
-            <Link to="/signup" className="text-secondary text-[14px] py-2">
-              Start here
-            </Link>
-          </span>
-        </div>
-      )}
+      <div className="mt-4 py-4 ">
+        <h2 className="text-2xl font-bold capitalize tracking-wide text-center">
+          Top Picks for you
+        </h2>
+        <TopPicksForYou />
+      </div>
+      {!auth?.token && <Personalized />}
     </div>
   );
 };

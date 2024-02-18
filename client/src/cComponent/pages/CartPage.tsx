@@ -1,6 +1,6 @@
-import { Box, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ratingStars } from "../reusable/utils";
 import image from "../../../image/1.jpg";
 import { toast, ToastContainer } from "react-toastify";
@@ -15,6 +15,9 @@ import useAuth from "../../../hooks/useAuth";
 import { AxiosInstance } from "axios";
 import { UserInfoProps } from "../../context/AuthProvider";
 import { JwtPayload, jwtDecode } from "jwt-decode";
+import TopPicksForYou from "../TopPicksForYou";
+import Personalized from "../personalized";
+import EmptyCartSvg from "../EmptyCartSvg";
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
@@ -60,6 +63,7 @@ const fetchCartByUserId = async (
 };
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const [selectedQuantities, setSelectedQuantities] = useState<{
     [productId: string]: number;
   }>({});
@@ -75,13 +79,61 @@ const CartPage = () => {
     queryFn: () =>
       fetchCartByUserId(decoded?.UserInfo.userId as string, axiosPrivate),
   });
-  if (isError) {
+
+  if (!auth.token) {
     return (
-      <span>
-        Error occured 404<p className="text-md font-medium ">{error.message}</p>{" "}
-      </span>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          justifyContent: "space-between",
+          height: "100vh",
+          bgcolor: "background.default",
+          color: "text.primary",
+          p: 4,
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            bgcolor: "background.paper",
+            color: "text.primary",
+          }}
+          className="flex flex-col items-center justify-center h-max py-6"
+        >
+          <Typography fontSize={"20px"} fontWeight={"600"}>
+            Your shopping cart is empty
+          </Typography>
+          <Link to={"/"} className="text-xs">
+            Top picks for you!
+          </Link>
+          <Box className="flex flex-col gap-2">
+            <EmptyCartSvg />{" "}
+            <Box className="flex flex-row gap-6 mt-8">
+              <Button variant="contained" onClick={() => navigate("/login")}>
+                Sign in to your account
+              </Button>
+              <Button variant="outlined" onClick={() => navigate("/signup")}>
+                Sign Up
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+        <Personalized />
+      </Box>
     );
+  } else {
+    if (isError) {
+      return (
+        <span>
+          Error occured 404
+          <p className="text-md font-medium ">{error.message}</p>{" "}
+        </span>
+      );
+    }
   }
+
   if (isLoading) {
     return <Loading />;
   }
@@ -143,6 +195,7 @@ const CartPage = () => {
       autoClose: 2000,
     });
   };
+
   return (
     <Box
       sx={{
@@ -312,9 +365,11 @@ const CartPage = () => {
           }}
         >
           <Typography variant="h5">International Top picks for Your</Typography>
-          <Box>
-            Your Shopping Cart lives to serve. Give it purpose — fill it with
-            groceries, clothing, household supplies,
+          <Box
+            className="w-full h-max rounded-md p-4"
+            sx={{ bgcolor: "background.paper" }}
+          >
+            <TopPicksForYou />
           </Box>
         </Box>
       </Box>

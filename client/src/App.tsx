@@ -107,8 +107,9 @@ function App() {
                   />
                 }
               >
-                <Route path="carts/:userId" element={<CartPage />} />
+               
               </Route>
+              <Route path="carts/:userId" element={<CartPage />} />
             </Route>
           </Route>
           <Route path="/admin">

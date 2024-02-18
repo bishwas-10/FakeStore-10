@@ -9,16 +9,20 @@ import useAuth from "../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../context/AuthProvider";
 import useRefreshToken from "../../hooks/useRefreshToken";
+import { AxiosInstance } from "axios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useQuery } from "@tanstack/react-query";
 
 const MainNav = () => {
   const { auth } = useAuth();
-  const navigate = useNavigate();
-  const refresh = useRefreshToken();
+
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
-  const decoded: UserInfoProps | undefined = auth.token ? jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps : undefined;
 
- 
+  const decoded: UserInfoProps | undefined = auth.token
+    ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
+    : undefined;
+
   return (
     <Box
       sx={{
@@ -126,11 +130,14 @@ const MainNav = () => {
             </div>
           </div>
         )}
-        <span className="flex flex-row  items-center">
-          <Link to={`/carts/${decoded?.UserInfo.userId}`}>
-          <ShoppingCart  height={30} width={30} />
+        <span className="flex flex-row  items-center hover:border-2 p-2">
+          <Link to={`/carts/${decoded?.UserInfo.userId}`} className="flex">
+            <ShoppingCart height={30} width={30} />
+            <span className=" text-center text-xs">
+              your
+              <br /> items
+            </span>
           </Link>
-          
         </span>
       </div>
     </Box>

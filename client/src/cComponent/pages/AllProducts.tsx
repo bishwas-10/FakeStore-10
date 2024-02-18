@@ -1,10 +1,11 @@
 import axios from "axios";
-import Card, { ProductsProps } from "../Card";
+import Card from "../Card";
 import { Link } from "react-router-dom";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { instance } from "../../../api/instance";
 import { Typography } from "@mui/material";
+import { TProductSchema } from "../../components/pages/sub-components/add-products";
 
 const fetchAllProducts = async () => {
   const response = await instance({
@@ -33,7 +34,7 @@ export default function AllProducts() {
         All products available at FakeStore
       </Typography>
       <div className="px-8 my-12 flex flex-wrap items-center justify-center gap-4">
-        {data?.map((product: ProductsProps) => {
+        {data?.map((product: TProductSchema) => {
           return (
             <Link key={product.id} to={"/product/" + product.id}>
               <Card product={product} />

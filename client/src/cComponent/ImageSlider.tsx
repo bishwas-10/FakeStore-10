@@ -24,14 +24,14 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
     });
   }
   return (
-    <section className="w-3/5 h-full px-4 relative mt-4">
+    <section className="w-full sm:w-[70%] lg:w-3/5 h-full px-4 relative mt-4">
       <div className="w-full h-full flex overflow-hidden">
         {images.map(({ url, alt }, index) => (
           <img
             src={url}
             alt={alt}
             key={index}
-            className="w-full h-full transition-all rounded-lg"
+            className="w-full h-full transition-all rounded-lg object-fill"
             style={{
               translate: `${-100 * imageIndex}% `,
               animation: "translate 1.5s ease-in-out infinite",

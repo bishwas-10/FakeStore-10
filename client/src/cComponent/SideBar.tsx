@@ -65,7 +65,7 @@ const logout = useLogout();
     <Box
       sx={{
         width: anchor === "top" || anchor === "bottom" ? "auto" : 350,
-        bgcolor: "background.main",
+        bgcolor: "background.black",
       }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
