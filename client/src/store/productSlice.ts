@@ -9,6 +9,7 @@ const addedProduct={
     category:"",
     description: "",
     image:null,
+    topPicks:false,
     rating:{
         rate:'',
         count:''

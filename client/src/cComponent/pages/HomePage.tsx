@@ -15,6 +15,7 @@ import ImageSlider from "../ImageSlider";
 import CategoryHome from "../CategoryHome";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import useAuth from "../../../hooks/useAuth";
 
 const IMAGES = [
   { url: pic1, alt: "pic 1" },
@@ -27,8 +28,8 @@ const IMAGES = [
   { url: pic8, alt: "pic 8" },
 ];
 
-
 const HomePage = () => {
+  const { auth } = useAuth();
   const navigate = useNavigate();
   return (
     <div>
@@ -41,18 +42,20 @@ const HomePage = () => {
         </h2>
         <CategoryHome />
       </div>
-      <div className="h-40 mx-4 my-2 flex flex-col items-center justify-center shadow-sm  border-2 border-gray-400 rounded-lg ">
-        <p>See Personalized Recommendation</p>
-        <Button onClick={() => navigate("/login")} variant="contained">
-          Sign In
-        </Button>
-        <span className="text-sm">
-          New Customer?{" "}
-          <Link to="/signup" className="text-secondary text-[14px] py-2">
-            Start here
-          </Link>
-        </span>
-      </div>
+      {!auth?.token && (
+        <div className="h-40 mx-4 my-2 flex flex-col items-center justify-center shadow-sm  border-2 border-gray-400 rounded-lg ">
+          <p>See Personalized Recommendation</p>
+          <Button onClick={() => navigate("/login")} variant="contained">
+            Sign In
+          </Button>
+          <span className="text-sm">
+            New Customer?{" "}
+            <Link to="/signup" className="text-secondary text-[14px] py-2">
+              Start here
+            </Link>
+          </span>
+        </div>
+      )}
     </div>
   );
 };

@@ -28,6 +28,7 @@ export const productSchema = z.object({
   category: z.string({ required_error: "category is required" }),
   description: z.string({ required_error: "description is required" }),
   image: z.string({ required_error: "image is required" }),
+  topPicks: z.boolean().default(false),
   rating: z.object({
     rate: z
       .string({ required_error: "Rate is required" })

@@ -52,6 +52,7 @@ export const productSchema = z.object({
     // Check if the base64 data starts with 'data:image'
     return base64Data && base64Data.startsWith("data:image");
   }, "Only image files in base64 format are supported."),
+  topPicks: z.boolean().default(false),
   rating: z.object({
     rate: z
       .string()
@@ -79,19 +80,25 @@ const AddProducts = () => {
     (state: RootState) => state.product.newlyAddedProduct
   );
   const [category, setCategory] = useState<string>(product?.category as string);
+  const [topPicks, setTopPicks] = useState<string>(product?.topPicks ?"true":"false");
+  const [categories, setCategories] = useState<TCategorySchema[]>([]);
+  const controller = new AbortController();
   const handleOrderChange = (event: SelectChangeEvent) => {
     setCategory(event.target.value as string);
     setValue("category", event.target.value as string);
   };
-  const [categories, setCategories] = useState<TCategorySchema[]>([]);
-  const controller = new AbortController();
+  const handleTopPicksChange = (event: SelectChangeEvent) => {
+    const value = event.target.value === 'true'; // Convert string to boolean
+    setTopPicks(event.target.value);
+    setValue("topPicks", value);
+   
+  };
   const categoryCall = async () => {
     try {
       const response = await axiosPrivate.get("/categories", {
         signal: controller.signal,
       });
       if (response.data.success) {
-        console.log(response.data);
         setCategories(response.data.categories);
       }
     } catch (error: any) {
@@ -116,6 +123,7 @@ const AddProducts = () => {
       image: product?.image,
       description: product?.description,
       category: product?.category,
+      topPicks: product?.topPicks,
       rating: {
         rate: product?.rating.rate,
         count: product?.rating.count,
@@ -140,6 +148,7 @@ const AddProducts = () => {
   };
   const onSubmit = async (data: TProductSchema) => {
     try {
+      console.log(data)
       const response = await instance({
         url: product?.id ? `/products/${product?.id}` : `/products`,
         method: product?.id ? "PUT" : "POST",
@@ -153,6 +162,7 @@ const AddProducts = () => {
           price: data.price,
           image: data.image,
           description: data.description,
+          topPicks:data.topPicks,
           rating: {
             rate: data.rating.rate,
             count: data.rating.count,
@@ -165,8 +175,9 @@ const AddProducts = () => {
           dispatch(addProduct(response.data.product));
         } else {
           dispatch(addProduct(data));
-          reset();
+        
         }
+        reset();
         toast.success(response.data.message);
       }
       reset();
@@ -256,7 +267,8 @@ const AddProducts = () => {
                       {categories.length !== 0 &&
                         categories.map((category, index) => {
                           return (
-                            <MenuItem key={index}
+                            <MenuItem
+                              key={index}
                               style={{ fontSize: "14px", lineHeight: "10px" }}
                               value={category.title}
                             >
@@ -308,16 +320,51 @@ const AddProducts = () => {
                 )}
               </>
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="flex ">
+              <Box style={{ height: "20px" }} className="text-sm ">
+                <FormControl
+                  variant="standard"
+                  style={{
+                    fontSize: "14px",
+                    lineHeight: "10px",
+                    height: "20px",
+                  }}
+                  className="w-40"
+                  error={!!errors.topPicks}
+                >
+                  <InputLabel
+                    style={{
+                      fontSize: "14px",
+                      lineHeight: "10px",
+                      textAlign: "center",
+                    }}
+                  >
+                    Top Picks
+                  </InputLabel>
+                  <Select
+                    className="text-sm"
+                    id="toppicks"
+                    value={topPicks}
+                    label="Top Picks"
+                    onChange={handleTopPicksChange}
+                  >
+                    <MenuItem value={false.toString()}>false</MenuItem>
+                    <MenuItem value={true.toString()}>true</MenuItem>
+                    
+                  </Select>
+                </FormControl>
+              </Box>
+            </div>
+            <div className="flex flex-col gap-1 mt-6">
               <FormLabel>Rating</FormLabel>
               <TextField
                 id="rate"
                 label="rate"
                 variant="outlined"
-                error={!!errors.rating?.rate} 
+                error={!!errors.rating?.rate}
                 helperText={
                   errors.rating?.rate ? errors.rating.rate?.message : ""
-                } 
+                }
                 {...register("rating.rate", { required: true })}
               />
 
@@ -339,7 +386,7 @@ const AddProducts = () => {
                 variant="outlined"
                 multiline
                 maxRows={4}
-                error={!!errors.description} 
+                error={!!errors.description}
                 helperText={
                   errors.description ? errors.description.message : ""
                 }
@@ -377,6 +424,9 @@ const AddProducts = () => {
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   <strong>Category:</strong> {product.category}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Top Picks:</strong> {product.topPicks? "true":"false"}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   <strong>Rate:</strong> {product.rating.rate}

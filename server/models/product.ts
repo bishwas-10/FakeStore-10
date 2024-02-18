@@ -6,6 +6,7 @@ export interface ProductProps extends Document {
     category:string;
     description:string;
     image:string;
+    topPicks?:boolean;
     rating:{
         rate:string;
         count:string;
@@ -32,6 +33,10 @@ const productSchema = new Schema<ProductProps>({
     image:{
         type:String,
         required:true
+    },
+    topPicks:{
+        type:Boolean,
+        
     },
     rating:{
         rate:{

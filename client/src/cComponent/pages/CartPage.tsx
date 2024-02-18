@@ -44,8 +44,10 @@ export const CartPropsSchema = z.object({
 });
 export type TCartSchema = z.infer<typeof CartPropsSchema>;
 
-const fetchCartByUserId = async (userId: string,axiosPrivate:AxiosInstance) => {
-
+const fetchCartByUserId = async (
+  userId: string,
+  axiosPrivate: AxiosInstance
+) => {
   try {
     const response = await axiosPrivate({
       url: `/carts/${userId}`,
@@ -62,15 +64,16 @@ const CartPage = () => {
     [productId: string]: number;
   }>({});
   const { auth } = useAuth();
-  const decoded: UserInfoProps | undefined = auth.token ? jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps : undefined;
-
-
+  const decoded: UserInfoProps | undefined = auth.token
+    ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
+    : undefined;
 
   const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
-    queryFn: () => fetchCartByUserId(decoded?.UserInfo.userId as string,axiosPrivate),
+    queryFn: () =>
+      fetchCartByUserId(decoded?.UserInfo.userId as string, axiosPrivate),
   });
   if (isError) {
     return (
@@ -189,98 +192,110 @@ const CartPage = () => {
           ) : (
             <>
               <Typography variant="h5">Your Shopping Cart</Typography>
-              {data?.map((item, index) => {
-                //  setQuantity(item.quantity)
-                return (
-                  <div
-                    key={index}
-                    className=" flex flex-col  md:flex-row  border-gray-400 border-2  "
-                  >
-                    <div className="w-full md:w-1/4 border-r-2 border-gray-400 shrink-0 ">
-                      <div className="w-full h-full p-3 flex items-center justify-center">
-                        <img
-                          src={item.product.image}
-                          alt="demo"
-                          width={240}
-                          height={240}
-                          className=" object-cover "
-                        />
+              {data
+                ?.slice()
+                .sort((a, b) => {
+                  // Sort by payment status
+                  if (a.paymentStatus === "paid" && b.paymentStatus !== "paid")
+                    return 1;
+                  if (a.paymentStatus !== "paid" && b.paymentStatus === "paid")
+                    return -1;
+                  // If payment status is same, maintain existing order
+                  return 0;
+                })
+                .map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className=" flex flex-col  md:flex-row  border-gray-400 border-2  "
+                    >
+                      <div className="w-full md:w-1/4 border-r-2 border-gray-400 shrink-0 ">
+                        <div className="w-full h-full p-3 flex items-center justify-center">
+                          <img
+                            src={item.product.image}
+                            alt="demo"
+                            width={240}
+                            height={240}
+                            className=" object-cover "
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col items-center  w-full md:w-2/4 h-full ">
-                      <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
-                        <p className="text-xl font-semibold pt-2 text-[#8A8888]">
-                          {item.product.title}
-                        </p>
-                        <div className="flex flex-row w-full pt-1 2">
-                          <p className="text-sm font-semibold ">
-                            {item.product.category}
+                      <div className="flex flex-col items-center  w-full md:w-2/4 h-full ">
+                        <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
+                          <p className="text-xl font-semibold pt-2 text-[#8A8888]">
+                            {item.product.title}
+                          </p>
+                          <div className="flex flex-row w-full pt-1 2">
+                            <p className="text-sm font-semibold ">
+                              {item.product.category}
+                            </p>
+                          </div>
+                          <p className="text-xl font-bold pt-2 text-red-400">
+                            ${item.product.price}
+                            <span className="text-xs">per product</span>
+                          </p>
+                          <p className="text-2xl font-semibold pt-2 text-red-400">
+                            <span className="text-xs">total</span> $
+                            {item.product.price * item.quantity}
                           </p>
                         </div>
-                        <p className="text-xl font-bold pt-2 text-red-400">
-                          ${item.product.price}
-                          <span className="text-xs">per product</span>
-                        </p>
-                        <p className="text-2xl font-semibold pt-2 text-red-400">
-                          <span className="text-xs">total</span> $
-                          {item.product.price * item.quantity}
-                        </p>
-                      </div>
-                      <div className="flex flex-col w-full p-4">
-                        <div className="flex flex-row items-center text-lg gap-6 dark:text-gray-400 ">
-                          <span>Quantity</span>
+                        <div className="flex flex-col w-full p-4">
+                          {item.paymentStatus !== "paid" && (
+                            <div className="flex flex-row items-center text-lg gap-6 dark:text-gray-400 ">
+                              <span>Quantity</span>
 
-                          <Select
-                            labelId="Quantity"
-                            id={`quantity-${index}`}
-                            value={
-                              selectedQuantities[item.product.id] ||
-                              item.quantity
-                            }
-                            label="productsPerPage"
-                            onChange={(e) =>
-                              handleQuantityChange(
-                                item.product.id,
-                                item._id,
-                                e.target.value
-                              )
-                            }
-                          >
-                            {[...Array(15).keys()].map((quantity) => (
-                              <MenuItem key={quantity} value={quantity + 1}>
-                                {quantity + 1}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                              <Select
+                                labelId="Quantity"
+                                id={`quantity-${index}`}
+                                value={
+                                  selectedQuantities[item.product.id] ||
+                                  item.quantity
+                                }
+                                label="productsPerPage"
+                                onChange={(e) =>
+                                  handleQuantityChange(
+                                    item.product.id,
+                                    item._id,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {[...Array(15).keys()].map((quantity) => (
+                                  <MenuItem key={quantity} value={quantity + 1}>
+                                    {quantity + 1}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </div>
+                          )}
+                          {item.paymentStatus === "paid" ? (
+                            <Typography
+                              fontSize={"18px"}
+                              className="text-white p-2 text-center bg-green-600 rounded-md"
+                            >
+                              Item bought
+                            </Typography>
+                          ) : (
+                            <div className="w-full mt-2 text-white ">
+                              <button
+                                onClick={() => cancelOrder(item._id)}
+                                className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
+                              >
+                                DELETE
+                              </button>
+                              <button
+                                onClick={() => buyNowHandler(item)}
+                                className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all rounded-r-md"
+                              >
+                                BUY NOW
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        {item.paymentStatus === "paid" ? (
-                          <Typography
-                            fontSize={"18px"}
-                            className="text-white p-2 text-center bg-green-600 rounded-md"
-                          >
-                            Item bought
-                          </Typography>
-                        ) : (
-                          <div className="w-full mt-2 text-white ">
-                            <button
-                              onClick={() => cancelOrder(item._id)}
-                              className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
-                            >
-                              DELETE
-                            </button>
-                            <button
-                              onClick={() => buyNowHandler(item)}
-                              className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all rounded-r-md"
-                            >
-                              BUY NOW
-                            </button>
-                          </div>
-                        )}
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </>
           )}
         </Box>

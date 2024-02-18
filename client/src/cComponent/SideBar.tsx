@@ -27,12 +27,13 @@ import { RootState } from "../store/store";
 import useAuth from "../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../context/AuthProvider";
+import useLogout from "../../hooks/useLogout";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 const SideBar = () => {
   const { auth } = useAuth();
-
+const logout = useLogout();
   let decoded: UserInfoProps;
   if (auth.token) {
     decoded = jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps;
@@ -133,14 +134,22 @@ const SideBar = () => {
             </ListItemIcon>
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/allproducts")}>
+        {auth?.token ? <ListItem disablePadding>
+          <ListItemButton onClick={() =>logout()}>
+            <ListItemText primary={"Sign Out"} />
+            <ListItemIcon>
+              <LogInIcon />
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem> : <ListItem disablePadding>
+          <ListItemButton onClick={() => navigate("/login")}>
             <ListItemText primary={"Sign In"} />
             <ListItemIcon>
               <LogInIcon />
             </ListItemIcon>
           </ListItemButton>
-        </ListItem>
+        </ListItem> }
+       
       </List>
     </Box>
   );

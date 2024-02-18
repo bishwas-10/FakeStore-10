@@ -114,12 +114,14 @@ export const editProduct =async (req:Request, res:Response) => {
         .status(400)
         .send({ success: false, message: "products not found" });
     };
+  
     const editedProduct = await Product.findOneAndUpdate({_id:req.params.id},{
       title: req.body.title,
       price: req.body.price,
       category: req.body.category,
       description: req.body.description,
       image: req.body.image,
+      topPicks: req.body.topPicks,
       rating:{
         rate:req.body.rating.rate,
         count:req.body.rating.count
@@ -128,6 +130,7 @@ export const editProduct =async (req:Request, res:Response) => {
       new: true,
       runValidators: true,
     });
+   
      res.status(200).send({success:true,message:"edited successfully",product:editedProduct})
   } catch (error) {
     return res.status(500).send({success:false,message:"internal server error"});

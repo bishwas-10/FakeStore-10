@@ -19,28 +19,28 @@ import { RootState } from "../../store/store";
 import {
   addProduct,
   fetchAllProducts,
-  
   removeProducts,
 } from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { instance } from "../../../api/instance";
 import { TProductSchema } from "./sub-components/add-products";
 import { Link } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
 const Products = () => {
   const products = useSelector((state: RootState) => state.product.products);
+  console.log(products)
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-const logout = useLogout();
+  const logout = useLogout();
   //pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [productsPerPage, setProductsPerPage] = useState<number>(2);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
- const {auth}= useAuth();
+  const { auth } = useAuth();
   const handlePageSelection = (page: number) => {
     setCurrentPage(page);
   };
@@ -52,50 +52,44 @@ const logout = useLogout();
   const controller = new AbortController();
   const axiosPrivate = useAxiosPrivate();
   //fetchallproducts
-const productCall =async()=>{
-  try {
-     const response = await axiosPrivate.get('/products', {
-      signal: controller.signal
-  })
-  if(response.data.success){
-    
-    dispatch(fetchAllProducts(response.data.products));
-  }
-  }  catch (error:any) {
-    if(error.response.status=== 403 || error.response.status=== 401){
-      logout();
-    }
-    console.log(error);
-  }
- 
-
-    
-}
-  //products
-  const deleteProduct = async (id: string) => {
+  const productCall = async () => {
     try {
-      const response = await instance({
-      url: `/products/${id}`,
-      method: "DELETE",
-       headers: {
-        "Content-type": "application/json",
-          authorization: `Bearer ${auth.token}`,
-      }, 
-    });
-    if (response.data.success) {
-     productCall();
-      toast.info(response.data.message);
-      
-    }else{
-      toast.error(response.data.message);
-    }
-    }  catch (error:any) {
-      if(error.response.status=== 403 || error.response.status=== 401){
+      const response = await axiosPrivate.get("/products", {
+        signal: controller.signal,
+      });
+      if (response.data.success) {
+        dispatch(fetchAllProducts(response.data.products));
+      }
+    } catch (error: any) {
+      if (error.response.status === 403 || error.response.status === 401) {
         logout();
       }
       console.log(error);
     }
-    
+  };
+  //products
+  const deleteProduct = async (id: string) => {
+    try {
+      const response = await instance({
+        url: `/products/${id}`,
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+          authorization: `Bearer ${auth.token}`,
+        },
+      });
+      if (response.data.success) {
+        productCall();
+        toast.info(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error: any) {
+      if (error.response.status === 403 || error.response.status === 401) {
+        logout();
+      }
+      console.log(error);
+    }
   };
   const editProduct = (product: TProductSchema) => {
     dispatch(addProduct(product));
@@ -119,83 +113,89 @@ const productCall =async()=>{
             below with pagination features
           </p>
         </div>
-        <Button variant="contained" >
+        <Button variant="contained">
           <Link to="addproducts">add products</Link>
         </Button>
       </div>
 
       <div className=" flex items-center justify-center font-sans overflow-hidden p-3">
         <div className="w-full min-h-screen">
-        <div className="my-4  flex flex-row gap-2 justify-center items-center">
-        <FormControl className="w-40">
-          <InputLabel id="demo-simple-select-label">
-            Products per page
-          </InputLabel>
-          <Select
-            labelId="productsPerPage"
-            id="productsPerPage"
-            value={productsPerPage}
-            label="productsPerPage"
-            onChange={(e) => setProductsPerPage(e.target.value as number)}
-          >
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={6}>6</MenuItem>
-            <MenuItem value={8}>8</MenuItem>
-          </Select>
-        </FormControl>
-        {currentPage > 1 && (
-          <>
-            <Button variant="text" onClick={() => handlePageSelection(1)}>
-              <ChevronsLeft />
-            </Button>
-            <Button
-              variant="text"
-              onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
-            >
-              <ChevronLeft />
-            </Button>
-          </>
-        )}
-        {currentPage > 1 && (
-          <Button
-          variant="text"
-          onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
-        >
-          {currentPage - 1}
-        </Button>
-        )}
-        
-        <Button variant="contained">{currentPage}</Button>
-        {currentPage < Math.ceil(products.length / productsPerPage) &&  <Button
-          variant="text"
-          onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
-        >{currentPage + 1}
-        </Button>}
-       
-          
-        {currentPage < Math.ceil(products.length / productsPerPage) && (
-          <>
-            <Button
-              variant="text"
-              onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
-            >
-              <ChevronRight />
-            </Button>
-            <Button
-              variant="text"
-              onClick={() =>
-                handlePageSelection(
-                  Math.ceil(products.length / productsPerPage)
-                )
-              }
-            >
-              <ChevronsRight />
-            </Button>
-          </>
-        )}
-      </div>
+          <div className="my-4  flex flex-row gap-2 justify-center items-center">
+            <FormControl className="w-40">
+              <InputLabel id="demo-simple-select-label">
+                Products per page
+              </InputLabel>
+              <Select
+                labelId="productsPerPage"
+                id="productsPerPage"
+                value={productsPerPage}
+                label="productsPerPage"
+                onChange={(e) => setProductsPerPage(e.target.value as number)}
+              >
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+              </Select>
+            </FormControl>
+            {currentPage > 1 && (
+              <>
+                <Button variant="text" onClick={() => handlePageSelection(1)}>
+                  <ChevronsLeft />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage - 1)
+                  }
+                >
+                  <ChevronLeft />
+                </Button>
+              </>
+            )}
+            {currentPage > 1 && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage - 1)}
+              >
+                {currentPage - 1}
+              </Button>
+            )}
+
+            <Button variant="contained">{currentPage}</Button>
+            {currentPage < Math.ceil(products.length / productsPerPage) && (
+              <Button
+                variant="text"
+                onClick={() => setCurrentPage((currentPage) => currentPage + 1)}
+              >
+                {currentPage + 1}
+              </Button>
+            )}
+
+            {currentPage < Math.ceil(products.length / productsPerPage) && (
+              <>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    setCurrentPage((currentPage) => currentPage + 1)
+                  }
+                >
+                  <ChevronRight />
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={() =>
+                    handlePageSelection(
+                      Math.ceil(products.length / productsPerPage)
+                    )
+                  }
+                >
+                  <ChevronsRight />
+                </Button>
+              </>
+            )}
+          </div>
           <div className=" shadow-md rounded my-6">
             <table className="w-full">
               <thead>
@@ -205,6 +205,7 @@ const productCall =async()=>{
                   <th className="py-3 px-0 text-center ">Title</th>
                   <th className="py-3 px-0 text-center">Price</th>
                   <th className="py-3 px-0 text-center">Category</th>
+                  <th className="py-3 px-0 text-center">Top Picks</th>
                   <th className="py-3 px-0 text-center">Description</th>
                   <th className="py-3 px-0 text-center">
                     Rating
@@ -223,7 +224,7 @@ const productCall =async()=>{
               <tbody className=" text-sm font-medium">
                 {products.length !== 0 && (
                   <>
-                    {products?.map((product:TProductSchema, index:number) => {
+                    {products?.map((product: TProductSchema, index: number) => {
                       if (pageStartIndex <= index && pageEndIndex >= index) {
                         return (
                           <tr
@@ -253,7 +254,9 @@ const productCall =async()=>{
                             <td id="category" className="py-3 px-0 text-center">
                               <strong>{product.category}</strong>,
                             </td>
-
+                            <td className="py-3 px-0 text-center">
+                              <span>{product.topPicks===true ? "true": "false"}</span>
+                            </td>
                             <td className="py-3 px-0 text-center max-w-30 break-words">
                               {product.description}
                             </td>
@@ -302,7 +305,7 @@ const productCall =async()=>{
           </div>
         </div>
       </div>
-     
+
       <ToastContainer />
     </div>
   );
