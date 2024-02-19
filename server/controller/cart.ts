@@ -139,8 +139,12 @@ export const updateQuantity = async (req: Request, res: Response) => {
         runValidators: true,
       }
     );
-
-  
+if(cart){
+ return  res
+    .status(200)
+    .send({ success: true, messsage: "updated" });
+}
+   
   } catch (error) {
     console.log(error);
     return res

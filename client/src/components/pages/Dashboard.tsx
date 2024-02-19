@@ -7,11 +7,12 @@ import { axiosPrivate, instance } from "../../../api/instance";
 import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllOrders } from "../../store/soldOrderSlice";
+
 import { RootState } from "../../store/store";
 import { Box, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { dateFormatter } from "../../../utils/dateFormatter";
+import { fetchAllOrders } from "../../store/soldOrderSlice";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Dashboard = () => {
       dispatch(fetchAllOrders(response.data.cart));
 
       return response.data.cart;
-      console.log(response);
+     
     } catch (error: any) {
       console.log(error);
     }

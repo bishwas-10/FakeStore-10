@@ -8,8 +8,8 @@ const Card = ({ product }: { product: TProductSchema }) => {
   
 
   return (
-    <Box sx={{bgcolor:"background.main"}} className="w-64 border border-gray-400 rounded-md hover:shadow-lg transition-all cursor-pointer">
-      <div className="w-full h-44 relative  rounded-t-md p-4">
+    <Box sx={{bgcolor:"background.main"}} className="w-64 border border-gray-200 rounded-md hover:shadow-lg transition-all cursor-pointer">
+      <div className="w-full h-max relative  rounded-t-md p-4">
         <div className="absolute  top-2 right-2 flex flex-row items-center justify-center h-6 py-3 px-2 bg-primary rounded-full">
           <p className="text-sm font-semibold ">$ {product.price}</p>
         </div>
@@ -17,7 +17,8 @@ const Card = ({ product }: { product: TProductSchema }) => {
           <img
             src={product.image}
             alt={product.title}
-            className=" h-full w-full object-contain"
+            style={{ width: 240, height: 224 }}
+            className=" object-cover"
           />
         </div>
       </div>
@@ -32,8 +33,8 @@ const Card = ({ product }: { product: TProductSchema }) => {
           
             <Typography
             color={"text.primary"}
-            fontWeight={500}
-             className="text-sm w-full  line-clamp-2 px-2
+            fontWeight={600}
+             className="text-sm  w-full  line-clamp-2 px-2
              hover:text-red-400">
               {product.title}
             </Typography>

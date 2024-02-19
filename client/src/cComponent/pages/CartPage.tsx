@@ -1,8 +1,6 @@
 import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
-import React, { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ratingStars } from "../reusable/utils";
-import image from "../../../image/1.jpg";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
@@ -10,14 +8,18 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { z } from "zod";
 import { customerSchema } from "../../components/pages/sub-components/editCustomers";
 import { productSchema } from "../../components/pages/sub-components/add-products";
-import { instance } from "../../../api/instance";
 import useAuth from "../../../hooks/useAuth";
 import { AxiosInstance } from "axios";
 import { UserInfoProps } from "../../context/AuthProvider";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import TopPicksForYou from "../TopPicksForYou";
-import Personalized from "../personalized";
+import Personalized from "../Personalized";
 import EmptyCartSvg from "../EmptyCartSvg";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllCarts } from "../../store/cartSlice";
+import BackToTop from "../reusable/BackToTop";
+import { RootState } from "../../store/store";
+import { Dispatch } from "@reduxjs/toolkit";
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
   updatedAt: z.string().optional(),
@@ -49,13 +51,15 @@ export type TCartSchema = z.infer<typeof CartPropsSchema>;
 
 const fetchCartByUserId = async (
   userId: string,
-  axiosPrivate: AxiosInstance
+  axiosPrivate: AxiosInstance,
+  dispatch: Dispatch
 ) => {
   try {
     const response = await axiosPrivate({
       url: `/carts/${userId}`,
       method: "GET",
     });
+    dispatch(fetchAllCarts(response.data.cart));
     return response.data.cart;
   } catch (error) {
     throw new Error("Failed to fetch cart data");
@@ -68,17 +72,19 @@ const CartPage = () => {
     [productId: string]: number;
   }>({});
   const { auth } = useAuth();
+  const dispatch = useDispatch();
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
-
+  const cartItems = useSelector((state: RootState) => state.cart.carts);
   const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
     queryFn: () =>
-      fetchCartByUserId(decoded?.UserInfo.userId as string, axiosPrivate),
+      fetchCartByUserId(decoded?.UserInfo.userId as string, axiosPrivate,dispatch),
   });
+
 
   if (!auth.token) {
     return (
@@ -121,6 +127,7 @@ const CartPage = () => {
           </Box>
         </Box>
         <Personalized />
+        <BackToTop />
       </Box>
     );
   } else {
@@ -153,7 +160,10 @@ const CartPage = () => {
           product: productId,
         },
       });
-      refetch();
+      if(response.data.success){
+         refetch();
+      }
+     
     } catch (error) {
       console.log(error);
     }
@@ -205,7 +215,6 @@ const CartPage = () => {
         minHeight: "100vh",
         bgcolor: "background.default",
         color: "text.primary",
-        p: 4,
       }}
     >
       <Box
@@ -244,19 +253,49 @@ const CartPage = () => {
             </>
           ) : (
             <>
+              <Box
+                sx={{ bgcolor: "background.paper" }}
+                className="flex flex-col py-8 px-6 items-center  gap-4"
+              >
+                <Typography fontSize={"30px"} fontWeight={"600"}>
+                  Your Total
+                </Typography>
+                <Box className="flex flex-row gap-4 items-center w-max text-xl font-bold ">
+                  <span className="flex flex-row items-center ">
+                    Total Products:{" "}
+                    <Typography fontSize={"25px"} color={"text.textSecondary"}>
+                      {data
+                        ?.map((item:TCartSchema) =>
+                          item.paymentStatus === "not paid"
+                            ? parseInt(item.quantity)
+                            : 0
+                        )
+                        .reduce((acc, curr) => acc + curr, 0)}
+                    </Typography>
+                  </span>
+                  <span className="flex flex-row items-center">
+                    Total Price:{" "}
+                    <Typography fontSize={"25px"} color={"text.textSecondary"}>
+                      $
+                      {data
+                        ?.map((item: TCartSchema) =>
+                          item.paymentStatus === "not paid"
+                            ? parseInt(item.quantity) *
+                              parseInt(item.totalAmount)
+                            : 0
+                        )
+                        .reduce((acc, curr) => acc + curr, 0)}
+                    </Typography>
+                  </span>
+                </Box>
+                <Button variant="contained" className="text-xl">
+                        Check Out
+                </Button>
+              </Box>
               <Typography variant="h5">Your Shopping Cart</Typography>
               {data
-                ?.slice()
-                .sort((a, b) => {
-                  // Sort by payment status
-                  if (a.paymentStatus === "paid" && b.paymentStatus !== "paid")
-                    return 1;
-                  if (a.paymentStatus !== "paid" && b.paymentStatus === "paid")
-                    return -1;
-                  // If payment status is same, maintain existing order
-                  return 0;
-                })
-                .map((item, index) => {
+                ?.filter((item) => item.paymentStatus === "not paid")
+                ?.map((item, index) => {
                   return (
                     <div
                       key={index}
@@ -283,14 +322,14 @@ const CartPage = () => {
                               {item.product.category}
                             </p>
                           </div>
-                          <p className="text-xl font-bold pt-2 text-red-400">
+                          <Typography fontSize={"25px"} color={"text.textSecondary"}>
                             ${item.product.price}
                             <span className="text-xs">per product</span>
-                          </p>
-                          <p className="text-2xl font-semibold pt-2 text-red-400">
+                          </Typography>
+                          <Typography fontSize={"25px"} color={"text.textSecondary"}>
                             <span className="text-xs">total</span> $
                             {item.product.price * item.quantity}
-                          </p>
+                          </Typography>
                         </div>
                         <div className="flex flex-col w-full p-4">
                           {item.paymentStatus !== "paid" && (
@@ -330,18 +369,21 @@ const CartPage = () => {
                             </Typography>
                           ) : (
                             <div className="w-full mt-2 text-white ">
-                              <button
+                              <Button
+                              variant="outlined"
                                 onClick={() => cancelOrder(item._id)}
-                                className="w-1/2  py-2 bg-red-500 hover:bg-red-700 transition-all rounded-l-md"
+                                className="w-1/2  py-2  rounded-l-md"
                               >
                                 DELETE
-                              </button>
-                              <button
+                              </Button>
+                              <Button
                                 onClick={() => buyNowHandler(item)}
-                                className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all rounded-r-md"
+                                variant="contained"
+                                
+                                className="w-1/2 py-2  rounded-r-md"
                               >
                                 BUY NOW
-                              </button>
+                              </Button>
                             </div>
                           )}
                         </div>
@@ -373,6 +415,7 @@ const CartPage = () => {
           </Box>
         </Box>
       </Box>
+      <BackToTop />
       <ToastContainer />
     </Box>
   );

@@ -17,20 +17,6 @@ const initialState:CartStateProps = {
   selectedCart: null,
 };
 
-export const fetchCarts = createAsyncThunk("customers/fetchCarts", async (token:string) => {
-  const response = await instance({
-    url: "/carts",
-    method: "GET",
-    headers: {
-      "Content-type": "application/json",
-        authorization: `Bearer ${token}`,
-    },
-  });
- if(response.data.success){
-    return response.data.cart;
- }
-
-});
 
 const customerSlice = createSlice({
   name: "cart",
@@ -48,18 +34,7 @@ const customerSlice = createSlice({
       state.status = "idle";
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchCarts.pending, (state) => {
-      state.status = "loading";
-    }),
-      builder.addCase(fetchCarts.fulfilled, (state, action) => {
-        state.carts = action.payload;
-        state.status="success";
-      }),
-      builder.addCase(fetchCarts.rejected, (state) => {
-        state.status = "failed";
-      });
-  },
+  
 });
 
 export const { removeCarts, addCart,fetchAllCarts } = customerSlice.actions;

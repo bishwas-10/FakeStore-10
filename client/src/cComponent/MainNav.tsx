@@ -1,21 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronDown, Search, ShoppingBag, ShoppingCart } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import Cart from "./Cart";
+import { Link } from "react-router-dom";
 import { Box, FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../context/AuthProvider";
-import useRefreshToken from "../../hooks/useRefreshToken";
-import { AxiosInstance } from "axios";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { TCartSchema } from "../components/pages/Orders";
 
 const MainNav = () => {
   const { auth } = useAuth();
-
+  const cartItems = useSelector((state: RootState) => state.cart.carts);
+  console.log(cartItems);
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
 
@@ -28,7 +27,7 @@ const MainNav = () => {
       sx={{
         width: "100%",
         height: "100%",
-        paddingX: 5,
+        paddingX: 3,
         paddingY: 2,
         alignItems: "center",
         justifyContent: "space-between",
@@ -131,11 +130,22 @@ const MainNav = () => {
           </div>
         )}
         <span className="flex flex-row  items-center hover:border-2 p-2">
-          <Link to={`/carts/${decoded?.UserInfo.userId}`} className="flex">
+          <Link
+            to={`/carts/${decoded?.UserInfo.userId}`}
+            className="flex relative"
+          >
             <ShoppingCart height={30} width={30} />
-            <span className=" text-center text-xs">
-              your
-              <br /> items
+            <span
+              className="absolute -top-2 -right-1 -translate-x-1/2 
+            text-center text-sm text-primary"
+            >
+              {cartItems
+                ?.map((item:TCartSchema) =>
+                  item.paymentStatus === "not paid"
+                    ? parseInt(item.quantity)
+                    : 0
+                )
+                .reduce((acc, curr) => acc + curr, 0)}
             </span>
           </Link>
         </span>

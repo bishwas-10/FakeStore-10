@@ -20,13 +20,11 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../../context/AuthProvider";
 import useRefreshToken from "../../../hooks/useRefreshToken";
 
-
-
 const EachProduct = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
   const { auth, setAuth } = useAuth();
- 
+
   const navigate = useNavigate();
   const location = useLocation();
   const refresh = useRefreshToken();
@@ -37,7 +35,7 @@ const EachProduct = () => {
       url: `/products/${id}`,
       method: "GET",
     });
-  
+
     if (response.data.success) {
       return response.data.product;
     } else {
@@ -49,15 +47,12 @@ const EachProduct = () => {
     queryFn: () => fetchProductDetails(id as string),
   });
 
- 
   const authCheck = async () => {
     try {
-      
       await refresh();
-    
     } catch (error) {
-       navigate("/login");
-    
+      navigate("/login");
+
       setAuth({ token: null });
     }
   };
@@ -69,9 +64,9 @@ const EachProduct = () => {
   const addToCart = async () => {
     try {
       if (!auth.token) {
-      await  authCheck();
-      } 
-      
+        await authCheck();
+      }
+
       const response = await axiosPrivate({
         url: `/carts`,
         method: "POST",
@@ -90,50 +85,45 @@ const EachProduct = () => {
           paymentStatus: "not paid",
         },
       });
- if(response.data.success){
-  toast.success("Item added to cart successfully", {
-    position: "top-center",
-    autoClose: 1000,
-  });
- setTimeout(()=>navigate(`/carts/${decoded?.UserInfo.userId}`),1000) 
- }
+      if (response.data.success) {
+        toast.success("Item added to cart successfully", {
+          position: "top-center",
+          autoClose: 1000,
+        });
+        setTimeout(() => navigate(`/carts/${decoded?.UserInfo.userId}`), 1000);
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   if (isLoading) {
     return <Loading />;
   }
-
 
   if (isError) {
     return <p>Error occured 404 {error.message}</p>;
   }
 
   return (
-    <div className="px-10 py-10 flex flex-col items-start">
-      
-        <div className=" flex flex-row items-center gap-2 text-lg capitalize">
-          <Link to="/">home</Link>
-          <ChevronRight />
-          <Link to={"/categories/" + data.category}>{data.category}</Link>
-          <ChevronRight />
-          {data.title}
-        </div>
-      
+    <div className="px-6 py-10 flex flex-col items-start">
+      <div className=" flex flex-row items-center gap-2 text-lg capitalize">
+        <Link to="/">home</Link>
+        <ChevronRight />
+        <Link to={"/categories/" + data.category}>{data.category}</Link>
+        <ChevronRight />
+        {data.title}
+      </div>
+
       <div className="flex flex-col w-full  mt-8  h-max-content">
         <div className=" flex flex-col  md:flex-row  border-2 border-gray-400  ">
-          <div className="w-full md:w-1/4 border-r-2 border-gray-400 shrink-0 ">
-            <div className="w-full h-full p-3 flex items-center justify-center">
-              <img
-                src={data?.image}
-                alt={data?.title}
-                width={240}
-                height={240}
-                className="p-3 object-contain shadow-md"
-              />
-            </div>
+          <div className="w-full flex items-center justify-center  md:w-1/4 border-r-2 border-gray-400 shrink-0 ">
+            <img
+              src={data?.image}
+              alt={data?.title}
+              style={{ width: 400, height: 300 }}
+              className="p-3 object-cover shadow-md"
+            />
           </div>
           <div className="flex flex-col items-center  w-full md:w-2/4 h-full ">
             <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
@@ -177,7 +167,6 @@ const EachProduct = () => {
                 </button>
               </div>
               <div className="w-full mt-4 text-white ">
-               
                 <button
                   onClick={() => addToCart()}
                   className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md"

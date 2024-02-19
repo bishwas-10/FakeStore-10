@@ -39,13 +39,13 @@ const HomePage = () => {
         <ImageSlider images={IMAGES} />
       </div>
       <div className="mt-4 py-4 ">
-        <h2 className="text-2xl font-bold capitalize tracking-wide text-center">
+        <h2 className="text-2xl font-bold uppercase tracking-wide text-center">
           Categories for you
         </h2>
         <CategoryHome />
       </div>
       <div className="mt-4 py-4 ">
-        <h2 className="text-2xl font-bold capitalize tracking-wide text-center">
+        <h2 className="text-2xl font-bold uppercase tracking-wide text-center">
           Top Picks for you
         </h2>
         <TopPicksForYou />

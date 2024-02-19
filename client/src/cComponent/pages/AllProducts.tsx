@@ -30,7 +30,7 @@ export default function AllProducts() {
   }
   return (
     <> 
-      <Typography  fontWeight={500} fontSize={"20px"} className="py-6 px-10 tracking-wide capitalize">
+      <Typography  fontWeight={500} fontSize={"20px"} className="py-6 px-6 tracking-wide capitalize">
         All products available at FakeStore
       </Typography>
       <div className="px-8 my-12 flex flex-wrap items-center justify-center gap-4">

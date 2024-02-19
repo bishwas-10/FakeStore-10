@@ -36,7 +36,7 @@ const TopPicksForYou = () => {
     );
   }
   return (
-    <div className="px-10 mt-4 flex flex-wrap items-center justify-center gap-10 ">
+    <div className=" mt-4 flex flex-wrap items-center justify-center gap-6 ">
       {data
         ?.filter((item) => item?.topPicks === true)
         .map((product, index) => {

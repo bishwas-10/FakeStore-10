@@ -1,4 +1,4 @@
-import {  Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
@@ -49,32 +49,40 @@ function App() {
   // State to manage the current theme mode
   const { theme } = useTheme();
   // Create custom theme based on the current mode
- const getDesignTokens = (mode: PaletteMode) => ({
-  palette: {
-    mode,
-    primary: {
-      main: mode === 'dark' ? amber[500] : indigo[500],
+  const getDesignTokens = (mode: PaletteMode) => ({
+    palette: {
+      mode,
+      primary: {
+        main: mode === "dark" ? amber[500] : indigo[500],
+      },
+      background:
+        mode === "dark"
+          ? {
+              main: grey[800],
+              black: "#000202",
+              default: grey[900],
+              paper: grey[800],
+            }
+          : {
+              main: grey[100],
+              black: "#ffffff",
+              default: "#ffffff",
+              paper: grey[300],
+            },
+      text:
+        mode === "light"
+          ? {
+              primary: grey[900],
+              secondary: grey[800],
+              textSecondary: indigo[500],
+            }
+          : {
+              primary: "#fff",
+              secondary: grey[500],
+              textSecondary: amber[500],
+            },
     },
-    background: mode === 'dark' ? {
-      main: grey[800],
-      black: '#000202',
-      default: grey[900],
-      paper: grey[800],
-    } : {
-      main: grey[100],
-      black: '#ffffff',
-      default:'#ffffff',
-      paper: grey[300],
-    },
-    text: mode === 'light' ? {
-      primary: grey[900],
-      secondary: grey[800],
-    } : {
-      primary: '#fff',
-      secondary: grey[500],
-    },
-  },
-});
+  });
 
   const themeUi = createTheme(getDesignTokens(theme));
 
@@ -106,9 +114,7 @@ function App() {
                     allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
                   />
                 }
-              >
-               
-              </Route>
+              ></Route>
               <Route path="carts/:userId" element={<CartPage />} />
             </Route>
           </Route>
