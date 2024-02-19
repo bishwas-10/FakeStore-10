@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import useAuth from "../../../hooks/useAuth";
 import TopPicksForYou from "../TopPicksForYou";
-import Personalized from "../personalized";
+import Personalized from "../Personalized";
 
 const IMAGES = [
   { url: pic1, alt: "pic 1" },
@@ -35,7 +35,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <div className="h-80 w-full flex items-center justify-center ">
+      <div className="h-max w-full flex items-center justify-center ">
         <ImageSlider images={IMAGES} />
       </div>
       <div className="mt-4 py-4 ">

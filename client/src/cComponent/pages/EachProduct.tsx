@@ -52,7 +52,7 @@ const EachProduct = () => {
  
   const authCheck = async () => {
     try {
-      console.log("run vayo");
+      
       await refresh();
     
     } catch (error) {

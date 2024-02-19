@@ -40,6 +40,10 @@ const Dashboard = () => {
       console.log(error);
     }
   };
+  const unsold = orderstatus.orders.map((order) =>
+    order.paymentStatus === "not paid" ? order.quantity : 0
+  ) as number[];
+  const unsoldQty = unsold.reduce((acc, curr) => acc + curr, 0);
   const { isLoading, data, isError, error } = useQuery<any>({
     queryKey: ["sold-carts"],
     queryFn: saleCall,
@@ -125,9 +129,10 @@ const Dashboard = () => {
                 <CardContent>
                   <Link
                     to={"orders"}
-                    className="flex flex-row items-center justify-between space-y-0 pb-2"
+                    className="flex flex-col items-start justify-between space-y-0 pb-2"
                   >
-                    <h1 className="text-sm font-medium">Unsold Product</h1>
+                   <Box className="flex flex-row items-center justify-between w-full ">
+                   <h1 className="text-sm font-medium">Unsold Product</h1>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -140,16 +145,22 @@ const Dashboard = () => {
                     >
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                     </svg>
-                  </Link>
+                   </Box>
+                 
                   <Box>
                     <div className="text-2xl font-bold">
                       {
                         orderstatus.orders.filter(
-                          (order) => order.paymentStatus === "paid"
+                          (order) => order.paymentStatus === "not paid"
                         ).length
                       }
                     </div>
+                    <span className="text-sm">
+                      Total Qnty:
+                      {unsoldQty}
+                    </span>
                   </Box>
+                  </Link>
                 </CardContent>
               </Card>
             </div>

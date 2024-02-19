@@ -1,6 +1,6 @@
 import React from "react";
 import { ratingStars } from "./reusable/utils";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { TProductSchema } from "../components/pages/sub-components/add-products";
 
 
@@ -29,14 +29,19 @@ const Card = ({ product }: { product: TProductSchema }) => {
           </div>
         </div>
         <div className="flex flex-col flex-grow items-center justify-between">
-          <div className="flex flex-row w-full pt-1 px-2">
-            <p className="text-sm font-semibold line-clamp-2 text-slate-400 hover:text-red-400">
+          
+            <Typography
+            color={"text.primary"}
+            fontWeight={500}
+             className="text-sm w-full  line-clamp-2 px-2
+             hover:text-red-400">
               {product.title}
-            </p>
-          </div>
-          <span className="flex flex-row w-full text-xs font-semibold px-2 py-1 text-gray-500 text-justify overflow-hidden">
-            <p className="line-clamp-2">{product.description}</p>
-          </span>
+            </Typography>
+          
+          <Typography color={"text.secondary"} className="line-clamp-2  w-full text-xs font-semibold px-2 py-1
+           ">
+           {product.description}
+          </Typography>
         </div>
       </div>
     </Box>

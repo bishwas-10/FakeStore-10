@@ -364,7 +364,7 @@ const CartPage = () => {
             gap: 2,
           }}
         >
-          <Typography variant="h5">International Top picks for Your</Typography>
+          <Typography variant="h5">International Top picks for You!</Typography>
           <Box
             className="w-full h-max rounded-md p-4"
             sx={{ bgcolor: "background.paper" }}

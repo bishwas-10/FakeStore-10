@@ -1,10 +1,11 @@
 import { ChevronRight } from 'lucide-react';
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
-import Card, { ProductsProps } from '../Card';
+import Card from '../Card';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../reusable/Loading';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import { TProductSchema } from '../../components/pages/sub-components/add-products';
 
 
 const EachCategoryProduct = () => {
@@ -60,7 +61,7 @@ const EachCategoryProduct = () => {
           
         </div>
       </div>
-      {data?.map((data: ProductsProps) => {
+      {data?.map((data: TProductSchema) => {
         return (
           <Link key={data.id} to={"/product/" + data.id}>
             

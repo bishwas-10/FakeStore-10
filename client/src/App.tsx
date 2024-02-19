@@ -56,12 +56,12 @@ function App() {
       main: mode === 'dark' ? amber[500] : indigo[500],
     },
     background: mode === 'dark' ? {
-      main: '#000202',
+      main: grey[800],
       black: '#000202',
       default: grey[900],
       paper: grey[800],
     } : {
-      main: grey[200],
+      main: grey[100],
       black: '#ffffff',
       default:'#ffffff',
       paper: grey[300],
