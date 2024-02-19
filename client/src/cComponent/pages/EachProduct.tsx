@@ -75,13 +75,9 @@ const EachProduct = () => {
           totalAmount: data.price.toString(),
           customer: decoded.UserInfo.userId?.toString(),
           product: id,
-          shippingAddress: {
-            city: "kathmandu",
-            street: "banechor road",
-            zipcode: "293282",
-          },
+          shippingAddress:{},
           orderStatus: "pending",
-          paymentMethod: "onsite",
+          paymentMethod: "online",
           paymentStatus: "not paid",
         },
       });

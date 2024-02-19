@@ -9,8 +9,8 @@ export interface CartProps extends Document {
   customer: mongoose.Schema.Types.ObjectId;
   product: mongoose.Schema.Types.ObjectId;
   shippingAddress: {
-    city: string;
-    street: string;
+    city?: string;
+    street?: string;
     zipcode?: string;
   };
   orderStatus: string;
@@ -43,11 +43,11 @@ const cartSchema = new Schema<CartProps>(
     shippingAddress: {
       city: {
         type: String,
-        required: true,
+        
       },
       street: {
         type: String,
-        required: true,
+        
       },
       zipcode: String,
     },

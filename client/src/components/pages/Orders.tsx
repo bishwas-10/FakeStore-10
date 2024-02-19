@@ -54,8 +54,8 @@ export const CartPropsSchema = z.object({
     title: z.string().min(1, "title is required"),
   }),
   shippingAddress: z.object({
-    city: z.string().min(1, "city is required"),
-    street: z.string().min(1, "street is required"),
+    city: z.string().optional(),
+    street: z.string().optional(),
     zipcode: z.string().optional(),
   }),
   orderStatus: z.string().min(1, "order status is required"),
@@ -307,11 +307,11 @@ const Order = () => {
                               className="py-3 px-0 text-center"
                             >
                               <div className="">
-                                {cart.shippingAddress.city}
+                                {cart.shippingAddress?.city}
                                 <br />
-                                {cart.shippingAddress.street}
+                                {cart.shippingAddress?.street}
                                 <br />
-                                {cart.shippingAddress.zipcode}
+                                {cart.shippingAddress?.zipcode}
                               </div>
                             </td>
                             <td id="status" className="py-3 px-0 text-center">

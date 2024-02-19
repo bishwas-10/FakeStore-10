@@ -10,7 +10,7 @@ router.get('/customers',verifyRoles(ROLES_LIST.admin),getAllCustomers);
 router.post('/customers',verifyRoles(ROLES_LIST.admin),addCustomer);
 
 //eachCustomer
-router.get('/customers/:id',verifyRoles(ROLES_LIST.admin),getSpecificCustomer);
+router.get('/customers/:id',verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer),getSpecificCustomer);
 router.put('/customers/:id',verifyRoles(ROLES_LIST.admin),updateCustomer);
 router.delete('/customers/:id',verifyRoles(ROLES_LIST.admin),deleteCustomer);
 

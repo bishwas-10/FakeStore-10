@@ -55,7 +55,7 @@ export const addCart = async (req: Request, res: Response) => {
     if (!validation.success) {
       return res.status(400).send({ sucess: false, message: validation.error });
     }
-const existingCart = await Cart.findOne({product:req.body.product});
+const existingCart = await Cart.findOne({product:req.body.product,paymentStatus:"not paid"});
 if(existingCart){
   
   existingCart.quantity += parseInt(req.body.quantity);

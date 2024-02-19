@@ -83,8 +83,8 @@ export const CartPropsSchema = z.object({
   customer: z.string().min(1,"customer id is required"),
   product: z.string().min(1,"product id is required"),
   shippingAddress: z.object({
-    city: z.string().min(1,"city is required"),
-    street: z.string().min(1,"street is required"),
+    city: z.string().optional(),
+    street: z.string().optional(),
     zipcode: z.string().optional(),
   }),
   orderStatus: z.string().min(1,"order status is required"),

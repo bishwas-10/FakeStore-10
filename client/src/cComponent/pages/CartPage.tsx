@@ -16,7 +16,7 @@ import TopPicksForYou from "../TopPicksForYou";
 import Personalized from "../Personalized";
 import EmptyCartSvg from "../EmptyCartSvg";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllCarts } from "../../store/cartSlice";
+import { fetchAllCarts, setCheckOutItems } from "../../store/cartSlice";
 import BackToTop from "../reusable/BackToTop";
 import { RootState } from "../../store/store";
 import { Dispatch } from "@reduxjs/toolkit";
@@ -82,9 +82,12 @@ const CartPage = () => {
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
     queryKey: ["userSpecific-cart"],
     queryFn: () =>
-      fetchCartByUserId(decoded?.UserInfo.userId as string, axiosPrivate,dispatch),
+      fetchCartByUserId(
+        decoded?.UserInfo.userId as string,
+        axiosPrivate,
+        dispatch
+      ),
   });
-
 
   if (!auth.token) {
     return (
@@ -160,10 +163,9 @@ const CartPage = () => {
           product: productId,
         },
       });
-      if(response.data.success){
-         refetch();
+      if (response.data.success) {
+        refetch();
       }
-     
     } catch (error) {
       console.log(error);
     }
@@ -205,7 +207,10 @@ const CartPage = () => {
       autoClose: 2000,
     });
   };
-
+  const handleCheckOut = async(items: TCartSchema[]) => {
+    dispatch(setCheckOutItems(items));
+    navigate("checkout");
+  };
   return (
     <Box
       sx={{
@@ -221,7 +226,7 @@ const CartPage = () => {
         sx={{
           display: "flex",
           borderRadius: 1,
-          gap: 4,
+          gap: 2,
         }}
       >
         <Box
@@ -255,7 +260,7 @@ const CartPage = () => {
             <>
               <Box
                 sx={{ bgcolor: "background.paper" }}
-                className="flex flex-col py-8 px-6 items-center  gap-4"
+                className="flex flex-col py-8 px-6 items-center "
               >
                 <Typography fontSize={"30px"} fontWeight={"600"}>
                   Your Total
@@ -263,9 +268,13 @@ const CartPage = () => {
                 <Box className="flex flex-row gap-4 items-center w-max text-xl font-bold ">
                   <span className="flex flex-row items-center ">
                     Total Products:{" "}
-                    <Typography fontSize={"25px"} color={"text.textSecondary"}>
+                    <Typography
+                      fontSize={"25px"}
+                      fontWeight={"600"}
+                      color={"text.textSecondary"}
+                    >
                       {data
-                        ?.map((item:TCartSchema) =>
+                        ?.map((item: TCartSchema) =>
                           item.paymentStatus === "not paid"
                             ? parseInt(item.quantity)
                             : 0
@@ -275,7 +284,11 @@ const CartPage = () => {
                   </span>
                   <span className="flex flex-row items-center">
                     Total Price:{" "}
-                    <Typography fontSize={"25px"} color={"text.textSecondary"}>
+                    <Typography
+                      fontSize={"25px"}
+                      fontWeight={"600"}
+                      color={"text.textSecondary"}
+                    >
                       $
                       {data
                         ?.map((item: TCartSchema) =>
@@ -288,9 +301,22 @@ const CartPage = () => {
                     </Typography>
                   </span>
                 </Box>
-                <Button variant="contained" className="text-xl">
-                        Check Out
-                </Button>
+                {data?.length && (
+                  <Button
+                    onClick={() =>
+                      handleCheckOut(
+                        data?.filter(
+                          (item: TCartSchema) =>
+                            item.paymentStatus === "not paid"
+                        ) as TCartSchema[]
+                      )
+                    }
+                    variant="contained"
+                    className="text-xl"
+                  >
+                    Check Out
+                  </Button>
+                )}
               </Box>
               <Typography variant="h5">Your Shopping Cart</Typography>
               {data
@@ -312,7 +338,7 @@ const CartPage = () => {
                           />
                         </div>
                       </div>
-                      <div className="flex flex-col items-center  w-full md:w-2/4 h-full ">
+                      <div className="flex flex-col items-center  w-full  ">
                         <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
                           <p className="text-xl font-semibold pt-2 text-[#8A8888]">
                             {item.product.title}
@@ -322,11 +348,19 @@ const CartPage = () => {
                               {item.product.category}
                             </p>
                           </div>
-                          <Typography fontSize={"25px"} color={"text.textSecondary"}>
+                          <Typography
+                            fontSize={"25px"}
+                            fontWeight={"600"}
+                            color={"text.textSecondary"}
+                          >
                             ${item.product.price}
                             <span className="text-xs">per product</span>
                           </Typography>
-                          <Typography fontSize={"25px"} color={"text.textSecondary"}>
+                          <Typography
+                            fontSize={"25px"}
+                            fontWeight={"600"}
+                            color={"text.textSecondary"}
+                          >
                             <span className="text-xs">total</span> $
                             {item.product.price * item.quantity}
                           </Typography>
@@ -370,7 +404,7 @@ const CartPage = () => {
                           ) : (
                             <div className="w-full mt-2 text-white ">
                               <Button
-                              variant="outlined"
+                                variant="outlined"
                                 onClick={() => cancelOrder(item._id)}
                                 className="w-1/2  py-2  rounded-l-md"
                               >
@@ -379,7 +413,6 @@ const CartPage = () => {
                               <Button
                                 onClick={() => buyNowHandler(item)}
                                 variant="contained"
-                                
                                 className="w-1/2 py-2  rounded-r-md"
                               >
                                 BUY NOW

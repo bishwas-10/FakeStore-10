@@ -34,6 +34,7 @@ import Footer from "./cComponent/Footer";
 import Categories from "./components/pages/Categories";
 import AddCategory from "./components/pages/sub-components/AddCategory";
 import CartPage from "./cComponent/pages/CartPage";
+import CheckOutPage from "./cComponent/pages/CheckOutPage";
 
 export interface RolesProps {
   [key: string]: number;
@@ -66,7 +67,7 @@ function App() {
           : {
               main: grey[100],
               black: "#ffffff",
-              default: "#ffffff",
+              default: grey[100],
               paper: grey[300],
             },
       text:
@@ -115,7 +116,19 @@ function App() {
                   />
                 }
               ></Route>
-              <Route path="carts/:userId" element={<CartPage />} />
+
+              <Route path="carts/:userId">
+                <Route index element={<CartPage />} />
+                <Route path="checkout"
+                  element={
+                    <RequireAuth
+                      allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
+                    />
+                  }
+                >
+                  <Route index element={<CheckOutPage />} />
+                </Route>
+              </Route>
             </Route>
           </Route>
           <Route path="/admin">
