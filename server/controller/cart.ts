@@ -56,6 +56,7 @@ export const addCart = async (req: Request, res: Response) => {
     }
     const existingCart = await Cart.findOne({
       product: req.body.product,
+      customer:req.body.customer,
       paymentStatus: "not paid",
     });
     if (existingCart) {

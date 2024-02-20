@@ -52,7 +52,10 @@ const EachProduct = () => {
     try {
       await refresh();
     } catch (error) {
-      navigate("/login");
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      })
 
       setAuth({ token: null });
     }
