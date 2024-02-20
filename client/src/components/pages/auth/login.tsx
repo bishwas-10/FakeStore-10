@@ -69,7 +69,7 @@ const LoginPage = () => {
   }, [persist]);
   const authCheck = async () => {
     try {
-      console.log("run vayo");
+
       await refresh();
       navigate(from, { replace: true });
     } catch (error) {

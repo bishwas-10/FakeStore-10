@@ -6,7 +6,9 @@ import {
   getAllCarts,
   getCartByCustomerId,
   soldProduct,
-  updateQuantity
+  updateAllShippingAddress,
+  updateQuantity,
+  updateSingleShippingAddress
 
 } from "../controller/cart";
 import { verifyRoles } from "../middleware/verifyRoles";
@@ -23,7 +25,10 @@ router.get("/carts/soldorder",verifyRoles(ROLES_LIST.admin), soldProduct);
  router.put("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), editCart);
  router.delete("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), deleteCart);
  router.patch("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), updateQuantity);
-// //customer
+ router.patch("/carts/checkoutaddress/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), updateAllShippingAddress);
+ router.patch("/carts/updateoneaddress/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), updateSingleShippingAddress);
+
+ // //customer
 router.get("/carts/:id",verifyRoles(ROLES_LIST.admin,ROLES_LIST.customer), getCartByCustomerId);
 // router.get("/products/category/:category", getCategoryProduct);
 

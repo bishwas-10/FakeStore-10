@@ -1,6 +1,6 @@
 import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
@@ -68,6 +68,7 @@ const fetchCartByUserId = async (
 
 const CartPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedQuantities, setSelectedQuantities] = useState<{
     [productId: string]: number;
   }>({});
@@ -91,47 +92,66 @@ const CartPage = () => {
 
   if (!auth.token) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          justifyContent: "space-between",
-          height: "100vh",
-          bgcolor: "background.default",
-          color: "text.primary",
-          p: 4,
-        }}
-      >
+      <>
+        {" "}
         <Box
           sx={{
+            display: "flex",
+            flexDirection: "column",
             width: "100%",
-            bgcolor: "background.paper",
+            justifyContent: "space-between",
+            height: "100vh",
+            bgcolor: "background.default",
             color: "text.primary",
+            p: 4,
           }}
-          className="flex flex-col items-center justify-center h-max py-6"
         >
-          <Typography fontSize={"20px"} fontWeight={"600"}>
-            Your shopping cart is empty
-          </Typography>
-          <Link to={"/"} className="text-xs">
-            Top picks for you!
-          </Link>
-          <Box className="flex flex-col gap-2">
-            <EmptyCartSvg />{" "}
-            <Box className="flex flex-row gap-6 mt-8">
-              <Button variant="contained" onClick={() => navigate("/login")}>
-                Sign in to your account
-              </Button>
-              <Button variant="outlined" onClick={() => navigate("/signup")}>
-                Sign Up
-              </Button>
+          <Box
+            sx={{
+              width: "100%",
+              bgcolor: "background.paper",
+              color: "text.primary",
+            }}
+            className="flex flex-col items-center justify-center h-max py-6"
+          >
+            <Typography fontSize={"20px"} fontWeight={"600"}>
+              Your shopping cart is empty
+            </Typography>
+            <Link to={"/"} className="text-xs">
+              Top picks for you!
+            </Link>
+            <Box className="flex flex-col gap-2">
+              <EmptyCartSvg />{" "}
+              <Box className="flex flex-row gap-6 mt-8">
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    navigate("/login", {
+                      state: { from: location },
+                      replace: true,
+                    })
+                  }
+                >
+                  Sign in to your account
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() =>
+                    navigate("/signup", {
+                      state: { from: location },
+                      replace: true,
+                    })
+                  }
+                >
+                  Sign Up
+                </Button>
+              </Box>
             </Box>
           </Box>
+          <Personalized />
         </Box>
-        <Personalized />
         <BackToTop />
-      </Box>
+      </>
     );
   } else {
     if (isError) {
@@ -185,29 +205,10 @@ const CartPage = () => {
 
   const buyNowHandler = async (cartItem: TCartSchema) => {
     //console.log(cartItem)
-    try {
-      const response = await axiosPrivate({
-        url: `/carts/${cartItem.id}`,
-        method: "PUT",
-        data: {
-          ...cartItem,
-          quantity: cartItem.quantity.toString(),
-          product: cartItem.product.id,
-          customer: decoded?.UserInfo.userId,
-          paymentStatus: "paid",
-        },
-      });
-      console.log(response);
-      refetch();
-    } catch (error) {
-      console.log(error);
-    }
-    toast.success("Item bought successfully", {
-      position: "top-center",
-      autoClose: 2000,
-    });
+    dispatch(setCheckOutItems([cartItem]));
+    navigate("checkout");
   };
-  const handleCheckOut = async(items: TCartSchema[]) => {
+  const handleCheckOut = async (items: TCartSchema[]) => {
     dispatch(setCheckOutItems(items));
     navigate("checkout");
   };

@@ -19,6 +19,7 @@ import useAuth from "../../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../../context/AuthProvider";
 import useRefreshToken from "../../../hooks/useRefreshToken";
+import { Button } from "@mui/material";
 
 const EachProduct = () => {
   const [quantity, setQuantity] = useState<number>(1);
@@ -163,12 +164,13 @@ const EachProduct = () => {
                 </button>
               </div>
               <div className="w-full mt-4 text-white ">
-                <button
+                <Button
                   onClick={() => addToCart()}
-                  className="w-1/2 py-2 bg-blue-500 hover:bg-blue-700 transition-all  rounded-r-md"
+                  variant="contained"
+                  className="w-1/2 py-2  transition-all  rounded-r-md"
                 >
                   ADD TO CART
-                </button>
+                </Button>
               </div>
             </div>
           </div>

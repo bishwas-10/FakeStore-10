@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ChevronDown, Search, ShoppingBag, ShoppingCart } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Box, FormControlLabel, Switch } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Box, Button, FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
@@ -10,11 +10,14 @@ import { UserInfoProps } from "../context/AuthProvider";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { TCartSchema } from "../components/pages/Orders";
+import useLogout from "../../hooks/useLogout";
 
 const MainNav = () => {
   const { auth } = useAuth();
+  const signOut = useLogout();
   const cartItems = useSelector((state: RootState) => state.cart.carts);
-  console.log(cartItems);
+  const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
 
@@ -52,9 +55,9 @@ const MainNav = () => {
           placeholder="search for items"
           className="px-4 py-1 w-full text-sm focus:outline-none text-black  rounded-l"
         />
-        <button className="p-2 text-lg bg-yellow-500 text-black rounded-r ">
+        <Button variant="contained" className="p-2 text-lg  ">
           <Search />
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-row gap-2 items-center">
@@ -71,44 +74,54 @@ const MainNav = () => {
             label={"Dark Mode"}
           />
         </div>
-        <Link
-          to="/login"
+        <Button
+          onClick={() =>
+            navigate("/login", { state: { from: location }, replace: true })
+          }
           onMouseEnter={() => setShowDiv(true)}
           onFocus={() => setShowDiv(true)}
           onBlur={() => setShowDiv(false)}
           onMouseLeave={() => setShowDiv(false)}
+          variant="contained"
           className="flex flex-col items-start hover:border-2 cursor-pointer p-2"
         >
           <span className="text-xs">
-            {" "}
             {decoded ? `Hello,${decoded.UserInfo.username}` : "Hello, Sign In"}
           </span>
           <span className={`text-sm font-bold flex flex-row items-center`}>
             Accounts and Lists
             <ChevronDown height={16} />
           </span>
-        </Link>
+        </Button>
         {showDiv && (
           <div
             onMouseEnter={() => setShowDiv(true)}
             onMouseLeave={() => setShowDiv(false)}
-            className="z-10 w-[20%] h-max flex flex-col absolute top-[72px] right-20 bg-white dark:bg-gray-700  shadow-md p-4"
+            className="z-10 w-[20%] h-max flex flex-col absolute top-[60px] right-20 bg-white dark:bg-gray-700  shadow-md p-4"
           >
             <div className="w-full flex flex-col items-center gap-2 font-sans tracking-normal">
-              <Link
-                to="/login"
-                className="w-[60%] bg-yellow-500 text-center text-md py-2"
+              <Button
+                onClick={() =>
+                  navigate("/login", {
+                    state: { from: location },
+                    replace: true,
+                  })
+                }
+                variant="contained"
+                className="w-[60%]  text-center text-md py-2"
               >
-                {decoded
-                  ? `Hello,${decoded.UserInfo.username}`
+                {auth.token
+                  ? `Hello,${decoded?.UserInfo.username}`
                   : "Hello, Sign In"}
-              </Link>
-              <span className="text-xs font-medium">
-                New customer?{" "}
-                <Link to={"/signup"} className="text-blue-500">
-                  Start here
-                </Link>
-              </span>
+              </Button>
+              {!auth.token && (
+                <span className="text-xs font-medium">
+                  New customer
+                  <Link to={"/signup"} className="text-blue-500">
+                    Start here
+                  </Link>
+                </span>
+              )}
             </div>
             <div className="w-full flex flex-col items-start mt-2">
               <h1 className="text-center text-lg font-bold w-full">
@@ -117,15 +130,28 @@ const MainNav = () => {
 
               {accountItems.map((item, index) => {
                 return (
-                  <Link
-                    className="my-1 text-xs font-medium hover:text-red-500 hover:border-b-2 transition-all hover:border-b-red-500"
-                    to={item.to}
-                    key={index}
-                  >
-                    {item.name}
-                  </Link>
+                  <React.Fragment key={index}>
+                    
+                    <Link
+                      className="my-1 text-xs font-medium hover:text-red-500
+                       hover:border-b-2 transition-all hover:border-b-red-500"
+                      to={item.to}
+                     
+                    >
+                      {item.name}
+                    </Link>
+                   
+                  </React.Fragment>
                 );
               })}
+               <Button
+                    variant="contained"
+                    onClick={()=>signOut()}
+                      className="my-1 text-xs font-medium"
+                      
+                    >
+                      sign out
+                    </Button>
             </div>
           </div>
         )}
@@ -140,7 +166,7 @@ const MainNav = () => {
             text-center text-sm text-primary"
             >
               {cartItems
-                ?.map((item:TCartSchema) =>
+                ?.map((item: TCartSchema) =>
                   item.paymentStatus === "not paid"
                     ? parseInt(item.quantity)
                     : 0
