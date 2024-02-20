@@ -1,6 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
@@ -13,8 +23,9 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../reusable/Loading";
 import { TCustomerSchema } from "../../components/pages/sub-components/editCustomers";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { TCartSchema } from "../../components/pages/Orders";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const shippingAddressSchema = z.object({
   city: z.string().min(1, "city is required"),
@@ -42,7 +53,8 @@ const CheckOutPage = () => {
   const checkOutItems = useSelector(
     (state: RootState) => state.cart.checkOutItems
   );
-  console.log(checkOutItems);
+  const navigate = useNavigate();
+  const [addressAdded, setAddressAdded] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const { auth } = useAuth();
   const decoded: UserInfoProps | undefined = auth.token
@@ -64,6 +76,11 @@ const CheckOutPage = () => {
   } = useForm<TShippingAddressSchema>({
     resolver: zodResolver(shippingAddressSchema),
   });
+  const [value, setValue] = useState<"onsite" | "online">("online");
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue((event.target as HTMLInputElement).value as "onsite" | "online");
+  };
   const onSubmit = async (data: TShippingAddressSchema) => {
     console.log(data);
     try {
@@ -81,12 +98,14 @@ const CheckOutPage = () => {
           },
         },
       });
-      console.log(response.data);
-      // if (response.data.success) {
-      //   toast.success("Item added to cart successfully", {
-      //     position: "top-center",
-      //     autoClose: 1000,
-      //   });
+
+      if (response.data.success) {
+        toast.success("Item added to cart successfully", {
+          position: "top-center",
+          autoClose: 1000,
+        });
+        setAddressAdded(true);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -106,105 +125,147 @@ const CheckOutPage = () => {
   return (
     <Box
       sx={{ bgcolor: "background.paper" }}
-      className="w-full min-h-screen p-6 flex flex-row gap-6"
+      className="w-full h-max p-6 flex flex-col md:flex-row gap-6"
     >
       <Box
         sx={{ bgcolor: "background.default" }}
-        className="w-2/3 p-4 border border-gray-200 min-h-screen"
+        className="w-full md:w-2/3 p-4 border border-gray-200 h-max"
       >
         <Typography fontSize={"27px"} fontWeight={"600"}>
           Information related to Order
         </Typography>
-        <Box className="flex flex-col md:flex-row w-full">
-          <Box className="flex flex-col gap-4 w-full md:w-1/2">
-            <Typography fontSize={"16px"} fontWeight={"500"}>
-              The personal informations of customer:{" "}
-            </Typography>
-            <Box className="flex flex-col  gap-4 ">
-              <Box className="flex flex-row items-center gap-2">
-                Full Name:
-                <Typography fontSize={"18px"} fontWeight={"500"}>
-                  {data?.name.firstName} {data?.name.lastName}
+        {checkOutItems.length === 0 ? (
+          <Box className="py-4 flex flex-col">
+             <Typography fontSize={"20px"} fontWeight={"500"}>
+           Please go back to cartpage and checkout items!
+          </Typography>
+          <Button variant="contained" onClick={()=>navigate(`/carts/${decoded?.UserInfo.userId}`)}>
+            Back to Cart Page
+          </Button>
+          </Box>
+        ) : (
+          <Box className="flex flex-col gap-4 w-full ">
+            <Box className="flex flex-col md:flex-row w-full">
+              <Box className="flex flex-col gap-4 w-full md:w-1/2">
+                <Typography fontSize={"16px"} fontWeight={"500"}>
+                  The personal informations of customer:{" "}
                 </Typography>
-              </Box>
+                <Box className="flex flex-col  gap-4 ">
+                  <Box className="flex flex-row items-center gap-2">
+                    Full Name:
+                    <Typography fontSize={"18px"} fontWeight={"500"}>
+                      {data?.name.firstName} {data?.name.lastName}
+                    </Typography>
+                  </Box>
 
-              <Box className="flex flex-row items-center gap-2">
-                Email:
-                <Typography fontSize={"18px"} fontWeight={"500"}>
-                  {data?.email}
-                </Typography>
-              </Box>
+                  <Box className="flex flex-row items-center gap-2">
+                    Email:
+                    <Typography fontSize={"18px"} fontWeight={"500"}>
+                      {data?.email}
+                    </Typography>
+                  </Box>
 
-              <Box className="flex flex-row items-center gap-2">
-                Phone:
-                <Typography fontSize={"18px"} fontWeight={"500"}>
-                  {data?.phone}
-                </Typography>
-              </Box>
+                  <Box className="flex flex-row items-center gap-2">
+                    Phone:
+                    <Typography fontSize={"18px"} fontWeight={"500"}>
+                      {data?.phone}
+                    </Typography>
+                  </Box>
 
-              <Box className="flex flex-row items-start gap-2">
-                Address:
-                <Typography fontSize={"18px"} fontWeight={"500"}>
-                  {data?.address.city}
-                  <br />
-                  {data?.address.street}
-                  <br />
-                  {data?.address?.zipcode}
-                  <br />
+                  <Box className="flex flex-row items-start gap-2">
+                    Address:
+                    <Typography fontSize={"18px"} fontWeight={"500"}>
+                      {data?.address.city}
+                      <br />
+                      {data?.address.street}
+                      <br />
+                      {data?.address?.zipcode}
+                      <br />
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+              <Box className="w-full md:w-1/2 flex flex-col gap-4  ">
+                <Typography fontSize={"17px"} fontWeight={"600"}>
+                  Shipping Address
                 </Typography>
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="flex flex-col gap-4 items-center"
+                >
+                  <div className="flex flex-col w-full gap-4">
+                    <TextField
+                      id="city"
+                      type="text"
+                      label="City"
+                      variant="outlined"
+                      onFocus={() => setErrMsg(null)}
+                      error={!!errors.city}
+                      helperText={errors.city ? errors.city.message : ""}
+                      {...register("city", { required: true })}
+                    />
+                    <TextField
+                      id="street"
+                      type="text"
+                      label="Street"
+                      variant="outlined"
+                      onFocus={() => setErrMsg(null)}
+                      error={!!errors.street}
+                      helperText={errors.street ? errors.street.message : ""}
+                      {...register("street", { required: true })}
+                    />
+                    <TextField
+                      id="zipcode"
+                      type="number"
+                      label="Zipcode"
+                      variant="outlined"
+                      onFocus={() => setErrMsg(null)}
+                      error={!!errors.zipcode}
+                      helperText={errors.zipcode ? errors.zipcode.message : ""}
+                      {...register("zipcode", { required: true })}
+                    />
+                  </div>
+                  <Button type="submit" variant="contained">
+                    Set Your Shipping Address
+                  </Button>
+                </form>
               </Box>
             </Box>
+            {addressAdded && (
+              <Box className="flex flex-col  gap-2">
+                <Typography fontSize={"24px"} fontWeight={"600"}>
+                  Payment Method
+                </Typography>
+                <Box className="flex flex-row justify-between items-center">
+                  <FormControl>
+                    <FormLabel>Method</FormLabel>
+                    <RadioGroup
+                      name="controlled-radio-buttons-group"
+                      value={value}
+                      onChange={handleChange}
+                    >
+                      <FormControlLabel
+                        value="onsite"
+                        control={<Radio />}
+                        label="On Site"
+                      />
+                      <FormControlLabel
+                        value="online"
+                        control={<Radio />}
+                        label="Online"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  <Button onClick={()=>navigate("stripe")} variant="contained">Order Now</Button>
+                </Box>
+              </Box>
+            )}
           </Box>
-          <Box className="w-full md:w-1/2 flex flex-col gap-4  ">
-            <Typography fontSize={"17px"} fontWeight={"600"}>
-              Shipping Address
-            </Typography>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4 items-center"
-            >
-              <div className="flex flex-col w-full gap-4">
-                <TextField
-                  id="city"
-                  type="text"
-                  label="City"
-                  variant="outlined"
-                  onFocus={() => setErrMsg(null)}
-                  error={!!errors.city}
-                  helperText={errors.city ? errors.city.message : ""}
-                  {...register("city", { required: true })}
-                />
-                <TextField
-                  id="street"
-                  type="text"
-                  label="Street"
-                  variant="outlined"
-                  onFocus={() => setErrMsg(null)}
-                  error={!!errors.street}
-                  helperText={errors.street ? errors.street.message : ""}
-                  {...register("street", { required: true })}
-                />
-                <TextField
-                  id="zipcode"
-                  type="number"
-                  label="Zipcode"
-                  variant="outlined"
-                  onFocus={() => setErrMsg(null)}
-                  error={!!errors.zipcode}
-                  helperText={errors.zipcode ? errors.zipcode.message : ""}
-                  {...register("zipcode", { required: true })}
-                />
-              </div>
-              <Button type="submit" variant="contained">
-                Set Your Shipping Address
-              </Button>
-            </form>
-          </Box>
-        </Box>
+        )}
       </Box>
       <Box
         sx={{ bgcolor: "background.default" }}
-        className="w-1/3 flex flex-col gap-2 p-4 h-max"
+        className="w-full md:w-1/3 flex flex-col gap-2 p-4 h-max"
       >
         <Box
           sx={{ bgcolor: "background.paper" }}
@@ -290,6 +351,7 @@ const CheckOutPage = () => {
           );
         })}
       </Box>
+      <ToastContainer />
     </Box>
   );
 };

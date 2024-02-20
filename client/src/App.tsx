@@ -35,6 +35,7 @@ import Categories from "./components/pages/Categories";
 import AddCategory from "./components/pages/sub-components/AddCategory";
 import CartPage from "./cComponent/pages/CartPage";
 import CheckOutPage from "./cComponent/pages/CheckOutPage";
+import StripeCheckOut from "./cComponent/pages/StripeCheckOut";
 
 export interface RolesProps {
   [key: string]: number;
@@ -127,6 +128,7 @@ function App() {
                   }
                 >
                   <Route index element={<CheckOutPage />} />
+                  <Route path="stripe" element={<StripeCheckOut />} />
                 </Route>
               </Route>
             </Route>
