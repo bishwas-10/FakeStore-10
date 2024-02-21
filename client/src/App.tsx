@@ -36,6 +36,7 @@ import AddCategory from "./components/pages/sub-components/AddCategory";
 import CartPage from "./cComponent/pages/CartPage";
 import CheckOutPage from "./cComponent/pages/CheckOutPage";
 import StripeCheckOut from "./cComponent/pages/StripeCheckOut";
+import BackToTop from "./cComponent/reusable/BackToTop";
 
 export interface RolesProps {
   [key: string]: number;
@@ -100,6 +101,7 @@ function App() {
             <SubNavbar />
           </>
         )}
+
         <Routes>
           <Route path="/">
             <Route index element={<HomePage />} />
@@ -120,7 +122,8 @@ function App() {
 
               <Route path="carts/:userId">
                 <Route index element={<CartPage />} />
-                <Route path="checkout"
+                <Route
+                  path="checkout"
                   element={
                     <RequireAuth
                       allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
@@ -165,7 +168,7 @@ function App() {
           <Route path="*" element={<Missing />} />
           {/* </Route> */}
         </Routes>
-
+                  <BackToTop/>
         <Footer />
       </div>
     </ThemeProvider>

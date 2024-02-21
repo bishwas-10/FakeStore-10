@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { ChevronDown, Search, ShoppingBag, ShoppingCart } from "lucide-react";
+import { ChevronDown, SearchIcon, ShoppingBag, ShoppingCart } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Box, Button, FormControlLabel, Switch } from "@mui/material";
+import { Box, Button, FormControlLabel, InputBase, Switch, alpha, styled } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";
 import { accountItems } from "./utils/items";
 import useAuth from "../../hooks/useAuth";
@@ -11,6 +11,56 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { TCartSchema } from "../components/pages/Orders";
 import useLogout from "../../hooks/useLogout";
+import { relative } from "path";
+import zIndex from "@mui/material/styles/zIndex";
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  width: '100%',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+
+      width: '0ch',
+      '&:focus': {
+        width: '100ch',
+      },
+      [theme.breakpoints.up('sm')]: {
+       
+        width: '0ch',
+        '&:focus': {
+          width: '100%',
+        },
+      },
+  },
+}));
 
 const MainNav = () => {
   const { auth } = useAuth();
@@ -49,7 +99,7 @@ const MainNav = () => {
           <ShoppingBag className="text-2xl mx-1" />
         </Link>
       </div>
-      <div className="relative flex flex-row w-60 shadow-md md:w-96">
+      {/* <div className="relative flex flex-row w-60 shadow-md md:w-96">
         <input
           type="text"
           placeholder="search for items"
@@ -58,9 +108,20 @@ const MainNav = () => {
         <Button variant="contained" className="p-2 text-lg  ">
           <Search />
         </Button>
-      </div>
-
-      <div className="flex flex-row gap-2 items-center">
+      </div> */}
+      <div className="flex   flex-row items-center gap-2">
+        
+        <div className=""> <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+          </div>
+      <div className="hidden md:flex  flex-row gap-2 items-center">
         <div>
           <FormControlLabel
             control={
@@ -176,6 +237,8 @@ const MainNav = () => {
           </Link>
         </span>
       </div>
+      </div>
+ 
     </Box>
   );
 };

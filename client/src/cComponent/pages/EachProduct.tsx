@@ -106,7 +106,7 @@ const EachProduct = () => {
   }
 
   return (
-    <div className="px-6 py-10 flex flex-col items-start">
+    <div className="px-6 py-10 flex flex-col items-start min-h-screen">
       <div className=" flex flex-row items-center gap-2 text-lg capitalize">
         <Link to="/">home</Link>
         <ChevronRight />
