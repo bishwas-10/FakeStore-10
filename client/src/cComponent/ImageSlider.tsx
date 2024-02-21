@@ -25,7 +25,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
            clickable: true,
          }}
          autoplay={{
-          delay: 2500,
+          delay: 2000,
           disableOnInteraction: false,
         }}
          navigation={true}
@@ -38,7 +38,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
               <img
                 src={image.url}
                 alt={image.alt}
-                className="w-full h-screen object-cover md:object-fit"
+                className="w-full h-80 lg:96 xl:h-screen object-cover md:object-fit"
               />
             </SwiperSlide>
           );

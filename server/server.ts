@@ -27,6 +27,7 @@ app.use(
   })
 );
 
+app.use(express.static("public"));
 app.use(express.json({ limit: "30mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
@@ -34,8 +35,7 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 // This is your test secret API key.
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-app.use(express.static("public"));
-app.use(express.json());
+
 
 const calculateOrderAmount = () => {
   // Replace this constant with a calculation of the order's amount
@@ -45,34 +45,36 @@ const calculateOrderAmount = () => {
 };
 
 app.post("/api/create-payment-intent", async (req, res) => {
-  const { items } = req.body;
+const {name,address}= req.body;
   console.log("aayo");
   // Create a PaymentIntent with the order amount and currency
  
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(),
-    currency: "INR",
-    description: "goods or products",
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
-  const customer = await stripe.customers.create({
-    name: "Jenny Rosen",
+    description: 'Software development services',
+  shipping: {
+    name: 'Jenny Rosen',
     address: {
-      line1: "510 Townsend St",
-      postal_code: "98140",
-      city: "San Francisco",
-      state: "CA",
-      country: "US",
+      line1: '510 Townsend St',
+      postal_code: '98140',
+      city: 'San Francisco',
+      state: 'CA',
+      country: 'US',
     },
+  },
+  amount: 1099,
+  currency: 'usd',
+  payment_method_types: ['card'],
   });
-  console.log(customer)
+  // const customer = await stripe.customers.create({
+   
+  //   name: name,
+  //   address:address
+
+  // });
+ 
   res.send({
     clientSecret: paymentIntent.client_secret,
-    customerName:customer.name,
-    customerAddress:customer.address
+ 
   });
 });
 

@@ -20,7 +20,16 @@ export default function StripeCheckOut() {
         const response =  await instance("/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            data:{ items: [{ id: "xl-tshirt" }] },
+            data:{ 
+              name:"bishwas",
+              address: {
+                line1: '510 Townsend St',
+                postal_code: '98140',
+                city: 'San Francisco',
+                state: 'CA',
+                country: 'US',
+              },
+              items: [{ id: "xl-tshirt" }] },
           })
           console.log(response)
           if(response){

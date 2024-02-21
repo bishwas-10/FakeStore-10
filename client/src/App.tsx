@@ -37,6 +37,7 @@ import CartPage from "./cComponent/pages/CartPage";
 import CheckOutPage from "./cComponent/pages/CheckOutPage";
 import StripeCheckOut from "./cComponent/pages/StripeCheckOut";
 import BackToTop from "./cComponent/reusable/BackToTop";
+import ScrollToTop from "./cComponent/ScrollToTop";
 
 export interface RolesProps {
   [key: string]: number;
@@ -93,83 +94,85 @@ function App() {
     <ThemeProvider theme={themeUi}>
       <CssBaseline />
       <div className="w-full h-max ">
-        {location.pathname.startsWith("/admin") ? (
-          <Navbar />
-        ) : (
-          <>
-            <MainNav />
-            <SubNavbar />
-          </>
-        )}
+        <ScrollToTop>
+          {location.pathname.startsWith("/admin") ? (
+            <Navbar />
+          ) : (
+            <>
+              <MainNav />
+              <SubNavbar />
+            </>
+          )}
 
-        <Routes>
-          <Route path="/">
-            <Route index element={<HomePage />} />
-            <Route path="allproducts" element={<AllProducts />} />
-            <Route path="product/:id" element={<EachProduct />} />
-            <Route
-              path="categories/:category"
-              element={<EachCategoryProduct />}
-            />
-            <Route element={<PersistLogin />}>
+          <Routes>
+            <Route path="/">
+              <Route index element={<HomePage />} />
+              <Route path="allproducts" element={<AllProducts />} />
+              <Route path="product/:id" element={<EachProduct />} />
               <Route
-                element={
-                  <RequireAuth
-                    allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
-                  />
-                }
-              ></Route>
-
-              <Route path="carts/:userId">
-                <Route index element={<CartPage />} />
+                path="categories/:category"
+                element={<EachCategoryProduct />}
+              />
+              <Route element={<PersistLogin />}>
                 <Route
-                  path="checkout"
                   element={
                     <RequireAuth
                       allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
                     />
                   }
+                ></Route>
+
+                <Route path="carts/:userId">
+                  <Route index element={<CartPage />} />
+                  <Route
+                    path="checkout"
+                    element={
+                      <RequireAuth
+                        allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
+                      />
+                    }
+                  >
+                    <Route index element={<CheckOutPage />} />
+                    <Route path="stripe" element={<StripeCheckOut />} />
+                  </Route>
+                </Route>
+              </Route>
+            </Route>
+            <Route path="/admin">
+              <Route element={<PersistLogin />}>
+                <Route
+                  element={<RequireAuth allowedRoles={[ROLES_LIST.admin]} />}
                 >
-                  <Route index element={<CheckOutPage />} />
-                  <Route path="stripe" element={<StripeCheckOut />} />
+                  <Route index element={<Dashboard />} />
+                  <Route path="products">
+                    <Route index element={<Products />} />
+                    <Route path="addproducts" element={<AddProducts />} />
+                  </Route>
+                  <Route path="categories">
+                    <Route index element={<Categories />} />
+                    <Route path="addcategory" element={<AddCategory />} />
+                  </Route>
+                  <Route path="customers">
+                    <Route index element={<Customers />} />
+                    <Route path="editcustomers" element={<EditCustomers />} />
+                  </Route>
+                  <Route path="orders">
+                    <Route index element={<Order />} />
+                    <Route path="editorders" element={<EditOrders />} />
+                  </Route>
+                  <Route path="settings" element={<Settings />} />
                 </Route>
               </Route>
             </Route>
-          </Route>
-          <Route path="/admin">
-            <Route element={<PersistLogin />}>
-              <Route
-                element={<RequireAuth allowedRoles={[ROLES_LIST.admin]} />}
-              >
-                <Route index element={<Dashboard />} />
-                <Route path="products">
-                  <Route index element={<Products />} />
-                  <Route path="addproducts" element={<AddProducts />} />
-                </Route>
-                <Route path="categories">
-                  <Route index element={<Categories />} />
-                  <Route path="addcategory" element={<AddCategory />} />
-                </Route>
-                <Route path="customers">
-                  <Route index element={<Customers />} />
-                  <Route path="editcustomers" element={<EditCustomers />} />
-                </Route>
-                <Route path="orders">
-                  <Route index element={<Order />} />
-                  <Route path="editorders" element={<EditOrders />} />
-                </Route>
-                <Route path="settings" element={<Settings />} />
-              </Route>
-            </Route>
-          </Route>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignUpPage />} />
-          <Route path="unauthorized" element={<Unauthorized />} />
-          <Route path="*" element={<Missing />} />
-          {/* </Route> */}
-        </Routes>
-                  <BackToTop/>
-        <Footer />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignUpPage />} />
+            <Route path="unauthorized" element={<Unauthorized />} />
+            <Route path="*" element={<Missing />} />
+            {/* </Route> */}
+          </Routes>
+          <BackToTop />
+          <Footer />
+        </ScrollToTop>
       </div>
     </ThemeProvider>
   );

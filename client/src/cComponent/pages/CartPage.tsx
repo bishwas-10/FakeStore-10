@@ -225,15 +225,17 @@ const CartPage = () => {
     >
       <Box
         sx={{
-          display: "flex",
+          
+          
           borderRadius: 1,
           gap: 2,
         }}
+        className="flex md:flex-row flex-col "
       >
         <Box
           sx={{
             display: "flex",
-            width: "70%",
+           
             flexDirection: "column",
             bgcolor: "background.black",
             color: "text.primary",
@@ -241,6 +243,7 @@ const CartPage = () => {
             p: 3,
             gap: 2,
           }}
+          className="w-full md:w-[70%]"
         >
           {data?.length === 0 ? (
             <>
@@ -431,7 +434,7 @@ const CartPage = () => {
         <Box
           sx={{
             display: "flex",
-            width: "30%",
+           
             flexDirection: "column",
             bgcolor: "background.black",
             color: "text.primary",
@@ -439,6 +442,7 @@ const CartPage = () => {
             p: 3,
             gap: 2,
           }}
+          className="w-full md:w-[30%]"
         >
           <Typography variant="h5">International Top picks for You!</Typography>
           <Box
@@ -449,7 +453,7 @@ const CartPage = () => {
           </Box>
         </Box>
       </Box>
-      <BackToTop />
+ 
       <ToastContainer />
     </Box>
   );

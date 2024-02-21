@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   ChevronDown,
-  List,
   MenuIcon,
   SearchIcon,
   ShoppingBag,
@@ -11,12 +10,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-  Divider,
   FormControlLabel,
   IconButton,
   InputBase,
   Switch,
-  Typography,
   alpha,
   styled,
 } from "@mui/material";
@@ -29,8 +26,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { TCartSchema } from "../components/pages/Orders";
 import useLogout from "../../hooks/useLogout";
-import { MoreVertical } from "lucide-react";
 import Drawer from "@mui/material/Drawer";
+
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
 
@@ -59,7 +56,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
-  width: "100%",
+  
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
@@ -68,28 +65,40 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
     width: "0ch",
     "&:focus": {
-      width: "100ch",
+      width: "5ch",
+    },
+    [theme.breakpoints.up("xs")]: {
+      width: "0ch",
+      "&:focus": {
+        width: "8ch",
+      },
     },
     [theme.breakpoints.up("sm")]: {
       width: "0ch",
       "&:focus": {
-        width: "100%",
+        width: "20ch",
+      },
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "0ch",
+      "&:focus": {
+        width: "30ch",
       },
     },
   },
 }));
 
-const drawerWidth = 240;
+
 const MainNav = () => {
   const { auth } = useAuth();
   const signOut = useLogout();
   const cartItems = useSelector((state: RootState) => state.cart.carts);
   const navigate = useNavigate();
   const location = useLocation();
-  const [toggleMenu, setToggleMenu] = useState<boolean>(false);
+
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
-  console.log(toggleMenu);
+
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
@@ -103,7 +112,7 @@ const MainNav = () => {
     <Box
       className="flex flex-row gap-2 justify-center py-4 h-max"
       onClick={handleDrawerToggle}
-      sx={{ width: "100vw", textAlign: "center",bgcolor: "#000202" }}
+      sx={{ width: "100vw", textAlign: "center", bgcolor: "#000202" }}
     >
       <div className="text-white">
         <FormControlLabel
@@ -169,9 +178,8 @@ const MainNav = () => {
           <Search />
         </Button>
       </div> */}
-      <div className="flex   flex-row items-center gap-4">
+      <div className="flex   flex-row items-center gap-2 md:gap-4">
         <div>
-          
           <Search>
             <SearchIconWrapper>
               <SearchIcon className="cursor-pointer" />
@@ -207,13 +215,7 @@ const MainNav = () => {
             {drawer}
           </Drawer>
         </div>
-        <div
-          className={` ${
-            toggleMenu
-              ? "flex flex-col absolute right-0 top-0 z-20 bg-black"
-              : "hidden"
-          } md:flex  flex-row gap-2 items-center`}
-        >
+        <div className="hidden md:flex flex-row items-center">
           <div>
             <FormControlLabel
               control={
@@ -306,7 +308,9 @@ const MainNav = () => {
               </div>
             </div>
           )}
-          <span className="flex flex-row  items-center hover:border-2 p-2">
+         
+        </div>
+         <span className="flex flex-row p-0 md:p-2 items-center md:hover:border-2 hover:border-0">
             <Link
               to={`/carts/${decoded?.UserInfo.userId}`}
               className="flex relative"
@@ -326,7 +330,6 @@ const MainNav = () => {
               </span>
             </Link>
           </span>
-        </div>
       </div>
     </Box>
   );
