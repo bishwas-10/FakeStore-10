@@ -56,7 +56,7 @@ export const addCart = async (req: Request, res: Response) => {
     }
     const existingCart = await Cart.findOne({
       product: req.body.product,
-      customer:req.body.customer,
+      customer: req.body.customer,
       paymentStatus: "not paid",
     });
     if (existingCart) {
@@ -147,19 +147,27 @@ export const updateQuantity = async (req: Request, res: Response) => {
 };
 export const updateAllShippingAddress = async (req: Request, res: Response) => {
   const id = req.params.id;
+  console.log("yesma aayena")
   try {
-    const cart = await Cart.updateMany(
-      { customer: id, paymentStatus: "not paid" },
-      {
-        $set: { shippingAddress: req.body.shippingAddress
-        ,orderStatus:"dispatched"
-       },
-      }
+    const filter = { customer: id, paymentStatus: "not paid" };
+     await Cart.updateMany(
+      filter,
+      {   
+          shippingAddress: req.body.shippingAddress,
+          orderStatus: "dispatched",
+      
+      },
+    
     );
+    const cart = await Cart.find(filter);
     if (cart) {
       return res
         .status(200)
-        .send({ success: true, messsage: "added the shipping address" });
+        .send({
+          success: true,
+          messsage: "added the shipping address",
+          cart: cart,
+        });
     }
     res.status(204).send({ success: true, messsage: "no cart found" });
   } catch (error) {
@@ -178,14 +186,18 @@ export const updateSingleShippingAddress = async (
     const cart = await Cart.findByIdAndUpdate(
       { _id: id },
       {
-        $set: { shippingAddress: req.body.shippingAddress ,
-          orderStatus:"dispatched"},
+        $set: {
+          shippingAddress: req.body.shippingAddress,
+          orderStatus: "dispatched",
+        },
+      },{
+        new:true
       }
     );
     if (cart) {
       return res
         .status(200)
-        .send({ success: true, messsage: "added the shipping address" });
+        .send({ success: true, messsage: "added the shipping address",cart:[cart] });
     }
     res.status(204).send({ success: true, messsage: "no cart found" });
   } catch (error) {
@@ -216,20 +228,16 @@ export const soldProduct = async (req: Request, res: Response) => {
     if (soldOrder.length === 0) {
       return res.status(204);
     }
-    return res
-      .status(200)
-      .send({
-        success: true,
-        message: "got all sold order",
-        soldOrder: soldOrder,
-      });
+    return res.status(200).send({
+      success: true,
+      message: "got all sold order",
+      soldOrder: soldOrder,
+    });
   } catch (error: any) {
     console.log(error);
-    res
-      .status(500)
-      .send({
-        success: false,
-        message: error.message || "internal server error",
-      });
+    res.status(500).send({
+      success: false,
+      message: error.message || "internal server error",
+    });
   }
 };

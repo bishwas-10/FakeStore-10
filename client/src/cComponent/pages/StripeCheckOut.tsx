@@ -5,6 +5,11 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import  "../../Stripe.css";
 import { instance } from "../../../api/instance";
+import useAuth from "../../../hooks/useAuth";
+import { UserInfoProps } from "../../context/AuthProvider";
+import { JwtPayload, jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -13,21 +18,28 @@ import { instance } from "../../../api/instance";
 const stripePromise = loadStripe("pk_test_51OlnFVSBM61PqvQCgrRcVzgKTIXK9BLo7QmxGWbCJNYS5yeacpXObgJ9IRFiaUJK7fKpIeruUcO0GT9s0UtBXwaE00VEykGLH9" );
 
 export default function StripeCheckOut() {
+  const checkOutItems = useSelector(
+    (state: RootState) => state.cart.checkOutItems
+  );
   const [clientSecret, setClientSecret] = useState("");
-
+  const { auth } = useAuth();
+  const decoded: UserInfoProps | undefined = auth.token
+    ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
+    : undefined;
+    console.log(checkOutItems)
   const createPaymentIntent = async()=>{
     try {
         const response =  await instance("/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             data:{ 
-              name:"bishwas",
+              name:decoded?.UserInfo.username,
               address: {
-                line1: '510 Townsend St',
-                postal_code: '98140',
-                city: 'San Francisco',
-                state: 'CA',
-                country: 'US',
+               
+                postal_code:checkOutItems[0].shippingAddress?.zipcode,
+                city: checkOutItems[0].shippingAddress?.city,
+                state: checkOutItems[0].shippingAddress?.street,
+                country: 'NE',
               },
               items: [{ id: "xl-tshirt" }] },
           })

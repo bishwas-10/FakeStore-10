@@ -45,20 +45,20 @@ const calculateOrderAmount = () => {
 };
 
 app.post("/api/create-payment-intent", async (req, res) => {
-const {name,address}= req.body;
+console.log(req.body)
   console.log("aayo");
   // Create a PaymentIntent with the order amount and currency
  
   const paymentIntent = await stripe.paymentIntents.create({
     description: 'Software development services',
   shipping: {
-    name: 'Jenny Rosen',
+    name: req.body.name,
     address: {
-      line1: '510 Townsend St',
-      postal_code: '98140',
-      city: 'San Francisco',
-      state: 'CA',
-      country: 'US',
+      line1: 'dummy line',
+      postal_code: req.body.address.postal_code,
+      city: req.body.address.city,
+      state: req.body.address.state,
+      country: req.body.address.country,
     },
   },
   amount: 1099,

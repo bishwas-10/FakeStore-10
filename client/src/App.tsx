@@ -38,6 +38,7 @@ import CheckOutPage from "./cComponent/pages/CheckOutPage";
 import StripeCheckOut from "./cComponent/pages/StripeCheckOut";
 import BackToTop from "./cComponent/reusable/BackToTop";
 import ScrollToTop from "./cComponent/ScrollToTop";
+import OrderSuccess from "./cComponent/pages/OrderSuccess";
 
 export interface RolesProps {
   [key: string]: number;
@@ -107,6 +108,7 @@ function App() {
           <Routes>
             <Route path="/">
               <Route index element={<HomePage />} />
+              <Route path="order-success" element={<OrderSuccess/>}/>
               <Route path="allproducts" element={<AllProducts />} />
               <Route path="product/:id" element={<EachProduct />} />
               <Route

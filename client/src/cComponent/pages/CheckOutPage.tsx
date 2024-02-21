@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 import { RootState } from "../../store/store";
 import useAuth from "../../../hooks/useAuth";
@@ -26,6 +26,7 @@ import { TCustomerSchema } from "../../components/pages/sub-components/editCusto
 import { ToastContainer, toast } from "react-toastify";
 import { TCartSchema } from "../../components/pages/Orders";
 import { useLocation, useNavigate } from "react-router-dom";
+import { setCheckOutItems } from "../../store/cartSlice";
 
 export const shippingAddressSchema = z.object({
   city: z.string().min(1, "city is required"),
@@ -53,6 +54,7 @@ const CheckOutPage = () => {
   const checkOutItems = useSelector(
     (state: RootState) => state.cart.checkOutItems
   );
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [addressAdded, setAddressAdded] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
@@ -100,11 +102,12 @@ const CheckOutPage = () => {
       });
 
       if (response.data.success) {
-        toast.success("Item added to cart successfully", {
+        toast.success(response.data.message, {
           position: "top-center",
           autoClose: 1000,
         });
         setAddressAdded(true);
+        dispatch(setCheckOutItems(response.data.cart))
       }
     } catch (error) {
       console.log(error);
