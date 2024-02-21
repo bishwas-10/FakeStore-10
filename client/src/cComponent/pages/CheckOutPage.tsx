@@ -54,6 +54,7 @@ const CheckOutPage = () => {
   const checkOutItems = useSelector(
     (state: RootState) => state.cart.checkOutItems
   );
+  console.log(checkOutItems.map((item)=>parseInt(item.quantity)*parseInt(item.totalAmount)).reduce((acc,curr)=>acc+curr,0))
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [addressAdded, setAddressAdded] = useState<boolean>(false);

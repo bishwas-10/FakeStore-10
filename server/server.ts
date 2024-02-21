@@ -16,11 +16,43 @@ import getRouter from "./routes/getRoute";
 import { handleRefreshToken } from "./controller/refreshToken";
 
 const app = express();
-app.set("trust proxy", 1); // trust first proxy
-//http://localhost:3000,
+
+app.use(express.raw({type: 'application/json'}));
+const endpointSecret = "whsec_14eba393874b337d170128fdc14d74241d32066e4b7572696b8592d6a48d4ab9";
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+app.post('/webhook', (request, response) => {
+  const sig = request.headers['stripe-signature'];
+console.log("aayo")
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+  } catch (err:any) {
+    response.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntentSucceeded = event.data.object;
+      // Then define and call a function to handle the event payment_intent.succeeded
+      break;
+    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  // Return a 200 response to acknowledge receipt of the event
+  response.send();
+});
+
+
+ app.set("trust proxy", 1); // trust first proxy
+// http://localhost:3000,
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"],
+    origin: ["http://localhost:3000", "http://localhost:5173",],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ["Access-Control-Allow-Origin"],
@@ -33,7 +65,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 // This is your test secret API key.
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 
 
@@ -50,7 +82,7 @@ console.log(req.body)
   // Create a PaymentIntent with the order amount and currency
  
   const paymentIntent = await stripe.paymentIntents.create({
-    description: 'Software development services',
+    description: 'Eccomerce Products',
   shipping: {
     name: req.body.name,
     address: {
@@ -61,16 +93,11 @@ console.log(req.body)
       country: req.body.address.country,
     },
   },
-  amount: 1099,
+  amount: req.body.product.totalPrice*100,
   currency: 'usd',
   payment_method_types: ['card'],
   });
-  // const customer = await stripe.customers.create({
-   
-  //   name: name,
-  //   address:address
-
-  // });
+ 
  
   res.send({
     clientSecret: paymentIntent.client_secret,
