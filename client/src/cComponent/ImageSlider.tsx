@@ -38,7 +38,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
               <img
                 src={image.url}
                 alt={image.alt}
-                className="w-full object-contain"
+                className="w-full h-screen object-cover md:object-fit"
               />
             </SwiperSlide>
           );
