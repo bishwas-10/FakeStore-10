@@ -3,12 +3,8 @@ import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
-import {
-  CssBaseline,
-  PaletteMode,
-  ThemeProvider,
-  createTheme,
-} from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline, PaletteMode } from "@mui/material";
 import { amber, grey, indigo } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
@@ -108,7 +104,7 @@ function App() {
           <Routes>
             <Route path="/">
               <Route index element={<HomePage />} />
-              <Route path="order-success" element={<OrderSuccess/>}/>
+              <Route path="order-success" element={<OrderSuccess />} />
               <Route path="allproducts" element={<AllProducts />} />
               <Route path="product/:id" element={<EachProduct />} />
               <Route
