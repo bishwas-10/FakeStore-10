@@ -33,9 +33,7 @@ const Search = styled("div")(({ theme }) => ({
 
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
+
   marginLeft: 0,
   width: "100%",
   [theme.breakpoints.up("sm")]: {
@@ -56,7 +54,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
-  
+
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
@@ -87,7 +85,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-
 
 const MainNav = () => {
   const { auth } = useAuth();
@@ -308,28 +305,27 @@ const MainNav = () => {
               </div>
             </div>
           )}
-         
         </div>
-         <span className="flex flex-row p-0 md:p-2 items-center md:hover:border-2 hover:border-0">
-            <Link
-              to={`/carts/${decoded?.UserInfo.userId}`}
-              className="flex relative"
-            >
-              <ShoppingCart height={30} width={30} />
-              <span
-                className="absolute -top-2 -right-1 -translate-x-1/2 
+        <span className="flex flex-row p-0 md:p-2 items-center md:hover:border-2 hover:border-0">
+          <Link
+            to={`/carts/${decoded?.UserInfo.userId}`}
+            className="flex relative"
+          >
+            <ShoppingCart height={30} width={30} />
+            <span
+              className="absolute -top-2 -right-1 -translate-x-1/2 
             text-center text-sm text-primary"
-              >
-                {cartItems
-                  ?.map((item: TCartSchema) =>
-                    item.paymentStatus === "not paid"
-                      ? parseInt(item.quantity)
-                      : 0
-                  )
-                  .reduce((acc, curr) => acc + curr, 0)}
-              </span>
-            </Link>
-          </span>
+            >
+              {cartItems
+                ?.map((item: TCartSchema) =>
+                  item.paymentStatus === "not paid"
+                    ? parseInt(item.quantity)
+                    : 0
+                )
+                .reduce((acc, curr) => acc + curr, 0)}
+            </span>
+          </Link>
+        </span>
       </div>
     </Box>
   );
