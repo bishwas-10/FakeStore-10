@@ -17,35 +17,35 @@ import { handleRefreshToken } from "./controller/refreshToken";
 
 const app = express();
 
-app.use(express.raw({type: 'application/json'}));
-const endpointSecret = "whsec_14eba393874b337d170128fdc14d74241d32066e4b7572696b8592d6a48d4ab9";
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-app.post('/webhook', (request, response) => {
-  const sig = request.headers['stripe-signature'];
-console.log("aayo")
-  let event;
+// app.use(express.raw({type: 'application/json'}));
+// const endpointSecret = "whsec_14eba393874b337d170128fdc14d74241d32066e4b7572696b8592d6a48d4ab9";
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// app.post('/webhook', (request, response) => {
+//   const sig = request.headers['stripe-signature'];
+// console.log("aayo")
+//   let event;
 
-  try {
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-  } catch (err:any) {
-    response.status(400).send(`Webhook Error: ${err.message}`);
-    return;
-  }
+//   try {
+//     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+//   } catch (err:any) {
+//     response.status(400).send(`Webhook Error: ${err.message}`);
+//     return;
+//   }
 
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntentSucceeded = event.data.object;
-      // Then define and call a function to handle the event payment_intent.succeeded
-      break;
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
+//   // Handle the event
+//   switch (event.type) {
+//     case 'payment_intent.succeeded':
+//       const paymentIntentSucceeded = event.data.object;
+//       // Then define and call a function to handle the event payment_intent.succeeded
+//       break;
+//     // ... handle other event types
+//     default:
+//       console.log(`Unhandled event type ${event.type}`);
+//   }
 
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
-});
+//   // Return a 200 response to acknowledge receipt of the event
+//   response.send();
+// });
 
 
  app.set("trust proxy", 1); // trust first proxy
@@ -76,34 +76,34 @@ const calculateOrderAmount = () => {
   return 1400;
 };
 
-app.post("/api/create-payment-intent", async (req, res) => {
-console.log(req.body)
-  console.log("aayo");
-  // Create a PaymentIntent with the order amount and currency
+// app.post("/api/create-payment-intent", async (req, res) => {
+// console.log(req.body)
+//   console.log("aayo");
+//   // Create a PaymentIntent with the order amount and currency
  
-  const paymentIntent = await stripe.paymentIntents.create({
-    description: 'Eccomerce Products',
-  shipping: {
-    name: req.body.name,
-    address: {
-      line1: 'dummy line',
-      postal_code: req.body.address.postal_code,
-      city: req.body.address.city,
-      state: req.body.address.state,
-      country: req.body.address.country,
-    },
-  },
-  amount: req.body.product.totalPrice*100,
-  currency: 'usd',
-  payment_method_types: ['card'],
-  });
+//   const paymentIntent = await stripe.paymentIntents.create({
+//     description: 'Eccomerce Products',
+//   shipping: {
+//     name: req.body.name,
+//     address: {
+//       line1: 'dummy line',
+//       postal_code: req.body.address.postal_code,
+//       city: req.body.address.city,
+//       state: req.body.address.state,
+//       country: req.body.address.country,
+//     },
+//   },
+//   amount: req.body.product.totalPrice*100,
+//   currency: 'usd',
+//   payment_method_types: ['card'],
+//   });
  
  
-  res.send({
-    clientSecret: paymentIntent.client_secret,
+//   res.send({
+//     clientSecret: paymentIntent.client_secret,
  
-  });
-});
+//   });
+// });
 
 app.use("/api/users", authRouter);
 app.get("/api/refresh", handleRefreshToken);

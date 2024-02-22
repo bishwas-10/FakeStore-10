@@ -150,7 +150,7 @@ const CartPage = () => {
           </Box>
           <Personalized />
         </Box>
-        <BackToTop />
+     
       </>
     );
   } else {
