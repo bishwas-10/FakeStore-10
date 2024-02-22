@@ -3,11 +3,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../cComponent/reusable/Loading";
-import { axiosPrivate, instance } from "../../../api/instance";
-import useLogout from "../../../hooks/useLogout";
+import {  instance } from "../../../api/instance";
 import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
-
 import { RootState } from "../../store/store";
 import { Box, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,7 +18,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
   const dispatch = useDispatch();
-  const logout = useLogout();
   const orderstatus = useSelector((state: RootState) => state.order);
   const paidOrders = orderstatus?.orders.filter((order:TCartSchema)=>order.paymentStatus==="paid") ;
 const graphData =  getGraphRevenue(paidOrders);
@@ -50,7 +47,7 @@ const graphData =  getGraphRevenue(paidOrders);
     order.paymentStatus === "not paid" ? order.quantity : 0
   ) as number[];
   const unsoldQty = unsold.reduce((acc, curr) => acc + curr, 0);
-  const { isLoading, data, isError, error } = useQuery<any>({
+  const { isLoading, isError, error } = useQuery<any>({
     queryKey: ["sold-carts"],
     queryFn: saleCall,
   });

@@ -8,7 +8,7 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { TProductSchema } from "../components/pages/sub-components/add-products";
 function valuetext(value: number) {
   return value > 5000 ? "$5000+" : `$${value}`;
@@ -47,7 +47,7 @@ const FilterProducts = ({
     if (!Array.isArray(newValue)) {
       return;
     }
-
+console.log(event)
     if (newValue[1] - newValue[0] < minPriceDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 5000 - minPriceDistance);
@@ -71,7 +71,7 @@ const FilterProducts = ({
     if (!Array.isArray(newValue)) {
       return;
     }
-
+    console.log(event)
     if (newValue[1] - newValue[0] < minRateDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 5 - minRateDistance);

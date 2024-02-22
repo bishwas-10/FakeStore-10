@@ -1,6 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { TProductSchema } from "../components/pages/sub-components/add-products";
-import { instance } from "../../api/instance";
+import {  createSlice } from "@reduxjs/toolkit";
 import { TCategorySchema } from "../components/pages/sub-components/AddCategory";
 
 

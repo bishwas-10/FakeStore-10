@@ -1,7 +1,7 @@
 import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -15,10 +15,8 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 import TopPicksForYou from "../TopPicksForYou";
 import Personalized from "../Personalized";
 import EmptyCartSvg from "../EmptyCartSvg";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchAllCarts, setCheckOutItems } from "../../store/cartSlice";
-import BackToTop from "../reusable/BackToTop";
-import { RootState } from "../../store/store";
 import { Dispatch } from "@reduxjs/toolkit";
 export const CartPropsSchema = z.object({
   id: z.string().optional(),
@@ -77,7 +75,6 @@ const CartPage = () => {
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
-  const cartItems = useSelector((state: RootState) => state.cart.carts);
   const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, data, error, isError, refetch } = useQuery<any[]>({
@@ -193,7 +190,7 @@ const CartPage = () => {
 
   const cancelOrder = async (cartId: string) => {
     try {
-      const response = await axiosPrivate({
+      await axiosPrivate({
         url: `/carts/${cartId}`,
         method: "DELETE",
       });

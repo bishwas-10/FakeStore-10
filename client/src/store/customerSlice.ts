@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { instance } from "../../api/instance";
 import { TCustomerSchema } from "../components/pages/sub-components/editCustomers";
 
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { AxiosInstance } from "axios";
+
 
 
 interface CustomerStateProps {

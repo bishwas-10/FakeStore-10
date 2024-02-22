@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
@@ -24,8 +24,8 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../reusable/Loading";
 import { TCustomerSchema } from "../../components/pages/sub-components/editCustomers";
 import { ToastContainer, toast } from "react-toastify";
-import { TCartSchema } from "../../components/pages/Orders";
-import { useLocation, useNavigate } from "react-router-dom";
+
+import {  useNavigate } from "react-router-dom";
 import { setCheckOutItems } from "../../store/cartSlice";
 
 export const shippingAddressSchema = z.object({
@@ -58,13 +58,12 @@ const CheckOutPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [addressAdded, setAddressAdded] = useState<boolean>(false);
-  const [errMsg, setErrMsg] = useState<string | null>(null);
   const { auth } = useAuth();
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
   const axiosPrivate = useAxiosPrivate();
-  const { isLoading, data, error, isError, refetch } =
+  const { isLoading, data, error, isError } =
     useQuery<TCustomerSchema>({
       queryKey: ["customerDetailById"],
       queryFn: () =>
@@ -75,7 +74,6 @@ const CheckOutPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<TShippingAddressSchema>({
     resolver: zodResolver(shippingAddressSchema),
   });
@@ -203,7 +201,6 @@ const CheckOutPage = () => {
                       type="text"
                       label="City"
                       variant="outlined"
-                      onFocus={() => setErrMsg(null)}
                       error={!!errors.city}
                       helperText={errors.city ? errors.city.message : ""}
                       {...register("city", { required: true })}
@@ -213,7 +210,6 @@ const CheckOutPage = () => {
                       type="text"
                       label="Street"
                       variant="outlined"
-                      onFocus={() => setErrMsg(null)}
                       error={!!errors.street}
                       helperText={errors.street ? errors.street.message : ""}
                       {...register("street", { required: true })}
@@ -223,7 +219,6 @@ const CheckOutPage = () => {
                       type="number"
                       label="Zipcode"
                       variant="outlined"
-                      onFocus={() => setErrMsg(null)}
                       error={!!errors.zipcode}
                       helperText={errors.zipcode ? errors.zipcode.message : ""}
                       {...register("zipcode", { required: true })}

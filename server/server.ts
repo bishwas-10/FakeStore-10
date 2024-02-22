@@ -3,6 +3,7 @@ import http from "http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDb from "./utils/connectDb";
+import * as path from 'path';
 require("dotenv").config();
 //middleware
 import { verifyJWT } from "./middleware/verifyJWT";
@@ -19,7 +20,7 @@ const app = express();
 
 // app.use(express.raw({type: 'application/json'}));
 // const endpointSecret = "whsec_14eba393874b337d170128fdc14d74241d32066e4b7572696b8592d6a48d4ab9";
-// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // app.post('/webhook', (request, response) => {
 //   const sig = request.headers['stripe-signature'];
 // console.log("aayo")
@@ -50,6 +51,7 @@ const app = express();
 
  app.set("trust proxy", 1); // trust first proxy
 // http://localhost:3000,
+app.use(express.static(path.resolve(__dirname, 'dist')));
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://localhost:5173",],
@@ -76,34 +78,34 @@ const calculateOrderAmount = () => {
   return 1400;
 };
 
-// app.post("/api/create-payment-intent", async (req, res) => {
-// console.log(req.body)
-//   console.log("aayo");
-//   // Create a PaymentIntent with the order amount and currency
+app.post("/api/create-payment-intent", async (req, res) => {
+console.log(req.body)
+  console.log("aayo");
+  // Create a PaymentIntent with the order amount and currency
  
-//   const paymentIntent = await stripe.paymentIntents.create({
-//     description: 'Eccomerce Products',
-//   shipping: {
-//     name: req.body.name,
-//     address: {
-//       line1: 'dummy line',
-//       postal_code: req.body.address.postal_code,
-//       city: req.body.address.city,
-//       state: req.body.address.state,
-//       country: req.body.address.country,
-//     },
-//   },
-//   amount: req.body.product.totalPrice*100,
-//   currency: 'usd',
-//   payment_method_types: ['card'],
-//   });
+  const paymentIntent = await stripe.paymentIntents.create({
+    description: 'Eccomerce Products',
+  shipping: {
+    name: req.body.name,
+    address: {
+      line1: 'dummy line',
+      postal_code: req.body.address.postal_code,
+      city: req.body.address.city,
+      state: req.body.address.state,
+      country: req.body.address.country,
+    },
+  },
+  amount: req.body.product.totalPrice*100,
+  currency: 'usd',
+  payment_method_types: ['card'],
+  });
  
  
-//   res.send({
-//     clientSecret: paymentIntent.client_secret,
+  res.send({
+    clientSecret: paymentIntent.client_secret,
  
-//   });
-// });
+  });
+});
 
 app.use("/api/users", authRouter);
 app.get("/api/refresh", handleRefreshToken);
@@ -118,6 +120,6 @@ const server = http.createServer(app);
 
 connectDb()
   .then(() => {
-    server.listen(4000, () => console.log("server is listening to port 4000"));
+    server.listen(process.env.PORT, () => console.log("server is listening to port 4000"));
   })
   .catch((err) => console.log("error", err));

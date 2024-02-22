@@ -1,8 +1,6 @@
-import React from "react";
 import Loading from "./reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { axiosPrivate } from "../../api/instance";
-import { fetchProducts } from "../store/productSlice";
 import { TProductSchema } from "../components/pages/sub-components/add-products";
 import Card from "./Card";
 import { Link } from "react-router-dom";

@@ -1,4 +1,3 @@
-import React from "react";
 import { ratingStars } from "./reusable/utils";
 import { Box, Typography } from "@mui/material";
 import { TProductSchema } from "../components/pages/sub-components/add-products";

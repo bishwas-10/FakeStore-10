@@ -1,4 +1,3 @@
-import React from "react";
 import pic1 from "../../../image/1.jpg";
 import pic2 from "../../../image/2.jpg";
 import pic3 from "../../../image/3.jpg";
@@ -7,14 +6,8 @@ import pic5 from "../../../image/5.jpg";
 import pic7 from "../../../image/7.jpg";
 import pic8 from "../../../image/8.jpg";
 import pic6 from "../../../image/6.jpg";
-import mens from "../../../image/mens.jpg";
-import electronics from "../../../image/Electronic.jpg";
-import jewellery from "../../../image/jewell.jpg";
-import womens from "../../../image/womens.jpg";
 import ImageSlider from "../ImageSlider";
 import CategoryHome from "../CategoryHome";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 import useAuth from "../../../hooks/useAuth";
 import TopPicksForYou from "../TopPicksForYou";
 import Personalized from "../Personalized";
@@ -32,7 +25,7 @@ const IMAGES = [
 
 const HomePage = () => {
   const { auth } = useAuth();
-  const navigate = useNavigate();
+  
   return (
     <div>
       <div className="h-max w-full flex items-center justify-center ">

@@ -1,6 +1,4 @@
 
-import React from "react";
-
 const BackToTop = () => {
     function backToTop(){
         window.scrollTo(
@@ -11,8 +9,7 @@ const BackToTop = () => {
         ) ;
       }
   return (
-    <div>
-      {" "}
+    <div> 
       <button
         onClick={backToTop}
         className="mt-4 w-full py-2 text-white capitalize  bg-slate-600"

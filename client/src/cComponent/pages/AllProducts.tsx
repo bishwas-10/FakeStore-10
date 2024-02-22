@@ -1,4 +1,3 @@
-import axios from "axios";
 import Card from "../Card";
 import { Link } from "react-router-dom";
 import Loading from "../reusable/Loading";
@@ -6,12 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { instance } from "../../../api/instance";
 import {
   Box,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  Slider,
   Typography,
 } from "@mui/material";
 import { TProductSchema } from "../../components/pages/sub-components/add-products";

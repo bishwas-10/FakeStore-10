@@ -101,7 +101,7 @@ const Order = () => {
       console.log(error);
     }
   };
-  const { isLoading, data, isError, error, refetch } = useQuery<any>({
+  const { isLoading, isError, error, refetch } = useQuery<any>({
     queryKey: ["all-carts"],
     queryFn: cartCall,
   });
@@ -118,7 +118,7 @@ const Order = () => {
   }
   const deleteOrders = async (id: string) => {
     try {
-      const response = await axiosPrivate({
+      await axiosPrivate({
         url: `/carts/${id}`,
         method: "DELETE",
         signal: controller.signal,

@@ -16,35 +16,27 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import {
-  addProduct,
-  fetchAllProducts,
-  fetchProducts,
-  removeProducts,
-} from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { instance } from "../../../api/instance";
-import { TProductSchema } from "./sub-components/add-products";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
 import { TCategorySchema } from "./sub-components/AddCategory";
 import {
   addCategory,
   fetchAllCategories,
-  removeCategories,
+
 } from "../../store/categorySlice";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../cComponent/reusable/Loading";
+import useAuth from "../../../hooks/useAuth";
 
 const Categories = () => {
   const categories = useSelector((state: RootState) => state.category.category);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const logout = useLogout();
-  const { auth, setAuth } = useAuth();
+  const { auth } = useAuth();
   //pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [productsPerPage, setProductsPerPage] = useState<number>(2);
@@ -80,7 +72,7 @@ const Categories = () => {
     }
   };
 
-  const { isLoading, data, isError, error,refetch } = useQuery<any>({
+  const { isLoading, isError, error,refetch } = useQuery<any>({
     queryKey: ["all categories"],
     queryFn: categoryCall,
   });

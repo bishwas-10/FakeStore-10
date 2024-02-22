@@ -21,7 +21,6 @@ import { RootState } from "../../store/store";
 import {
   addProduct,
   fetchAllProducts,
-  removeProducts,
 } from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { instance } from "../../../api/instance";

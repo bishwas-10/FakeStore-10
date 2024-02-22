@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, PencilIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import {  addCustomer, fetchAllCustomers, fetchCustomers, removeCustomers } from "../../store/customerSlice";
+import {  addCustomer, fetchAllCustomers } from "../../store/customerSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
-import { TCustomerSchema } from "./sub-components/editCustomers";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import useAuth from "../../../hooks/useAuth";
 import useLogout from "../../../hooks/useLogout";
 import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +53,7 @@ const customerCall =async()=>{
 
     
 }
-const { isLoading, data, isError, error,refetch } = useQuery<any>({
+const { isLoading, isError, error } = useQuery<any>({
   queryKey: ["all categories"],
   queryFn: customerCall,
 });

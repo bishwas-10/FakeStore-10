@@ -9,12 +9,12 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import {
-  ArrowRight,
+
   ChevronRight,
-  InboxIcon,
+  
   Languages,
   LogInIcon,
-  MailIcon,
+
   Menu,
   Settings,
   ShoppingBag,

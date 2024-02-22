@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./reusable/Loading";
@@ -8,13 +7,6 @@ import { fetchAllCategories } from "../store/categorySlice";
 import { Box } from "@mui/material";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
-type CategoriesProps = {
-  categories: {
-    name: string;
-    url: string;
-    alt: string;
-  }[];
-};
 
 const CategoryHome = () => {
   const axiosPrivate = useAxiosPrivate();

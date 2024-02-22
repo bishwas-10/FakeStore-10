@@ -11,11 +11,9 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { InboxIcon, MailIcon, MenuIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 const SubNavbar = () => {
   const logout = useLogout();
   const { auth } = useAuth();

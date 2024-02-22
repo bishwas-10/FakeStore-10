@@ -1,9 +1,8 @@
-import { JwtPayload, jwtDecode } from "jwt-decode";
 import { instance } from "../api/instance";
 import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
-  const { setAuth ,auth,setUser} = useAuth();
+  const { setAuth ,auth} = useAuth();
  
 //  if(auth.token){
 //        const decoded = jwtDecode<JwtPayload>(auth?.token as string) as any;

@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Card from "../Card";
 import { useQuery } from "@tanstack/react-query";

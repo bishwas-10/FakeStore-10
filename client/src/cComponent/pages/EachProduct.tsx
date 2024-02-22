@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import {
   ChevronRight,
   DollarSign,
@@ -29,7 +29,6 @@ const EachProduct = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const refresh = useRefreshToken();
-  const from = location.state?.from?.pathname || "/";
   const axiosPrivate = useAxiosPrivate();
   const fetchProductDetails = async (id: string) => {
     const response = await axiosPrivate({

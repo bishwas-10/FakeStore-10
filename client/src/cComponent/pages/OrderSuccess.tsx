@@ -1,5 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 
 function OrderSuccess() {
