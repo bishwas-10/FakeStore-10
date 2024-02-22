@@ -42,7 +42,7 @@ export default function AllProducts() {
   });
 
   const filteredProducts = data
-    ?.filter((item) => (category ? item.category === category : item))
+    ?.filter((item) => (category? category==="All" ?item : item.category === category : item))
     ?.filter((item) => price[0] <= item.price && item.price <= price[1])
     ?.filter(
       (item) => rating[0] <= item.rating.rate && item.rating.rate <= rating[1]
@@ -60,7 +60,14 @@ export default function AllProducts() {
   }
   return (
     <Box className="w-full flex flex-col md:flex-row p-4">
-      <>
+        <Box   sx={{ bgcolor: "background.paper" }} className="md:w-1/3 w-full py-6 px-4 h-max flex flex-col gap-4">
+        <Typography
+        fontWeight={500}
+        fontSize={"20px"}
+        className=" tracking-wide capitalize"
+      >
+        Filter Products
+      </Typography>
         {data && (
           <FilterProducts
             data={data}
@@ -72,7 +79,7 @@ export default function AllProducts() {
             setRating={setRating}
           />
         )}
-      </>
+      </Box>
       <Box className="flex flex-col w-full">
         <Typography
           fontWeight={500}

@@ -27,13 +27,13 @@ const FilterProducts = ({
   rating,
   setRating,
 }: {
-  data: TProductSchema[],
-  category:string | null,
-  setCategory: React.Dispatch<React.SetStateAction<string | null>>,
-  price:number[],
-  setPrice:React.Dispatch<React.SetStateAction<number[]>>,
-  rating:number[],
-  setRating:React.Dispatch<React.SetStateAction<number[]>>
+  data: TProductSchema[];
+  category: string | null;
+  setCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  price: number[];
+  setPrice: React.Dispatch<React.SetStateAction<number[]>>;
+  rating: number[];
+  setRating: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategory((event.target as HTMLInputElement).value);
@@ -85,18 +85,7 @@ const FilterProducts = ({
     }
   };
   return (
-    <Box
-      sx={{ bgcolor: "background.paper" }}
-      className="w-full md:w-1/3  py-6 px-4 h-max flex flex-col gap-4"
-    >
-      <Typography
-        fontWeight={500}
-        fontSize={"20px"}
-        className=" tracking-wide capitalize"
-      >
-        Filter Products
-      </Typography>
-
+    <>
       <FormControl>
         <FormLabel
           sx={{ fontSize: "18px", fontWeight: 600 }}
@@ -105,8 +94,7 @@ const FilterProducts = ({
           Category
         </FormLabel>
         <RadioGroup
-          sx={{ marginTop: "2px",display:"flex",flexDirection:"row" }}
-         
+          sx={{ marginTop: "2px", display: "flex", flexDirection: "row" }}
           aria-labelledby="radio-buttons-group"
           name="controlled-radio-buttons-group"
           value={category}
@@ -122,11 +110,16 @@ const FilterProducts = ({
               />
             )
           )}
+          <FormControlLabel value="All" control={<Radio />} label="All" />
         </RadioGroup>
       </FormControl>
       <Box>
         <Typography fontWeight={600} fontSize={"18px"}>
-          Price in $ "${price[0]}-${price[1]}"
+          Price in $<br />
+          <span className="text-md font-medium">
+            {" "}
+            ${price[0]}-${price[1]}
+          </span>
         </Typography>
         <Slider
           getAriaLabel={() => "Range slider"}
@@ -142,7 +135,10 @@ const FilterProducts = ({
       </Box>
       <Box>
         <Typography fontWeight={600} fontSize={"18px"}>
-          Rate "{rating[0]}-{rating[1]}"
+          Rate <br />
+          <span className="text-md font-medium">
+            "{rating[0]}-{rating[1]}"
+          </span>
         </Typography>
         <Slider
           getAriaLabel={() => "Range rate slider"}
@@ -155,7 +151,7 @@ const FilterProducts = ({
           disableSwap
         />
       </Box>
-    </Box>
+    </>
   );
 };
 

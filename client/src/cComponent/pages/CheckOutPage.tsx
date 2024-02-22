@@ -129,7 +129,7 @@ const CheckOutPage = () => {
   return (
     <Box
       sx={{ bgcolor: "background.paper" }}
-      className="w-full h-max p-6 flex flex-col md:flex-row gap-6"
+      className="w-full h-max p-6 flex flex-col md:flex-row gap-6 min-h-screen"
     >
       <Box
         sx={{ bgcolor: "background.default" }}

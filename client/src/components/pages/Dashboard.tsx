@@ -13,6 +13,8 @@ import { Box, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import { fetchAllOrders } from "../../store/soldOrderSlice";
+import { getGraphRevenue } from "../getRevenueData";
+import { TCartSchema } from "./Orders";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,8 +22,11 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const logout = useLogout();
   const orderstatus = useSelector((state: RootState) => state.order);
-  console.log(orderstatus);
-  const controller = new AbortController();
+  const paidOrders = orderstatus?.orders.filter((order:TCartSchema)=>order.paymentStatus==="paid") ;
+const graphData =  getGraphRevenue(paidOrders);
+  
+  console.log(graphData);
+ 
   const saleCall = async () => {
     try {
       const response = await instance({
@@ -54,11 +59,14 @@ const Dashboard = () => {
   }
 
   if (isError) {
-    return <p>Error occured 404 {error.message}</p>;
+    return <>
+    <p>Error occured 404 {error.message}</p>
+    <p>Please refresh the page</p>
+    </>;
   }
   return (
     <>
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-4 p-8 pt-6 min-h-screen">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight ">Dashboard</h2>
           <div className="flex items-center space-x-2">
@@ -171,7 +179,7 @@ const Dashboard = () => {
                   Overview
                 </Typography>
                 <div className="mt-4">
-                  <Overview />
+                  <Overview data={graphData}/>
                 </div>
               </div>
               <div className="col-span-3 border-2 border-gray-300 h-max p-4 shadow-lg">
@@ -185,7 +193,7 @@ const Dashboard = () => {
                   className="pt-4 flex flex-col gap-2"
                   onClick={() => navigate("orders")}
                 >
-                  {orderstatus.orders.map((order, index) => {
+                  {orderstatus?.orders.map((order, index) => {
                     return (
                       order.paymentStatus === "paid" && (
                         <Box
@@ -194,10 +202,10 @@ const Dashboard = () => {
                         >
                           <Box className="flex flex-col  items-start w-60">
                             <Typography fontSize={"14px"} fontWeight={600}>
-                              {order.product.title}
+                              {order.product?.title}
                             </Typography>
                             <Typography fontSize={"12px"}>
-                              {order.customer.email}
+                              {order.customer?.email}
                             </Typography>
                           </Box>
                           <Box className="flex flex-col  items-center">
