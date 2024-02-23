@@ -106,11 +106,11 @@ const EachProduct = () => {
 
   return (
     <div className="px-6 py-10 flex flex-col items-start min-h-screen">
-      <div className=" flex flex-row items-center gap-2 text-lg capitalize">
-        <Link to="/">home</Link>
-        <ChevronRight />
-        <Link to={"/categories/" + data.category}>{data.category}</Link>
-        <ChevronRight />
+      <div className=" flex flex-col md:flex-row justify-center md:items-center gap-2 text-lg capitalize">
+        <Link to="/" className="flex flex-row gap-2 items-center">home<ChevronRight /></Link>
+        
+        <Link to={"/categories/" + data.category} className="flex flex-row gap-2 items-center" >{data.category}<ChevronRight /></Link>
+        
         {data.title}
       </div>
 

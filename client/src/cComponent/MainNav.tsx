@@ -14,6 +14,7 @@ import {
   IconButton,
   InputBase,
   Switch,
+  Typography,
   alpha,
   styled,
 } from "@mui/material";
@@ -27,6 +28,10 @@ import { RootState } from "../store/store";
 import { TCartSchema } from "../components/pages/Orders";
 import useLogout from "../../hooks/useLogout";
 import Drawer from "@mui/material/Drawer";
+import { instance } from "../../api/instance";
+import { useQuery } from "@tanstack/react-query";
+import { TProductSchema } from "../components/pages/sub-components/add-products";
+import Loading from "./reusable/Loading";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -39,7 +44,7 @@ const Search = styled("div")(({ theme }) => ({
   marginLeft: 0,
   width: "100%",
   [theme.breakpoints.up("sm")]: {
-   marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(1),
     width: "auto",
   },
 }));
@@ -87,6 +92,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
+const fetchAllProducts = async () => {
+  const response = await instance({
+    url: "/products",
+    method: "GET",
+  });
+
+  return response.data.products;
+};
 
 const MainNav = () => {
   const { auth } = useAuth();
@@ -94,19 +107,32 @@ const MainNav = () => {
   const cartItems = useSelector((state: RootState) => state.cart.carts);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { theme, toggleDarkMode } = useTheme();
   const [showDiv, setShowDiv] = useState<boolean>(false);
-
+  const [showSearchBox, setShowSearchBox] = useState<boolean>(false);
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  const { isLoading, data, error, isError } = useQuery<any[]>({
+    queryKey: ["all-products"],
+    queryFn: fetchAllProducts,
+    staleTime: 10000,
+  });
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+  const searchProducts = data?.filter((product) =>
+    searchQuery === ""
+      ? product
+      : product.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  console.log(searchProducts);
   const drawer = (
     <Box
       className="flex flex-row gap-2 justify-center py-4 h-max"
@@ -143,6 +169,43 @@ const MainNav = () => {
       </Button>
     </Box>
   );
+  const searchBox = isLoading ? (
+    <Loading />
+  ) : isError ? (
+    <p>Error occured</p>
+  ) : (
+    <>
+      {searchProducts?.length !== 0 ? (
+        searchProducts?.slice(0, 4)?.map((item, index) => {
+          return (
+            <span
+            onClick={()=>navigate(`/product/${item.id}`)}
+              key={index}
+              className="flex flex-row gap-3 cursor-pointer  border-2 border-gray-400 p-2"
+            >
+              <img
+                src={item.image}
+                alt={item.id}
+                className="md:w-20 md:h-20 w-10 h-10 object-cover"
+              />
+              <Typography className="line-clamp-2 md:text-sm text-xs">
+                {item.title}
+              </Typography>
+            </span>
+          );
+        })
+      ) : (
+        <Box
+          sx={{ bgcolor: "background.main", color: "text.primary" }}
+          className="flex items-center justify-center h-40 border-2 border-gray-400 rounded-md"
+        >
+          <Typography className="line-clamp-2 text-xs md:text-sm ">
+            No search products found
+          </Typography>
+        </Box>
+      )}
+    </>
+  );
   return (
     <Box
       sx={{
@@ -167,27 +230,29 @@ const MainNav = () => {
           <ShoppingBag className="text-2xl mx-1" />
         </Link>
       </div>
-      {/* <div className="relative flex flex-row w-60 shadow-md md:w-96">
-        <input
-          type="text"
-          placeholder="search for items"
-          className="px-4 py-1 w-full text-sm focus:outline-none text-black  rounded-l"
-        />
-        <Button variant="contained" className="p-2 text-lg  ">
-          <Search />
-        </Button>
-      </div> */}
+
       <div className="flex   flex-row items-center gap-2 md:gap-4">
-        <div>
+        <div className="relative">
           <Search>
             <SearchIconWrapper>
               <SearchIcon className="cursor-pointer" />
             </SearchIconWrapper>
             <StyledInputBase
+              onFocus={() => setShowSearchBox(true)}
+              onBlur={()=>setTimeout(()=>setShowSearchBox(false),200)}
               placeholder="Search…"
+              onChange={handleSearchInputChange}
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
+          {showSearchBox && (
+            <Box
+              sx={{ bgcolor: "background.main", color: "text.primary" }}
+              className="absolute flex flex-col gap-2   top-12  md:-left-20 z-10 w-[200px] sm:w-[250px] md:w-[600px] h-max"
+            >
+              {searchBox}
+            </Box>
+          )}
         </div>
         <div className="md:hidden flex">
           <IconButton
@@ -297,13 +362,13 @@ const MainNav = () => {
                     </React.Fragment>
                   );
                 })}
-                <Button
+                {auth.token && <Button
                   variant="contained"
                   onClick={() => signOut()}
                   className="my-1 text-xs font-medium"
                 >
                   sign out
-                </Button>
+                </Button>}
               </div>
             </div>
           )}

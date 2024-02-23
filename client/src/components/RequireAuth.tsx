@@ -9,7 +9,7 @@ const RequireAuth = ({ allowedRoles }: { allowedRoles: number[] }) => {
   if (auth.token) {
     const decoded = jwtDecode<JwtPayload>(auth?.token as string) as any;
     
-
+console.log(decoded)
     if (decoded) {
       return decoded.UserInfo.roles.find((role: number) =>
         allowedRoles?.includes(role)

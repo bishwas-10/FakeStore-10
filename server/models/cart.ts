@@ -8,7 +8,7 @@ export interface CartProps extends Document {
   totalAmount: string;
   customer: mongoose.Schema.Types.ObjectId;
   product: mongoose.Schema.Types.ObjectId;
-  shippingAddress: {
+  shippingAddress?: {
     city?: string;
     street?: string;
     zipcode?: string;

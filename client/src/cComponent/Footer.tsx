@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import { X } from "lucide-react";
 const Footer = () => {
+  const date = new Date();
   return (
     <footer className="w-full bg-slate-800 text-white">
       <div className="py-6 flex flex-col items-center content-center bg-black">
@@ -13,7 +14,7 @@ const Footer = () => {
             <X className="h-5 w-6 bg-red-400 rounded-r-lg" />
           </a>
         </span>
-        <span className="text-[12px]">© 2020-2023, FakeStore.com, Inc. or its affiliates</span>
+        <span className="text-[12px]">© 2020-{date.getFullYear()}, FakeStore.com, Inc. or its affiliates</span>
       </div>
     </footer>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   Button,
   FormControl,
   InputLabel,
@@ -110,10 +111,10 @@ const Categories = () => {
   }
 
   if (isError) {
-    return <>
+    return <Box className="w-full h-screen flex flex-col items-center justify-center">
     <p>Error occured 404 {error.message}</p>
     <p>Please refresh the page</p>
-    </>;
+    </Box>;
   }
   
   return (

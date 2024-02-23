@@ -47,7 +47,7 @@ const FilterProducts = ({
     if (!Array.isArray(newValue)) {
       return;
     }
-console.log(event)
+    console.log(event);
     if (newValue[1] - newValue[0] < minPriceDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 5000 - minPriceDistance);
@@ -71,7 +71,7 @@ console.log(event)
     if (!Array.isArray(newValue)) {
       return;
     }
-    console.log(event)
+    console.log(event);
     if (newValue[1] - newValue[0] < minRateDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 5 - minRateDistance);
@@ -100,6 +100,7 @@ console.log(event)
           value={category}
           onChange={handleCategoryChange}
         >
+          <FormControlLabel value="All" control={<Radio />} label="All" />
           {[...new Set(data?.map((items) => items.category))].map(
             (category, index) => (
               <FormControlLabel
@@ -110,7 +111,6 @@ console.log(event)
               />
             )
           )}
-          <FormControlLabel value="All" control={<Radio />} label="All" />
         </RadioGroup>
       </FormControl>
       <Box>

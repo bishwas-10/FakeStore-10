@@ -86,7 +86,7 @@ export const CartPropsSchema = z.object({
     city: z.string().optional(),
     street: z.string().optional(),
     zipcode: z.string().optional(),
-  }),
+  }).optional(),
   orderStatus: z.string().min(1,"order status is required"),
   paymentMethod: z.string().min(1,"order method is required"),
   paymentStatus: z.string().min(1,"payment status is required"),

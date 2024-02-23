@@ -1,20 +1,33 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, PencilIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  PencilIcon,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import {  addCustomer, fetchAllCustomers } from "../../store/customerSlice";
+import { addCustomer, fetchAllCustomers } from "../../store/customerSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useLogout from "../../../hooks/useLogout";
-import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../cComponent/reusable/Loading";
 
 const Customers = () => {
   const customers = useSelector((state: RootState) => state.customer.customers);
-const logout = useLogout();
+  const logout = useLogout();
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   //pagination
@@ -33,44 +46,39 @@ const logout = useLogout();
 
   const controller = new AbortController();
   const axiosPrivate = useAxiosPrivate();
-const customerCall =async()=>{
-  try {
-    const response = await axiosPrivate.get('/customers', {
-      signal: controller.signal
-  })
-  if(response.data.success){
-    dispatch(fetchAllCustomers(response.data.customers));
-    return response.data.customers;
-    
-  }
-  } catch (error:any) {
-    if(error.response.status=== 403 || error.response.status=== 401){
-      logout();
+  const customerCall = async () => {
+    try {
+      const response = await axiosPrivate.get("/customers", {
+        signal: controller.signal,
+      });
+      if (response.data.success) {
+        dispatch(fetchAllCustomers(response.data.customers));
+        return response.data.customers;
+      }
+    } catch (error: any) {
+      if (error.response.status === 403 || error.response.status === 401) {
+        logout();
+      }
+      console.log(error);
     }
-    console.log(error);
+  };
+  const { isLoading, isError, error } = useQuery<any>({
+    queryKey: ["all categories"],
+    queryFn: customerCall,
+  });
+
+  if (isLoading) {
+    return <Loading />;
   }
-  
 
-    
-}
-const { isLoading, isError, error } = useQuery<any>({
-  queryKey: ["all categories"],
-  queryFn: customerCall,
-});
-
-
-if (isLoading) {
-  return <Loading />;
-}
-
-
-if (isError) {
-  return <>
-  <p>Error occured 404 {error.message}</p>
-  <p>Please refresh the page</p>
-  </>;
-}
-
+  if (isError) {
+    return (
+      <Box className="w-full h-screen flex flex-col items-center justify-center">
+        <p>Error occured 404 {error.message}</p>
+        <p>Please refresh the page</p>
+      </Box>
+    );
+  }
   return (
     <div className="px-4">
       <div className="h-20 w-full p-4 flex flex-row items-center justify-between">
@@ -83,12 +91,10 @@ if (isError) {
             listed below with pagination features
           </p>
         </div>
-        
       </div>
 
       <div className=" flex items-center justify-center font-sans overflow-hidden">
         <div className="w-full min-h-screen">
-       
           <div className=" shadow-md rounded my-6">
             <table className="w-full">
               <thead>
@@ -115,67 +121,77 @@ if (isError) {
                 </tr>
               </thead>
               <tbody className=" text-sm font-medium">
-              {customers.length !== 0 && (
+                {customers.length !== 0 && (
                   <>
                     {customers?.map((customer, index) => {
                       if (pageStartIndex <= index && pageEndIndex >= index) {
-                    return (
-                      <tr key={index} className="border-b border-gray-200 ">
-                        <td className="py-3 px-0 text-center whitespace-nowrap">
-                          <span className="font-medium">
-                            {index+1}
-                          </span>
-                        </td>
-                        <td className="py-3 px-0 text-center">
-                         {customer.email}
-                        </td>
-                        <td className="py-3 px-0 text-center">
-                          <div className="flex items-center justify-center">
-                            {customer.username}
-                          </div>
-                        </td>
-                        <td className="py-3 px-0 text-center">
-                          <div className="flex flex-row justify-around">
-                            <div className="w-full borders p-2">
-                              {customer.name.firstName}
-                            </div>
-                            <div className="w-full borders p-2">
-                              {customer.name.firstName}
-                            </div>
-                          </div>
-                        </td>
+                        return (
+                          <tr key={index} className="border-b border-gray-200 ">
+                            <td className="py-3 px-0 text-center whitespace-nowrap">
+                              <span className="font-medium">{index + 1}</span>
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              {customer.email}
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <div className="flex items-center justify-center">
+                                {customer.username}
+                              </div>
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <div className="flex flex-row justify-around">
+                                <div className="w-full borders p-2">
+                                  {customer.name.firstName}
+                                </div>
+                                <div className="w-full borders p-2">
+                                  {customer.name.firstName}
+                                </div>
+                              </div>
+                            </td>
 
-                        <td className="py-3 px-0 text-center">
-                          <div className="flex flex-row justify-around">
-                            <div className="w-full borders p-2">
-                              {customer.address.city}
-                            </div>
-                            <div className="w-full borders p-2">
-                              {customer.address.zipcode}
-                            </div>
-                            <div className="w-full borders p-2">
-                              {customer.address.street}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-3 px-0 text-center">
-                          <span className="flex items-center justify-center">
-                            {customer.phone}
-                          </span>
-                        </td>
+                            <td className="py-3 px-0 text-center">
+                              <div className="flex flex-row justify-around">
+                                <div className="w-full borders p-2">
+                                  {customer.address.city}
+                                </div>
+                                <div className="w-full borders p-2">
+                                  {customer.address.zipcode}
+                                </div>
+                                <div className="w-full borders p-2">
+                                  {customer.address.street}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-3 px-0 text-center">
+                              <span className="flex items-center justify-center">
+                                {customer.phone}
+                              </span>
+                            </td>
 
-                        <td className="py-3 px-0 text-center">
-                          <p className="text-center ">{dateFormatter(customer?.updatedAt as string)}</p>
-                        </td>
+                            <td className="py-3 px-0 text-center">
+                              <p className="text-center ">
+                                {dateFormatter(customer?.updatedAt as string)}
+                              </p>
+                            </td>
 
-                        <td className="py-3 px-0 text-center">
-                            <div className="w-full flex items-center justify-center transform hover:text-purple-500 hover:scale-120">
-                            <Link to={'editcustomers'}>  <PencilIcon onClick={()=>dispatch(addCustomer(customer))}/></Link>
-                            </div>
-                        </td>
-                      </tr>
-                    );
-                  }})}</>)}
+                            <td className="py-3 px-0 text-center">
+                              <div className="w-full flex items-center justify-center transform hover:text-purple-500 hover:scale-120">
+                                <Link to={"editcustomers"}>
+                                  {" "}
+                                  <PencilIcon
+                                    onClick={() =>
+                                      dispatch(addCustomer(customer))
+                                    }
+                                  />
+                                </Link>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    })}
+                  </>
+                )}
               </tbody>
             </table>
           </div>

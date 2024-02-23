@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 
 const BackToTop = () => {
     function backToTop(){
@@ -10,12 +11,13 @@ const BackToTop = () => {
       }
   return (
     <div> 
-      <button
+      <Button
+      variant="contained"
         onClick={backToTop}
-        className="mt-4 w-full py-2 text-white capitalize  bg-slate-600"
+        className="mt-4 w-full py-2 capitalize"
       >
         Back to top
-      </button>
+      </Button>
     </div>
   );
 };

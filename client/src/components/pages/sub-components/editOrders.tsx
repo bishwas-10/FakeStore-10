@@ -99,9 +99,9 @@ const {auth}= useAuth();
           },
           data: {
             shippingAddress: {
-              city: cartData?.shippingAddress.city,
-              street: cartData?.shippingAddress.street,
-              zipcode: cartData?.shippingAddress.zipcode,
+              city: cartData?.shippingAddress?.city,
+              street: cartData?.shippingAddress?.street,
+              zipcode: cartData?.shippingAddress?.zipcode,
             },
             customer:cartData?.customer.id,
             product: cartData?.product.id,
@@ -121,10 +121,11 @@ const {auth}= useAuth();
         }
       }
     }  catch (error:any) {
-      if(error.response.status=== 403 || error.response.status=== 401){
+      console.log(error);  
+       if(error.response.status=== 403 || error.response.status=== 401){
         logout();
       }
-      console.log(error);
+   
     }
   };
 

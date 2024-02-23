@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { instance } from "../../../api/instance";
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { TProductSchema } from "../../components/pages/sub-components/add-products";
 import { useState } from "react";
 import FilterProducts from "../FilterProducts";
@@ -35,7 +32,9 @@ export default function AllProducts() {
   });
 
   const filteredProducts = data
-    ?.filter((item) => (category? category==="All" ?item : item.category === category : item))
+    ?.filter((item) =>
+      category ? (category === "All" ? item : item.category === category) : item
+    )
     ?.filter((item) => price[0] <= item.price && item.price <= price[1])
     ?.filter(
       (item) => rating[0] <= item.rating.rate && item.rating.rate <= rating[1]
@@ -53,14 +52,17 @@ export default function AllProducts() {
   }
   return (
     <Box className="w-full flex flex-col md:flex-row p-4">
-        <Box   sx={{ bgcolor: "background.paper" }} className="md:w-1/3 w-full py-6 px-4 h-max flex flex-col gap-4">
-        <Typography
-        fontWeight={500}
-        fontSize={"20px"}
-        className=" tracking-wide capitalize"
+      <Box
+        sx={{ bgcolor: "background.paper" }}
+        className="md:w-1/3 w-full py-6 px-4 h-max flex flex-col gap-4"
       >
-        Filter Products
-      </Typography>
+        <Typography
+          fontWeight={500}
+          fontSize={"20px"}
+          className=" tracking-wide capitalize"
+        >
+          Filter Products
+        </Typography>
         {data && (
           <FilterProducts
             data={data}
@@ -82,7 +84,7 @@ export default function AllProducts() {
           All products available at FakeStore
         </Typography>
         <div className="px-8 my-12 flex flex-wrap items-center justify-center gap-4">
-          {filteredProducts?.length!==0 ? (
+          {filteredProducts?.length !== 0 ? (
             filteredProducts?.map((product: TProductSchema) => {
               return (
                 <Link key={product.id} to={"/product/" + product.id}>
@@ -92,7 +94,6 @@ export default function AllProducts() {
             })
           ) : (
             <Box className="h-80 flex items-center justify-center">
-            
               <Typography
                 fontWeight={500}
                 fontSize={"20px"}

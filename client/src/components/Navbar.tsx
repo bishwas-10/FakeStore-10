@@ -1,11 +1,9 @@
 import {
   Button,
-
   FormControlLabel,
   Popover,
   Switch,
   Typography,
- 
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../providers/theme-provider";
@@ -132,26 +130,14 @@ const Navbar = () => {
             >
               Settings
             </Link>
-            <Link
-              to="/"
-              className={` p-2 
-           
-            rounded-md transition-all`}
-            >
-              Customer Section
-            </Link>
-            <button
+
+            <Button
+              variant="contained"
               onClick={() => logout()}
-              className={`p-2 
-            ${
-              pathname === "/admin/login"
-                ? "font-semibold text-gray-600 bg-gray-300"
-                : "text-muted-foreground"
-            }
-            rounded-md transition-all `}
+              className={`p-2   rounded-md `}
             >
               logout
-            </button>
+            </Button>
           </nav>
         )}
 

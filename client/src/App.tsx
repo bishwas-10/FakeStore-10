@@ -4,10 +4,9 @@ import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import  CssBaseline  from "@mui/material/CssBaseline"
+import CssBaseline from "@mui/material/CssBaseline";
 import { PaletteMode } from "@mui/material";
-;
-import {  indigo,amber,grey } from "@mui/material/colors";
+import { indigo, amber, grey } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -61,28 +60,28 @@ function App() {
       background:
         mode === "dark"
           ? {
-            main: grey[800],
-             black: "#000202",
-            default: grey[900],
-            paper: grey[800],
+              main: grey[800],
+              black: "#000202",
+              default: grey[900],
+              paper: grey[800],
             }
           : {
-            main: grey[100],
-             black: "#ffffff",
-            default: grey[100],
-            paper: grey[300],
+              main: grey[100],
+              black: "#ffffff",
+              default: grey[100],
+              paper: grey[300],
             },
       text:
         mode === "light"
           ? {
-             primary: grey[900],
-            secondary: grey[800],
-            textSecondary: indigo[500],
+              primary: grey[900],
+              secondary: grey[800],
+              textSecondary: indigo[500],
             }
           : {
               primary: "#fff",
-             secondary: grey[500],
-             textSecondary: amber[500],
+              secondary: grey[500],
+              textSecondary: amber[500],
             },
     },
   });
@@ -117,25 +116,23 @@ function App() {
                 <Route
                   element={
                     <RequireAuth
-                      allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
+                      allowedRoles={[ROLES_LIST.customer]}
                     />
                   }
-                ></Route>
-
-                <Route path="carts/:userId">
+                > <Route path="carts/:userId">
                   <Route index element={<CartPage />} />
                   <Route
                     path="checkout"
                     element={
-                      <RequireAuth
-                        allowedRoles={[ROLES_LIST.customer, ROLES_LIST.admin]}
-                      />
+                      <RequireAuth allowedRoles={[ROLES_LIST.customer]} />
                     }
                   >
                     <Route index element={<CheckOutPage />} />
                     <Route path="stripe" element={<StripeCheckOut />} />
                   </Route>
-                </Route>
+                </Route></Route>
+
+               
               </Route>
             </Route>
             <Route path="/admin">
