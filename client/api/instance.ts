@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL="https://eccomerce-admin1.onrender.com/api"
+const BASE_URL="https://eccomerce-admin1.onrender.com"
 
 export const instance = axios.create({
     baseURL: BASE_URL,

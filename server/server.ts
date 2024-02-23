@@ -28,46 +28,46 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 // at https://dashboard.stripe.com/webhooks
 
 
-app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
-  let event = request.body;
-  // Only verify the event if you have an endpoint secret defined.
-  // Otherwise use the basic event deserialized with JSON.parse
-  if (endpointSecret) {
-    // Get the signature sent by Stripe
-    const signature = request.headers['stripe-signature'];
-    try {
-      event = stripe.webhooks.constructEvent(
-        request.body,
-        signature,
-        endpointSecret
-      );
-    } catch (err:any) {
-      console.log(`⚠️  Webhook signature verification failed.`, err.message);
-      return response.sendStatus(400);
-    }
-  }
+// app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+//   let event = request.body;
+//   // Only verify the event if you have an endpoint secret defined.
+//   // Otherwise use the basic event deserialized with JSON.parse
+//   if (endpointSecret) {
+//     // Get the signature sent by Stripe
+//     const signature = request.headers['stripe-signature'];
+//     try {
+//       event = stripe.webhooks.constructEvent(
+//         request.body,
+//         signature,
+//         endpointSecret
+//       );
+//     } catch (err:any) {
+//       console.log(`⚠️  Webhook signature verification failed.`, err.message);
+//       return response.sendStatus(400);
+//     }
+//   }
 
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object;
-      console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-      // Then define and call a method to handle the successful payment intent.
-      // handlePaymentIntentSucceeded(paymentIntent);
-      break;
-    case 'payment_method.attached':
-      const paymentMethod = event.data.object;
-      // Then define and call a method to handle the successful attachment of a PaymentMethod.
-      // handlePaymentMethodAttached(paymentMethod);
-      break;
-    default:
-      // Unexpected event type
-      console.log(`Unhandled event type ${event.type}.`);
-  }
+//   // Handle the event
+//   switch (event.type) {
+//     case 'payment_intent.succeeded':
+//       const paymentIntent = event.data.object;
+//       console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
+//       // Then define and call a method to handle the successful payment intent.
+//       // handlePaymentIntentSucceeded(paymentIntent);
+//       break;
+//     case 'payment_method.attached':
+//       const paymentMethod = event.data.object;
+//       // Then define and call a method to handle the successful attachment of a PaymentMethod.
+//       // handlePaymentMethodAttached(paymentMethod);
+//       break;
+//     default:
+//       // Unexpected event type
+//       console.log(`Unhandled event type ${event.type}.`);
+//   }
 
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
-});
+//   // Return a 200 response to acknowledge receipt of the event
+//   response.send();
+// });
 
 
 
@@ -100,9 +100,8 @@ const calculateOrderAmount = () => {
   return 1400;
 };
 
-app.post("/api/create-payment-intent", async (req, res) => {
-console.log(req.body)
-  console.log("aayo");
+app.post("/create-payment-intent", async (req, res) => {
+
   // Create a PaymentIntent with the order amount and currency
  
   const paymentIntent = await stripe.paymentIntents.create({
@@ -129,15 +128,15 @@ console.log(req.body)
   });
 });
 
-app.use("/api/users", authRouter);
-app.get("/api/refresh", handleRefreshToken);
+app.use("/users", authRouter);
+app.get("/refresh", handleRefreshToken);
 /*getproducts and categories */
-app.use("/api", getRouter);
+app.use("/", getRouter);
 // app.use(verifyJWT);
-app.use("/api", categoryRouter);
-app.use("/api", productRouter);
-app.use("/api", cartRouter);
-app.use("/api", customerRouter);
+app.use("/", categoryRouter);
+app.use("/", productRouter);
+app.use("/", cartRouter);
+app.use("/", customerRouter);
 const server = http.createServer(app);
 
 connectDb()
