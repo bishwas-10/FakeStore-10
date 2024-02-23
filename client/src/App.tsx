@@ -3,8 +3,8 @@ import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
-// import { ThemeProvider, createTheme } from "@mui/material/styles";
-// import  CssBaseline  from "@mui/material/CssBaseline"
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import  CssBaseline  from "@mui/material/CssBaseline"
 // import { PaletteMode } from "@mui/material";
 // ;
 // import { amber, grey, indigo } from "@mui/material/colors";
@@ -52,33 +52,33 @@ function App() {
   // State to manage the current theme mode
   // const { theme } = useTheme();
   // Create custom theme based on the current mode
-  // const getDesignTokens = () => ({
-  //   palette: {
+  const getDesignTokens = () => ({
+    palette: {
     
-  //     primary: {
-  //       main:"#3f51b5",
-  //     },
-  //     background:
-  //        {
-  //             main: "#f5f5f5",
-  //             black: "#ffffff",
-  //             default: "#f5f5f5",
-  //             paper: "#e0e0e0",
-  //           },
-  //     text:
-  //       {
-  //             primary: "#fff",
-  //             secondary: "#9e9e9e",
-  //             textSecondary: "#ffc107",
-  //           },
-  //   },
-  // });
+      primary: {
+        main:"#3f51b5",
+      },
+      background:
+         {
+              main: "#f5f5f5",
+              black: "#ffffff",
+              default: "#f5f5f5",
+              paper: "#e0e0e0",
+            },
+      text:
+        {
+              primary: "#fff",
+              secondary: "#9e9e9e",
+              textSecondary: "#ffc107",
+            },
+    },
+  });
 
-  // const themeUi = createTheme(getDesignTokens());
+  const themeUi = createTheme(getDesignTokens());
 
   return (
-    <>
-    
+    <ThemeProvider theme={themeUi}>
+      <CssBaseline />
       <div className="w-full h-max ">
         <ScrollToTop>
           {location.pathname.startsWith("/admin") ? (
@@ -161,7 +161,7 @@ function App() {
           <Footer />
         </ScrollToTop>
       </div>
-    </>
+    </ThemeProvider>
   );
 }
 
