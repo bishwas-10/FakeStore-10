@@ -16,7 +16,7 @@ export const ThemeModeProvider = ({
 }) => {
   // State to manage the current theme
   const [theme, setTheme] = useState<"dark" | "light">(
-    localStorage.getItem("ThemeMode") as "light" | "dark"
+    localStorage.getItem("ThemeMode") as "light" | "dark" || "light"
   );
 
   // Function to toggle between light and dark themes

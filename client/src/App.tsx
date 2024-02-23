@@ -7,6 +7,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import  CssBaseline  from "@mui/material/CssBaseline"
 import { PaletteMode } from "@mui/material";
 ;
+import {  grey } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -58,16 +59,29 @@ function App() {
         main: mode === "dark" ? "#ffc107" : "#3f51b5",
       },
       background:
-         {
+        mode === "dark"
+          ? {
+              main: "#424242",
+              black: "#000202",
+              default: "#212121",
+              paper: "#424242",
+            }
+          : {
               main: "#f5f5f5",
               black: "#ffffff",
               default: "#f5f5f5",
-              paper: "#e0e0e0",
+              paper: "grey[300]",
             },
       text:
-        {
+        mode === "light"
+          ? {
+              primary:"#212121",
+              secondary:"#424242",
+              textSecondary: "#3f51b5",
+            }
+          : {
               primary: "#fff",
-              secondary: "#9e9e9e",
+              secondary: grey[500],
               textSecondary: "#ffc107",
             },
     },
