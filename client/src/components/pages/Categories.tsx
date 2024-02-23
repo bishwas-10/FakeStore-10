@@ -32,6 +32,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../cComponent/reusable/Loading";
 import useAuth from "../../../hooks/useAuth";
+import { instance } from "../../../api/instance";
 
 const Categories = () => {
   const categories = useSelector((state: RootState) => state.category.category);
@@ -57,7 +58,7 @@ const Categories = () => {
   //fetchallproducts
   const categoryCall = async () => {
     try {
-      const response = await axiosPrivate.get("/categories", {
+      const response = await instance.get("/categories", {
         signal: controller.signal,
       });
       if (response.data.success) {

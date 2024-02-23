@@ -14,24 +14,24 @@ import Loading from "../reusable/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { UserInfoProps } from "../../context/AuthProvider";
 import useRefreshToken from "../../../hooks/useRefreshToken";
 import { Button } from "@mui/material";
+import { instance } from "../../../api/instance";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const EachProduct = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
   const { auth, setAuth } = useAuth();
-
+const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const refresh = useRefreshToken();
-  const axiosPrivate = useAxiosPrivate();
   const fetchProductDetails = async (id: string) => {
-    const response = await axiosPrivate({
+    const response = await instance({
       url: `/products/${id}`,
       method: "GET",
     });

@@ -4,14 +4,15 @@ import { Link, useParams } from "react-router-dom";
 import Card from "../Card";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../reusable/Loading";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+
 import { TProductSchema } from "../../components/pages/sub-components/add-products";
 import { Box, Typography } from "@mui/material";
 import FilterProducts from "../FilterProducts";
+import { instance } from "../../../api/instance";
 
 const EachCategoryProduct = () => {
   const { category } = useParams();
-  const axiosPrivate = useAxiosPrivate();
+  
   const [selectedCategory, setSelectedCategory] = useState<string | null>(category as string);
 
   const [price, setPrice] = useState<number[]>([0, 10000]);
@@ -24,7 +25,7 @@ const EachCategoryProduct = () => {
 
   const fetchCategory = async (CATEGORY: string) => {
     try {
-      const response = await axiosPrivate({
+      const response = await instance({
         url: `/categories/${CATEGORY}`,
         method: "GET",
       });
