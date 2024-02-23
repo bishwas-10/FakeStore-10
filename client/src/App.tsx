@@ -7,7 +7,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import  CssBaseline  from "@mui/material/CssBaseline"
 import { PaletteMode } from "@mui/material";
 ;
-import { amber, grey, indigo } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
