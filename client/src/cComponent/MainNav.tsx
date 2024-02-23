@@ -14,7 +14,6 @@ import {
   IconButton,
   InputBase,
   Switch,
-  alpha,
   styled,
 } from "@mui/material";
 import { useTheme } from "../providers/theme-provider";

@@ -62,25 +62,25 @@ function App() {
         mode === "dark"
           ? {
               main: grey[800],
-              black: "#000202",
+              // black: "#000202",
               default: grey[900],
               paper: grey[800],
             }
           : {
               main: grey[100],
-              black: "#ffffff",
+              // black: "#ffffff",
               default: grey[100],
               paper: grey[300],
             },
       text:
         mode === "light"
           ? {
-              primary: grey[900],
+              // primary: grey[900],
               secondary: grey[800],
               textSecondary: indigo[500],
             }
           : {
-              primary: "#fff",
+              // primary: "#fff",
               secondary: grey[500],
               textSecondary: amber[500],
             },
