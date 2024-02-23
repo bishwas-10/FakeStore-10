@@ -7,7 +7,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import  CssBaseline  from "@mui/material/CssBaseline"
 import { PaletteMode } from "@mui/material";
 ;
-import {  grey } from "@mui/material/colors";
+import {  indigo,amber,grey } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -56,33 +56,33 @@ function App() {
     palette: {
       mode,
       primary: {
-        main: mode === "dark" ? "#ffc107" : "#3f51b5",
+        main: mode === "dark" ? amber[500] : indigo[500],
       },
       background:
         mode === "dark"
           ? {
-              main: "#424242",
-              black: "#000202",
-              default: "#212121",
-              paper: "#424242",
+            main: grey[800],
+             black: "#000202",
+            default: grey[900],
+            paper: grey[800],
             }
           : {
-              main: "#f5f5f5",
-              black: "#ffffff",
-              default: "#f5f5f5",
-              paper: "grey[300]",
+            main: grey[100],
+             black: "#ffffff",
+            default: grey[100],
+            paper: grey[300],
             },
       text:
         mode === "light"
           ? {
-              primary:"#212121",
-              secondary:"#424242",
-              textSecondary: "#3f51b5",
+             primary: grey[900],
+            secondary: grey[800],
+            textSecondary: indigo[500],
             }
           : {
               primary: "#fff",
-              secondary: grey[500],
-              textSecondary: "#ffc107",
+             secondary: grey[500],
+             textSecondary: amber[500],
             },
     },
   });

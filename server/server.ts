@@ -17,7 +17,7 @@ import getRouter from "./routes/getRoute";
 import { handleRefreshToken } from "./controller/refreshToken";
 
 const app = express();
-
+const PORT = process.env.PORT;
 // app.use(express.raw({type: 'application/json'}));
 // const endpointSecret = "whsec_14eba393874b337d170128fdc14d74241d32066e4b7572696b8592d6a48d4ab9";
  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -120,6 +120,6 @@ const server = http.createServer(app);
 
 connectDb()
   .then(() => {
-    server.listen(process.env.PORT, () => console.log("server is listening to port 4000"));
+    server.listen(PORT, () => console.log("server is listening to port 4000"));
   })
   .catch((err) => console.log("error", err));
