@@ -29,7 +29,7 @@ export default function StripeCheckOut() {
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
-  console.log(checkOutItems);
+ 
   const createPaymentIntent = async () => {
     try {
       const response = await instance("/create-payment-intent", {

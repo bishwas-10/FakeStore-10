@@ -59,7 +59,7 @@ const CheckoutForm: React.FC = () => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:5173/order-success",
+        return_url: "/order-success",
       },
     });
     console.log(error);
