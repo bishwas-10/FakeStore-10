@@ -4,7 +4,7 @@ import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
 // import { ThemeProvider, createTheme } from "@mui/material/styles";
-import  CssBaseline  from "@mui/material/CssBaseline"
+// import  CssBaseline  from "@mui/material/CssBaseline"
 // import { PaletteMode } from "@mui/material";
 // ;
 // import { amber, grey, indigo } from "@mui/material/colors";
@@ -78,7 +78,7 @@ function App() {
 
   return (
     <>
-      <CssBaseline />
+    
       <div className="w-full h-max ">
         <ScrollToTop>
           {location.pathname.startsWith("/admin") ? (
