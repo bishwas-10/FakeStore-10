@@ -5,14 +5,14 @@ import { TCategorySchema } from "../components/pages/sub-components/AddCategory"
 import { useDispatch } from "react-redux";
 import { fetchAllCategories } from "../store/categorySlice";
 import { Box } from "@mui/material";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { instance } from "../../api/instance";
 
 
 const CategoryHome = () => {
-  const axiosPrivate = useAxiosPrivate();
+
   const dispatch = useDispatch();
   const fetchCategories = async () => {
-    const response = await axiosPrivate({
+    const response = await instance({
       url: `/categories`,
       method: "GET",
     });
