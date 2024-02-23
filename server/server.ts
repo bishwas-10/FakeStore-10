@@ -76,7 +76,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), (request, response
 app.use(express.static(path.resolve(__dirname, 'dist')));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173","https://eccomerce-admin1.bishwas-projects.vercel.app"],
+    origin: ["http://localhost:4000", "http://localhost:5173","https://eccomerce-admin1.bishwas-projects.vercel.app"],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ["Access-Control-Allow-Origin"],
@@ -133,7 +133,7 @@ app.use("/api/users", authRouter);
 app.get("/api/refresh", handleRefreshToken);
 /*getproducts and categories */
 app.use("/api", getRouter);
-app.use(verifyJWT);
+// app.use(verifyJWT);
 app.use("/api", categoryRouter);
 app.use("/api", productRouter);
 app.use("/api", cartRouter);

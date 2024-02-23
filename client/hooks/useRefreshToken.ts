@@ -1,9 +1,10 @@
 
+import { instance } from "../api/instance";
 import useAuth from "./useAuth";
-import useAxiosPrivate from "./useAxiosPrivate";
+
 
 const useRefreshToken = () => {
-  const axiosPrivate = useAxiosPrivate();
+  
   const { setAuth ,auth} = useAuth();
  
 //  if(auth.token){
@@ -11,7 +12,7 @@ const useRefreshToken = () => {
 //       // setUser({username:decoded.UserInfo.username,roles:decoded.UserInfo.roles});
 //     }
   return  async () => {
-    const response = await axiosPrivate({
+    const response = await instance({
       url: "/refresh",
       method: "GET",
       headers: {
