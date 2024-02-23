@@ -54,7 +54,7 @@ console.log("aayo")
 app.use(express.static(path.resolve(__dirname, 'dist')));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173","https://eccomerce-admin1.vercel.app"],
+    origin: ["http://localhost:3000", "http://localhost:5173","https://eccomerce-admin1.bishwas-projects.vercel.app"],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ["Access-Control-Allow-Origin"],
