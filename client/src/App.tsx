@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import {Router, Route, Routes, useLocation } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
 import Settings from "./components/pages/Settings";
@@ -102,7 +102,7 @@ function App() {
             </>
           )}
 
-          <Routes>
+          <Routes >
             <Route path="/">
               <Route index element={<HomePage />} />
               <Route path="order-success" element={<OrderSuccess />} />
