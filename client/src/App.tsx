@@ -5,9 +5,9 @@ import Settings from "./components/pages/Settings";
 import Navbar from "./components/Navbar";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import  CssBaseline  from "@mui/material/CssBaseline"
-import { PaletteMode } from "@mui/material";
-;
-import { amber, grey, indigo } from "@mui/material/colors";
+// import { PaletteMode } from "@mui/material";
+// ;
+// import { amber, grey, indigo } from "@mui/material/colors";
 
 import Order from "./components/pages/Orders";
 import Customers from "./components/pages/Customers";
@@ -26,7 +26,7 @@ import HomePage from "./cComponent/pages/HomePage";
 import AllProducts from "./cComponent/pages/AllProducts";
 import EachProduct from "./cComponent/pages/EachProduct";
 import EachCategoryProduct from "./cComponent/pages/EachCategoryProduct";
-import { useTheme } from "./providers/theme-provider";
+// import { useTheme } from "./providers/theme-provider";
 import SignUpPage from "./components/pages/auth/signup";
 import Footer from "./cComponent/Footer";
 import Categories from "./components/pages/Categories";
@@ -50,11 +50,11 @@ export const ROLES_LIST: RolesProps = {
 function App() {
   const location = useLocation();
   // State to manage the current theme mode
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
   // Create custom theme based on the current mode
-  const getDesignTokens = (mode: PaletteMode) => ({
+  const getDesignTokens = () => ({
     palette: {
-      mode,
+    
       primary: {
         main:"#3f51b5",
       },
@@ -74,7 +74,7 @@ function App() {
     },
   });
 
-  const themeUi = createTheme(getDesignTokens(theme));
+  const themeUi = createTheme(getDesignTokens());
 
   return (
     <ThemeProvider theme={themeUi}>
