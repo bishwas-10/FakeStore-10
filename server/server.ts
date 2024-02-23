@@ -76,7 +76,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), (request, response
 app.use(express.static(path.resolve(__dirname, 'dist')));
 app.use(
   cors({
-    origin: ["https://eccomerce-admin1.onrender.com", "http://localhost:5173","https://eccomerce-admin1.bishwas-projects.vercel.app"],
+    origin: ["https://eccomerce-admin1.onrender.com","https://fakestore-10.vercel.app", "http://localhost:5173","https://eccomerce-admin1.bishwas-projects.vercel.app"],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ["Access-Control-Allow-Origin"],
