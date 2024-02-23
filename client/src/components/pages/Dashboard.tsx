@@ -3,7 +3,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../cComponent/reusable/Loading";
-import {  instance } from "../../../api/instance";
 import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -13,6 +12,7 @@ import { dateFormatter } from "../../../utils/dateFormatter";
 import { fetchAllOrders } from "../../store/soldOrderSlice";
 import { getGraphRevenue } from "../getRevenueData";
 import { TCartSchema } from "./Orders";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -22,11 +22,11 @@ const Dashboard = () => {
   const paidOrders = orderstatus?.orders.filter((order:TCartSchema)=>order.paymentStatus==="paid") ;
 const graphData =  getGraphRevenue(paidOrders);
   
-  console.log(graphData);
- 
+
+ const axiosPrivate = useAxiosPrivate();
   const saleCall = async () => {
     try {
-      const response = await instance({
+      const response = await axiosPrivate({
         url: "/carts",
         method: "GET",
         headers: {

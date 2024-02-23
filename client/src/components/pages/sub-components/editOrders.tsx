@@ -19,11 +19,11 @@ import { Link } from "react-router-dom";
 import { RootState } from "../../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
-import { instance } from "../../../../api/instance";
 import { addCart } from "../../../store/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
 import useLogout from "../../../../hooks/useLogout";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 const EditCartSchema = z.object({
   quantity:z
@@ -58,6 +58,7 @@ const {auth}= useAuth();
   const [payment, setPayment] = useState<string>(
     cartData?.paymentStatus as string
   );
+  const axiosPrivate = useAxiosPrivate();
 
   const {
     register,
@@ -90,7 +91,7 @@ const {auth}= useAuth();
 
     try {
       if (cartData?.id) {
-        const response = await instance({
+        const response = await axiosPrivate({
           url: `/carts/${cartData.id}`,
           method: "PUT",
           headers: {

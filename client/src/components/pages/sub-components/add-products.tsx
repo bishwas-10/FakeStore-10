@@ -21,12 +21,12 @@ import { useEffect, useState } from "react";
 import { addProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
-import { axiosPrivate, instance } from "../../../../api/instance";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
 import useLogout from "../../../../hooks/useLogout";
 import { TCategorySchema } from "./AddCategory";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 
 
@@ -74,6 +74,7 @@ const AddProducts = () => {
   const product = useSelector(
     (state: RootState) => state.product.newlyAddedProduct
   );
+  const axiosPrivate = useAxiosPrivate();
   const [category, setCategory] = useState<string>(product?.category as string);
   const [topPicks, setTopPicks] = useState<string>(product?.topPicks ?"true":"false");
   const [categories, setCategories] = useState<TCategorySchema[]>([]);
@@ -144,7 +145,7 @@ const AddProducts = () => {
   const onSubmit = async (data: TProductSchema) => {
     try {
       console.log(data)
-      const response = await instance({
+      const response = await axiosPrivate({
         url: product?.id ? `/products/${product?.id}` : `/products`,
         method: product?.id ? "PUT" : "POST",
         headers: {

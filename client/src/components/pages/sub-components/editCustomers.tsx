@@ -12,12 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { axiosPrivate } from "../../../../api/instance";
+
 import { z } from "zod";
 import { addCustomer } from "../../../store/customerSlice";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../hooks/useAuth";
 import useLogout from "../../../../hooks/useLogout";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 export const customerSchema = z.object({
     _id: z.string().optional(),
     updatedAt: z.string().optional(),
@@ -40,6 +41,7 @@ export const customerSchema = z.object({
   export type TCustomerSchema = z.infer<typeof customerSchema>;
 
 const EditCustomers = () => {
+  const axiosPrivate = useAxiosPrivate();
   const {auth}= useAuth();
   const dispatch =useDispatch();
   const logout = useLogout();

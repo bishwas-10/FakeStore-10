@@ -30,7 +30,6 @@ import useLogout from "../../hooks/useLogout";
 import Drawer from "@mui/material/Drawer";
 import { instance } from "../../api/instance";
 import { useQuery } from "@tanstack/react-query";
-import { TProductSchema } from "../components/pages/sub-components/add-products";
 import Loading from "./reusable/Loading";
 
 const Search = styled("div")(({ theme }) => ({
@@ -132,7 +131,7 @@ const MainNav = () => {
       ? product
       : product.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  console.log(searchProducts);
+  console.log(error);
   const drawer = (
     <Box
       className="flex flex-row gap-2 justify-center py-4 h-max"

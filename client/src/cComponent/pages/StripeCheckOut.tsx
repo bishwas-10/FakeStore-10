@@ -4,12 +4,12 @@ import { Elements } from "@stripe/react-stripe-js";
 
 import CheckoutForm from "./CheckoutForm";
 import "../../Stripe.css";
-import { instance } from "../../../api/instance";
 import useAuth from "../../../hooks/useAuth";
 import { UserInfoProps } from "../../context/AuthProvider";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -23,7 +23,7 @@ export default function StripeCheckOut() {
   const checkOutItems = useSelector(
     (state: RootState) => state.cart.checkOutItems
   );
-  
+  const axiosPrivate = useAxiosPrivate();
   const [clientSecret, setClientSecret] = useState("");
   const { auth } = useAuth();
   const decoded: UserInfoProps | undefined = auth.token
@@ -32,7 +32,7 @@ export default function StripeCheckOut() {
  
   const createPaymentIntent = async () => {
     try {
-      const response = await instance("/create-payment-intent", {
+      const response = await axiosPrivate("/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
