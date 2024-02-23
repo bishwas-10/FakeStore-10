@@ -56,33 +56,33 @@ function App() {
     palette: {
       mode,
       primary: {
-        main: mode === "dark" ? amber[500] : indigo[500],
+        main: mode === "dark" ? "#ffc107" : "#3f51b5",
       },
       background:
         mode === "dark"
           ? {
-              main: grey[800],
-              // black: "#000202",
-              default: grey[900],
-              paper: grey[800],
+              main: "#424242",
+              black: "#000202",
+              default: "#212121",
+              paper: "#424242",
             }
           : {
-              main: grey[100],
-              // black: "#ffffff",
-              default: grey[100],
-              paper: grey[300],
+              main: "#f5f5f5",
+              black: "#ffffff",
+              default: "#f5f5f5",
+              paper: "#e0e0e0",
             },
       text:
         mode === "light"
           ? {
-              // primary: grey[900],
-              secondary: grey[800],
-              textSecondary: indigo[500],
+              primary:"#212121",
+              secondary:"#424242",
+              textSecondary: "#3f51b5",
             }
           : {
-              // primary: "#fff",
-              secondary: grey[500],
-              textSecondary: amber[500],
+              primary: "#fff",
+              secondary: "#9e9e9e",
+              textSecondary: "#ffc107",
             },
     },
   });
