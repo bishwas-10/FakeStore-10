@@ -22,44 +22,48 @@ const PORT = process.env.PORT;
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-// This is your test secret API key.
-// Replace this endpoint secret with your endpoint's unique secret
-// If you are testing with the CLI, find the secret by running 'stripe listen'
-// If you are using an endpoint defined with the API or dashboard, look in your webhook settings
-// at https://dashboard.stripe.com/webhooks
-
+app.use((req, res, next) => {
+  if (req.originalUrl === '/webhook') {
+    next(); // Do nothing with the body because I need it in a raw state.
+  } else {
+    express.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
+  }
+});
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   (request, response) => {
-    let event;
-    // Only verify the event if you have an endpoint secret defined.
-    // Otherwise use the basic event deserialized with JSON.parse
-    if (endpointSecret) {
-      // Get the signature sent by Stripe
-      const signature = request.headers["stripe-signature"];
-      try {
-        event = stripe.webhooks.constructEvent(
-          request.body,
-          signature,
-          endpointSecret
-        );
-      } catch (err: any) {
-        console.log(`⚠️  Webhook signature verification failed.`, err.message);
-        return response.sendStatus(400);
-      }
+    const sig = request.headers["stripe-signature"];
+
+    let event=request.body;
+    console.log(sig)
+
+    try {
+      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+      
+    } catch (err: any) {
+      console.log(err)
+      response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
     // Handle the event
     switch (event.type) {
       case "payment_intent.succeeded":
-        const paymentIntent = event.data.object;
-        console.log(
-          `PaymentIntent for ${paymentIntent.amount} was successful!`
-        );
+        // const paymentIntent = event.data.object;
+        // console.log(
+        //   `PaymentIntent for ${paymentIntent.amount} was successful!`
+        // );
         // Then define and call a method to handle the successful payment intent.
         // handlePaymentIntentSucceeded(paymentIntent);
         break;
+        case "payment_intent.created":
+          const paymentIntent = event.data.object;
+          console.log(
+            paymentIntent
+          );
+          // Then define and call a method to handle the successful payment intent.
+          // handlePaymentIntentSucceeded(paymentIntent);
+          break;
       case "payment_method.attached":
         const paymentMethod = event.data.object;
         // Then define and call a method to handle the successful attachment of a PaymentMethod.
