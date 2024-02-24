@@ -21,7 +21,7 @@ const PORT = process.env.PORT;
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 app.use((req, res, next) => {
   if (req.originalUrl === '/webhook') {
     next(); // Do nothing with the body because I need it in a raw state.
@@ -111,7 +111,7 @@ const calculateOrderAmount = () => {
   // people from directly manipulating the amount on the client
   return 1400;
 };
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 app.post("/create-payment-intent", async (req, res) => {
   // Create a PaymentIntent with the order amount and currency
 
