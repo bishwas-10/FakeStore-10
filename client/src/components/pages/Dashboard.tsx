@@ -94,9 +94,7 @@ const graphData =  getGraphRevenue(paidOrders);
                     <h1 className="text-2xl font-bold">
                       ${orderstatus.totalRevenue}
                     </h1>
-                    <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
-                    </p>
+                   
                   </div>
                 </CardContent>
               </Card>
@@ -121,14 +119,12 @@ const graphData =  getGraphRevenue(paidOrders);
                       <path d="M2 10h20" />
                     </svg>
                   </div>
-                  <div>
+       
                     <div className="text-2xl font-bold">
                       +{orderstatus.totalSales}
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      +19% from last month
-                    </p>
-                  </div>
+                   
+              
                 </CardContent>
               </Card>
               <Card className=" border-2  rounded-md cursor-pointer hover:shadow-2xl transition-all">

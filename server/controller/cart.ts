@@ -147,7 +147,7 @@ export const updateQuantity = async (req: Request, res: Response) => {
 };
 export const updateAllShippingAddress = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log("yesma aayena")
+ 
   try {
     const filter = { customer: id, paymentStatus: "not paid" };
      await Cart.updateMany(

@@ -1,5 +1,16 @@
-import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
-import {  useState } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  Typography,
+} from "@mui/material";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Loading from "../reusable/Loading";
@@ -65,6 +76,10 @@ const fetchCartByUserId = async (
 };
 
 const CartPage = () => {
+  const [value, setValue] = React.useState<"All" | "Paid" | "Not Paid">(
+    "Not Paid"
+  );
+
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedQuantities, setSelectedQuantities] = useState<{
@@ -97,7 +112,7 @@ const CartPage = () => {
             flexDirection: "column",
             width: "100%",
             justifyContent: "space-between",
-            height: "100vh",
+            minheight: "100vh",
             bgcolor: "background.default",
             color: "text.primary",
             p: 4,
@@ -147,7 +162,6 @@ const CartPage = () => {
           </Box>
           <Personalized />
         </Box>
-     
       </>
     );
   } else {
@@ -187,7 +201,11 @@ const CartPage = () => {
       console.log(error);
     }
   };
-
+  const handlePaidProductChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setValue(event.target.value as "All" | "Paid" | "Not Paid");
+  };
   const cancelOrder = async (cartId: string) => {
     try {
       await axiosPrivate({
@@ -205,10 +223,7 @@ const CartPage = () => {
     dispatch(setCheckOutItems([cartItem]));
     navigate("checkout");
   };
-  const handleCheckOut = async (items: TCartSchema[]) => {
-    dispatch(setCheckOutItems(items));
-    navigate("checkout");
-  };
+
   return (
     <Box
       sx={{
@@ -222,8 +237,6 @@ const CartPage = () => {
     >
       <Box
         sx={{
-          
-          
           borderRadius: 1,
           gap: 2,
         }}
@@ -232,7 +245,7 @@ const CartPage = () => {
         <Box
           sx={{
             display: "flex",
-           
+
             flexDirection: "column",
             bgcolor: "background.black",
             color: "text.primary",
@@ -264,7 +277,7 @@ const CartPage = () => {
                 className="flex flex-col py-8 px-6 items-center "
               >
                 <Typography fontSize={"30px"} fontWeight={"600"}>
-                  Your Total
+                  Your Total for unpaid products
                 </Typography>
                 <Box className="flex flex-row gap-4 items-center w-max text-xl font-bold ">
                   <span className="flex flex-row items-center ">
@@ -302,127 +315,151 @@ const CartPage = () => {
                     </Typography>
                   </span>
                 </Box>
-                {data?.length && (
-                  <Button
-                    onClick={() =>
-                      handleCheckOut(
-                        data?.filter(
-                          (item: TCartSchema) =>
-                            item.paymentStatus === "not paid"
-                        ) as TCartSchema[]
-                      )
-                    }
-                    variant="contained"
-                    className="text-xl"
-                  >
-                    Check Out
-                  </Button>
-                )}
               </Box>
+              <FormControl>
+                <FormLabel id="controlled-radio-buttons-group">
+                  Filter Orders
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby="controlled-radio-buttons-group"
+                  name="radio-buttons-group"
+                  value={value}
+                  onChange={handlePaidProductChange}
+                >
+                  <Box className="flex flex-row gap-2">
+                    <FormControlLabel
+                      value="All"
+                      control={<Radio />}
+                      label="All"
+                    />
+                    <FormControlLabel
+                      value="Paid"
+                      control={<Radio />}
+                      label="Paid"
+                    />
+                    <FormControlLabel
+                      value="Not Paid"
+                      control={<Radio />}
+                      label="Not Paid"
+                    />
+                  </Box>
+                </RadioGroup>
+              </FormControl>
               <Typography variant="h5">Your Shopping Cart</Typography>
               {data
-                ?.filter((item) => item.paymentStatus === "not paid")
+                ?.filter((item) =>
+                  value === "All"
+                    ? item
+                    : value === "Paid"
+                    ? item.paymentStatus === "paid"
+                    : item.paymentStatus === "not paid"
+                )
                 ?.map((item, index) => {
                   return (
-                    <div
-                      key={index}
-                      className=" flex flex-col  md:flex-row  border-gray-400 border-2  "
-                    >
-                      <div className="w-full md:w-1/4 border-r-2 border-gray-400 shrink-0 ">
-                        <div className="w-full h-full p-3 flex items-center justify-center">
-                          <img
-                            src={item.product.image}
-                            alt="demo"
-                            width={240}
-                            height={240}
-                            className=" object-cover "
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center  w-full  ">
-                        <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
-                          <p className="text-xl font-semibold pt-2 text-[#8A8888]">
-                            {item.product.title}
-                          </p>
-                          <div className="flex flex-row w-full pt-1 2">
-                            <p className="text-sm font-semibold ">
-                              {item.product.category}
-                            </p>
+                    <React.Fragment key={index}>
+                      {item.product && (
+                        <div className=" flex flex-col  md:flex-row  border-gray-400 border-2  ">
+                          <div className="w-full md:w-1/4 border-r-2 border-gray-400 shrink-0 ">
+                            <div className="w-full h-full p-3 flex items-center justify-center">
+                              <img
+                                src={item.product?.image}
+                                alt="demo"
+                                width={240}
+                                height={240}
+                                className=" object-cover "
+                              />
+                            </div>
                           </div>
-                          <Typography
-                            fontSize={"25px"}
-                            fontWeight={"600"}
-                            color={"text.textSecondary"}
-                          >
-                            ${item.product.price}
-                            <span className="text-xs">per product</span>
-                          </Typography>
-                          <Typography
-                            fontSize={"25px"}
-                            fontWeight={"600"}
-                            color={"text.textSecondary"}
-                          >
-                            <span className="text-xs">total</span> $
-                            {item.product.price * item.quantity}
-                          </Typography>
-                        </div>
-                        <div className="flex flex-col w-full p-4">
-                          {item.paymentStatus !== "paid" && (
-                            <div className="flex flex-row items-center text-lg gap-6 dark:text-gray-400 ">
-                              <span>Quantity</span>
+                          <div className="flex flex-col items-center  w-full  ">
+                            <div className="flex flex-col items-start justify-start w-full pl-4 pr-4">
+                              <p className="text-xl font-semibold pt-2 text-[#8A8888]">
+                                {item.product?.title}
+                              </p>
+                              <div className="flex flex-row w-full pt-1 2">
+                                <p className="text-sm font-semibold ">
+                                  {item.product?.category}
+                                </p>
+                              </div>
+                              <Typography
+                                fontSize={"25px"}
+                                fontWeight={"600"}
+                                color={"text.textSecondary"}
+                              >
+                                ${item.product?.price}
+                                <span className="text-xs">per product</span>
+                              </Typography>
+                              <Typography
+                                fontSize={"25px"}
+                                fontWeight={"600"}
+                                color={"text.textSecondary"}
+                              >
+                                <span className="text-xs">total</span> $
+                                {item.product?.price * item.quantity}
+                              </Typography>
+                            </div>
+                            <div className="flex flex-col w-full p-4">
+                              {item.paymentStatus !== "paid" && (
+                                <div className="flex flex-row items-center text-lg gap-6 dark:text-gray-400 ">
+                                  <span>Quantity</span>
 
-                              <Select
-                                labelId="Quantity"
-                                id={`quantity-${index}`}
-                                value={
-                                  selectedQuantities[item.product.id] ||
-                                  item.quantity
-                                }
-                                label="productsPerPage"
-                                onChange={(e) =>
-                                  handleQuantityChange(
-                                    item.product.id,
-                                    item._id,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                {[...Array(15).keys()].map((quantity) => (
-                                  <MenuItem key={quantity} value={quantity + 1}>
-                                    {quantity + 1}
-                                  </MenuItem>
-                                ))}
-                              </Select>
+                                  <Select
+                                    labelId="Quantity"
+                                    id={`quantity-${index}`}
+                                    value={
+                                      selectedQuantities[item.product?.id] ||
+                                      item.quantity
+                                    }
+                                    label="productsPerPage"
+                                    onChange={(e) =>
+                                      handleQuantityChange(
+                                        item.product.id,
+                                        item._id,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    {[...Array(15).keys()].map((quantity) => (
+                                      <MenuItem
+                                        key={quantity}
+                                        value={quantity + 1}
+                                      >
+                                        {quantity + 1}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </div>
+                              )}
+                              {item.paymentStatus === "paid" ? (
+                                <Typography
+                                  fontSize={"18px"}
+                                  className="text-white p-2 text-center bg-green-600 rounded-md"
+                                >
+                                  Payment recieved successfully ,products will
+                                  be delivered to your provided location
+                                </Typography>
+                              ) : (
+                                <div className="w-full mt-2 text-white ">
+                                  <Button
+                                    variant="outlined"
+                                    onClick={() => cancelOrder(item._id)}
+                                    className="w-1/2  py-2  rounded-l-md"
+                                  >
+                                    DELETE
+                                  </Button>
+                                  <Button
+                                    onClick={() => buyNowHandler(item)}
+                                    variant="contained"
+                                    className="w-1/2 py-2  rounded-r-md"
+                                  >
+                                    BUY NOW
+                                  </Button>
+                                </div>
+                              )}
                             </div>
-                          )}
-                          {item.paymentStatus === "paid" ? (
-                            <Typography
-                              fontSize={"18px"}
-                              className="text-white p-2 text-center bg-green-600 rounded-md"
-                            >
-                              Item bought
-                            </Typography>
-                          ) : (
-                            <div className="w-full mt-2 text-white ">
-                              <Button
-                                variant="outlined"
-                                onClick={() => cancelOrder(item._id)}
-                                className="w-1/2  py-2  rounded-l-md"
-                              >
-                                DELETE
-                              </Button>
-                              <Button
-                                onClick={() => buyNowHandler(item)}
-                                variant="contained"
-                                className="w-1/2 py-2  rounded-r-md"
-                              >
-                                BUY NOW
-                              </Button>
-                            </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      )}
+                    </React.Fragment>
                   );
                 })}
             </>
@@ -431,7 +468,7 @@ const CartPage = () => {
         <Box
           sx={{
             display: "flex",
-           
+
             flexDirection: "column",
             bgcolor: "background.black",
             color: "text.primary",
@@ -450,7 +487,7 @@ const CartPage = () => {
           </Box>
         </Box>
       </Box>
- 
+
       <ToastContainer />
     </Box>
   );

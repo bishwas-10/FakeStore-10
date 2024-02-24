@@ -13,7 +13,7 @@ const fetchAllProducts = async () => {
     url: "/products",
     method: "GET",
   });
-  console.log(response.data);
+ 
   return response.data.products;
 };
 

@@ -91,15 +91,9 @@ app.use(express.json({ limit: "30mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
-// This is your test secret API key.
-// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-const calculateOrderAmount = () => {
-  // Replace this constant with a calculation of the order's amount
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-  return 1400;
-};
+
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 app.post("/create-payment-intent", async (req, res) => {
   // Create a PaymentIntent with the order amount and currency

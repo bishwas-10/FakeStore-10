@@ -92,7 +92,7 @@ export const signUp = async (
       },
       phone: req.body.phone,
     });
-    console.log(customer)
+    
     await customer.save();
 
    

@@ -39,7 +39,7 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
         if (hackedUser) {
           hackedUser.refreshToken = [];
           const result = await hackedUser.save();
-          console.log(result);
+          
           return res.sendStatus(403);
         }
       }

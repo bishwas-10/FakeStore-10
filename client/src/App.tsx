@@ -36,6 +36,7 @@ import StripeCheckOut from "./cComponent/pages/StripeCheckOut";
 import BackToTop from "./cComponent/reusable/BackToTop";
 import ScrollToTop from "./cComponent/ScrollToTop";
 import OrderSuccess from "./cComponent/pages/OrderSuccess";
+import DesktopCheck from "./components/pages/DesktopCheck";
 
 export interface RolesProps {
   [key: string]: number;
@@ -102,7 +103,7 @@ function App() {
             </>
           )}
 
-          <Routes >
+          <Routes>
             <Route path="/">
               <Route index element={<HomePage />} />
               <Route path="order-success" element={<OrderSuccess />} />
@@ -114,25 +115,22 @@ function App() {
               />
               <Route element={<PersistLogin />}>
                 <Route
-                  element={
-                    <RequireAuth
-                      allowedRoles={[ROLES_LIST.customer]}
-                    />
-                  }
-                > <Route path="carts/:userId">
-                  <Route index element={<CartPage />} />
-                  <Route
-                    path="checkout"
-                    element={
-                      <RequireAuth allowedRoles={[ROLES_LIST.customer]} />
-                    }
-                  >
-                    <Route index element={<CheckOutPage />} />
-                    <Route path="stripe" element={<StripeCheckOut />} />
+                  element={<RequireAuth allowedRoles={[ROLES_LIST.customer]} />}
+                >
+                  {" "}
+                  <Route path="carts/:userId">
+                    <Route index element={<CartPage />} />
+                    <Route
+                      path="checkout"
+                      element={
+                        <RequireAuth allowedRoles={[ROLES_LIST.customer]} />
+                      }
+                    >
+                      <Route index element={<CheckOutPage />} />
+                      <Route path="stripe" element={<StripeCheckOut />} />
+                    </Route>
                   </Route>
-                </Route></Route>
-
-               
+                </Route>
               </Route>
             </Route>
             <Route path="/admin">
@@ -140,24 +138,26 @@ function App() {
                 <Route
                   element={<RequireAuth allowedRoles={[ROLES_LIST.admin]} />}
                 >
-                  <Route index element={<Dashboard />} />
-                  <Route path="products">
-                    <Route index element={<Products />} />
-                    <Route path="addproducts" element={<AddProducts />} />
+                  <Route element={<DesktopCheck />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="products">
+                      <Route index element={<Products />} />
+                      <Route path="addproducts" element={<AddProducts />} />
+                    </Route>
+                    <Route path="categories">
+                      <Route index element={<Categories />} />
+                      <Route path="addcategory" element={<AddCategory />} />
+                    </Route>
+                    <Route path="customers">
+                      <Route index element={<Customers />} />
+                      <Route path="editcustomers" element={<EditCustomers />} />
+                    </Route>
+                    <Route path="orders">
+                      <Route index element={<Order />} />
+                      <Route path="editorders" element={<EditOrders />} />
+                    </Route>
+                    <Route path="settings" element={<Settings />} />
                   </Route>
-                  <Route path="categories">
-                    <Route index element={<Categories />} />
-                    <Route path="addcategory" element={<AddCategory />} />
-                  </Route>
-                  <Route path="customers">
-                    <Route index element={<Customers />} />
-                    <Route path="editcustomers" element={<EditCustomers />} />
-                  </Route>
-                  <Route path="orders">
-                    <Route index element={<Order />} />
-                    <Route path="editorders" element={<EditOrders />} />
-                  </Route>
-                  <Route path="settings" element={<Settings />} />
                 </Route>
               </Route>
             </Route>

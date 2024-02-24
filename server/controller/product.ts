@@ -29,7 +29,7 @@ export const getProduct = async (req: Request, res: Response) => {
 
 
 export const getAllCategories = async(req:Request,res:Response) => {
-  console.log("aaipugyosdada")
+  
   try {
     const categories = await Product.distinct('category');
     if(categories.length===0){

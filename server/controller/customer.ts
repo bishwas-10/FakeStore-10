@@ -78,7 +78,7 @@ export const addCustomer =async(req:Request,res:Response)=>{
           },
           phone: req.body.phone,
         });
-        console.log(customer)
+      
         await customer.save();
         res.status(200).send({success:true,message:"customer added"});
       } catch (error) {

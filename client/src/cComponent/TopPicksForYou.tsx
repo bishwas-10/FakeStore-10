@@ -22,7 +22,7 @@ const TopPicksForYou = () => {
     queryKey: [`all-products`],
     queryFn: () => fetchProducts(),
   });
-  console.log(data);
+
   if (isLoading) {
     return <Loading />;
   }

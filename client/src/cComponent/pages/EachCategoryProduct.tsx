@@ -29,7 +29,7 @@ const EachCategoryProduct = () => {
         url: `/categories/${CATEGORY}`,
         method: "GET",
       });
-      console.log(response);
+     
 
       return response.data.products;
     } catch (error: any) {
