@@ -42,28 +42,21 @@ app.post(
       event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
       
     } catch (err: any) {
-      console.log(err)
+      
       response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
     // Handle the event
     switch (event.type) {
       case "payment_intent.succeeded":
-        // const paymentIntent = event.data.object;
-        // console.log(
-        //   `PaymentIntent for ${paymentIntent.amount} was successful!`
-        // );
+        const paymentIntent = event.data.object;
+        console.log(
+          `PaymentIntent for ${ paymentIntent.metadata.orderId} and ${paymentIntent.metadata.customer} was successful!`
+        );
         // Then define and call a method to handle the successful payment intent.
         // handlePaymentIntentSucceeded(paymentIntent);
         break;
-        case "payment_intent.created":
-          const paymentIntent = event.data.object;
-          console.log(
-            paymentIntent
-          );
-          // Then define and call a method to handle the successful payment intent.
-          // handlePaymentIntentSucceeded(paymentIntent);
-          break;
+   
       case "payment_method.attached":
         const paymentMethod = event.data.object;
         // Then define and call a method to handle the successful attachment of a PaymentMethod.
@@ -75,7 +68,7 @@ app.post(
     }
 
     // Return a 200 response to acknowledge receipt of the event
-    response.send();
+    response.send({success:true,message:"payment intent sent successfully"});
   }
 );
 
@@ -133,6 +126,7 @@ app.post("/create-payment-intent", async (req, res) => {
     metadata: {
       orderId: "123456",
       customerType: "new",
+      customer:"bishwas"
     },
   });
 
