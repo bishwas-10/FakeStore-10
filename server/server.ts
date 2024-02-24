@@ -22,28 +22,24 @@ const PORT = process.env.PORT;
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
-
 app.use((req, res, next) => {
-  if (req.originalUrl === '/webhook') {
+  if (req.originalUrl === "/webhook") {
     next(); // Do nothing with the body because I need it in a raw state.
   } else {
-    express.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
+    express.json()(req, res, next); // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
   }
 });
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
- async (request, response) => {
+  async (request, response) => {
     const sig = request.headers["stripe-signature"];
 
     let event;
- 
 
     try {
       event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-      
     } catch (err: any) {
-      
       response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -52,17 +48,20 @@ app.post(
       case "payment_intent.succeeded":
         const paymentIntent = event.data.object;
         console.log(
-          `PaymentIntent for ${ paymentIntent.metadata.orderId} and was successful!`
+          `PaymentIntent for ${paymentIntent.metadata.orderId} and was successful!`
         );
-        for (const eachOrder of paymentIntent.metadata.orderId){
-           await Cart.findByIdAndUpdate({_id:eachOrder},{
-            $set:{paymentStatus:"paid"}
-          })
+        for (const eachOrder of paymentIntent.metadata.orderId) {
+          await Cart.findByIdAndUpdate(
+            { _id: eachOrder },
+            {
+              $set: { paymentStatus: "paid" },
+            }
+          );
         }
         // Then define and call a method to handle the successful payment intent.
         // handlePaymentIntentSucceeded(paymentIntent);
         break;
-   
+
       case "payment_method.attached":
         const paymentMethod = event.data.object;
         // Then define and call a method to handle the successful attachment of a PaymentMethod.
@@ -74,7 +73,10 @@ app.post(
     }
 
     // Return a 200 response to acknowledge receipt of the event
-    response.send({success:true,message:"payment intent sent successfully"});
+    response.send({
+      success: true,
+      message: "payment intent sent successfully",
+    });
   }
 );
 
@@ -83,13 +85,7 @@ app.set("trust proxy", 1); // trust first proxy
 app.use(express.static(path.resolve(__dirname, "dist")));
 app.use(
   cors({
-    origin: [
-      "https://eccomerce-admin1.onrender.com",
-      "https://fakestore-10.vercel.app",
-      "http://localhost:4000",
-      "http://localhost:5173",
-      "https://eccomerce-admin1.bishwas-projects.vercel.app",
-    ],
+    origin: "https://fakestore-10.vercel.app",
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ["Access-Control-Allow-Origin"],
@@ -130,8 +126,7 @@ app.post("/create-payment-intent", async (req, res) => {
     currency: "usd",
     payment_method_types: ["card"],
     metadata: {
-      orderId:req.body.product.orderId,
-     
+      orderId: req.body.product.orderId,
     },
   });
 
