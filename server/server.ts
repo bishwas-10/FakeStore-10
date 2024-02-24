@@ -120,7 +120,7 @@ const orderId= req.body.product.orderId[0];
     currency: "usd",
     payment_method_types: ["card"],
     metadata: {
-      orderId: orderId.toSring(),
+      orderId: orderId,
     },
   });
 
