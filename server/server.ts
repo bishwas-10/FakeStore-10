@@ -22,13 +22,7 @@ const PORT = process.env.PORT;
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
-app.use((req, res, next) => {
-  if (req.originalUrl === "/webhook") {
-    next(); // Do nothing with the body because I need it in a raw state.
-  } else {
-    express.json()(req, res, next); // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
-  }
-});
+
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
@@ -85,14 +79,14 @@ app.set("trust proxy", 1); // trust first proxy
 app.use(express.static(path.resolve(__dirname, "dist")));
 app.use(
   cors({
-    origin: "https://fakestore-10.vercel.app",
+    origin:[ "https://fakestore-10.vercel.app","http://localhost:5173"],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ["Access-Control-Allow-Origin"],
   })
 );
 
-app.use(express.static("public"));
+
 app.use(express.json({ limit: "30mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
