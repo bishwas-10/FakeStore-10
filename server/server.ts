@@ -44,14 +44,14 @@ app.post(
         console.log(
           `PaymentIntent for ${paymentIntent.metadata.orderId} and was successful!`
         );
-        for (const eachOrder of paymentIntent.metadata.orderId) {
+       
           await Cart.findByIdAndUpdate(
-            { _id: eachOrder },
+            { _id: paymentIntent.metadata.orderId },
             {
               $set: { paymentStatus: "paid" },
             }
           );
-        }
+        
         // Then define and call a method to handle the successful payment intent.
         // handlePaymentIntentSucceeded(paymentIntent);
         break;
@@ -103,7 +103,7 @@ const calculateOrderAmount = () => {
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 app.post("/create-payment-intent", async (req, res) => {
   // Create a PaymentIntent with the order amount and currency
-
+const orderId= req.body.product.orderId[0];
   const paymentIntent = await stripe.paymentIntents.create({
     description: "Eccomerce Products",
     shipping: {
@@ -120,7 +120,7 @@ app.post("/create-payment-intent", async (req, res) => {
     currency: "usd",
     payment_method_types: ["card"],
     metadata: {
-      orderId: req.body.product.orderId,
+      orderId: orderId.toSring(),
     },
   });
 
