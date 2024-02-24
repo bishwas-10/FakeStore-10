@@ -59,7 +59,7 @@ const CheckoutForm: React.FC = () => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "/order-success",
+        return_url: "https://fakestore-10.vercel.app/order-success",
       },
     });
     console.log(error);

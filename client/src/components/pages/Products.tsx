@@ -47,7 +47,7 @@ const Products = () => {
   const logout = useLogout();
   //pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [productsPerPage, setProductsPerPage] = useState<number>(2);
+  const [productsPerPage, setProductsPerPage] = useState<number>(4);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
   const { auth } = useAuth();

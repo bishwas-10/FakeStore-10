@@ -32,7 +32,7 @@ const Customers = () => {
 
   //pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [productsPerPage, setProductsPerPage] = useState<number>(2);
+  const [productsPerPage, setProductsPerPage] = useState<number>(4);
   const [pageStartIndex, setPageStartIndex] = useState<number>(0);
   const [pageEndIndex, setPageEndIndex] = useState<number>(3);
 
@@ -144,7 +144,7 @@ const Customers = () => {
                                   {customer.name.firstName}
                                 </div>
                                 <div className="w-full borders p-2">
-                                  {customer.name.firstName}
+                                  {customer.name.lastName}
                                 </div>
                               </div>
                             </td>
