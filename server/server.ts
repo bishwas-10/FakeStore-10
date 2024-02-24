@@ -15,6 +15,7 @@ import categoryRouter from "./routes/category";
 import customerRouter from "./routes/customer";
 import getRouter from "./routes/getRoute";
 import { handleRefreshToken } from "./controller/refreshToken";
+import Cart from "./models/cart";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -32,7 +33,7 @@ app.use((req, res, next) => {
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  (request, response) => {
+ async (request, response) => {
     const sig = request.headers["stripe-signature"];
 
     let event;
@@ -51,8 +52,13 @@ app.post(
       case "payment_intent.succeeded":
         const paymentIntent = event.data.object;
         console.log(
-          `PaymentIntent for ${ paymentIntent.metadata.orderId} and ${paymentIntent.metadata.customer} was successful!`
+          `PaymentIntent for ${ paymentIntent.metadata.orderId} and was successful!`
         );
+        for (const eachOrder of paymentIntent.metadata.orderId){
+           await Cart.findByIdAndUpdate({_id:eachOrder},{
+            $set:{paymentStatus:"paid"}
+          })
+        }
         // Then define and call a method to handle the successful payment intent.
         // handlePaymentIntentSucceeded(paymentIntent);
         break;
@@ -124,9 +130,8 @@ app.post("/create-payment-intent", async (req, res) => {
     currency: "usd",
     payment_method_types: ["card"],
     metadata: {
-      orderId: "123456",
-      customerType: "new",
-      customer:"bishwas"
+      orderId:req.body.product.orderId,
+     
     },
   });
 

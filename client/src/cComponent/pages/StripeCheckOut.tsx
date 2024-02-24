@@ -29,7 +29,7 @@ export default function StripeCheckOut() {
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
-
+const orderId = checkOutItems?.map((item)=>item.id);
   const createPaymentIntent = async () => {
     try {
       const response = await axiosPrivate("/create-payment-intent", {
@@ -44,7 +44,7 @@ export default function StripeCheckOut() {
             country: "NE",
           },
           product: {
-            title: checkOutItems[0].product.title,
+            orderId: orderId,
             totalPrice: checkOutItems
               .map(
                 (item) => parseInt(item.quantity) * parseInt(item.totalAmount)
