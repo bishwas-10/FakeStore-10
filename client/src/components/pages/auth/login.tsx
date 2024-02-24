@@ -39,9 +39,7 @@ const LoginPage = () => {
       const response = await instance({
         url: "/users/login",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        
         data: {
           email: data.email,
           password: data.password,
@@ -54,6 +52,7 @@ const LoginPage = () => {
         navigate(from, { replace: true });
       }
     } catch (error: any) {
+      console.log(error)
       setErrMsg(error.response.data.message);
     }
   };

@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 export const instance = axios.create({
-  baseURL: "https://eccomerce-admin1.onrender.com",
+  baseURL: "http://localhost:4000",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -11,7 +11,7 @@ export const instance = axios.create({
 });
 
 export const axiosPrivate = axios.create({
-  baseURL: "https://eccomerce-admin1.onrender.com",
+  baseURL: "http://localhost:4000",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });

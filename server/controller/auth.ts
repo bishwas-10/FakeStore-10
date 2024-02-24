@@ -50,7 +50,7 @@ export const signUp = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("herte")
+
   const validation = signUpSchema.safeParse(req.body);
   if (!validation.success) {
     return res
@@ -125,7 +125,7 @@ export const logIn = async (req: Request, res: Response) => {
     
     const roles = Object.values(foundUser.roles).filter((value)=>!!value===true);
     // create JWTs
-    
+   
     const accessToken = jwt.sign(
       {
         UserInfo: {
@@ -138,7 +138,7 @@ export const logIn = async (req: Request, res: Response) => {
       { expiresIn: "10m" }
     );
     const newRefreshToken = jwt.sign(
-      { username: foundUser.username,
+      { username: foundUser.username, roles: roles,
         userId:foundUser._id },
       process.env.REFRESH_TOKEN_KEY as string,
       { expiresIn: "2h" }
