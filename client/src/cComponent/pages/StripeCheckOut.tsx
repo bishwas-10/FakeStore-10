@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
@@ -29,7 +29,7 @@ export default function StripeCheckOut() {
   const decoded: UserInfoProps | undefined = auth.token
     ? (jwtDecode<JwtPayload>(auth.token as string) as UserInfoProps)
     : undefined;
- 
+
   const createPaymentIntent = async () => {
     try {
       const response = await axiosPrivate("/create-payment-intent", {
@@ -44,9 +44,16 @@ export default function StripeCheckOut() {
             country: "NE",
           },
           product: {
-            title:checkOutItems[0].product.title,
-            totalPrice:checkOutItems.map((item)=>parseInt(item.quantity)*parseInt(item.totalAmount)).reduce((acc,curr)=>acc+curr,0),
-           
+            title: checkOutItems[0].product.title,
+            totalPrice: checkOutItems
+              .map(
+                (item) => parseInt(item.quantity) * parseInt(item.totalAmount)
+              )
+              .reduce((acc, curr) => acc + curr, 0),
+          },
+          metadata: {
+            orderId: "123456",
+            customerType: "new",
           },
         },
       });
