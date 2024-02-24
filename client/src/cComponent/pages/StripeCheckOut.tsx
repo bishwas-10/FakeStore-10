@@ -51,10 +51,7 @@ export default function StripeCheckOut() {
               )
               .reduce((acc, curr) => acc + curr, 0),
           },
-          metadata: {
-            orderId: "123456",
-            customerType: "new",
-          },
+         
         },
       });
       console.log(response);
