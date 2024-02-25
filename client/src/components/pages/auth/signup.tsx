@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { instance } from "../../../../api/instance";
 import useAuth from "../../../../hooks/useAuth";
+import { ToastContainer, toast } from "react-toastify";
 const signUpSchema = z
   .object({
     username: z.string({ required_error: "username is required" }),
@@ -86,10 +87,14 @@ const SignUpPage = () => {
           confirmPassword: data.confirmPassword,
         },
       });
-      console.log(response)
+     
       if (response.data.success) {
+        toast("Signed Up Successfully,you can login now",{
+          position: "top-center",
+          autoClose: 1000,
+        })
         reset();
-        navigate("/login");
+       setTimeout(()=> navigate("/login"),1000);
       }
     } catch (error: any) {
       console.log(error)
@@ -281,6 +286,7 @@ const SignUpPage = () => {
           </Button>
         </div>
       </div>
+    <ToastContainer/>
     </div>
   );
 };

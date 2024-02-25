@@ -55,6 +55,9 @@ const productSlice = createSlice({
     addProduct(state, action) {
       state.newlyAddedProduct = { ...action.payload };
     },
+    removeProduct(state) {
+      state.newlyAddedProduct = addedProduct;
+    },
     removeProducts(state) {
       state.products = [];
       state.status = "idle";
@@ -74,6 +77,6 @@ const productSlice = createSlice({
   },
 });
 
-export const { addProduct, removeProducts,fetchAllProducts } = productSlice.actions;
+export const { addProduct, removeProducts,removeProduct,fetchAllProducts } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { UploadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { addProduct } from "../../../store/productSlice";
+import { addProduct, removeProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Link } from "react-router-dom";
@@ -144,7 +144,7 @@ const AddProducts = () => {
   };
   const onSubmit = async (data: TProductSchema) => {
     try {
-      console.log(data)
+      
       const response = await axiosPrivate({
         url: product?.id ? `/products/${product?.id}` : `/products`,
         method: product?.id ? "PUT" : "POST",
@@ -186,6 +186,9 @@ const AddProducts = () => {
   };
   useEffect(() => {
     categoryCall();
+    return ()=>{
+      dispatch(removeProduct())
+    };
   }, []);
   // const editProduct = async (data: TProductSchema) => {
   //   console.log(data);

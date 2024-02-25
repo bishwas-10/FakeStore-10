@@ -4,9 +4,7 @@
 
 This is an eCommerce web application built using the MERN stack. It allows users to browse through products, add items to their cart, and complete orders. The project includes features such as user authentication, product search, and order management..
 
-OFFICIAL SITE :
-
-<a href="https://fakestore-10.vercel.app/" target="_blank">
+OFFICIAL SITE :<a href="https://fakestore-10.vercel.app/" target="_blank">https://fakestore-10.vercel.app/</a>
 
 ## SCREENSHOTS
 

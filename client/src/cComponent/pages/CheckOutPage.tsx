@@ -100,7 +100,7 @@ const CheckOutPage = () => {
       });
 
       if (response.data.success) {
-        toast.success(response.data.message, {
+        toast.success("added address", {
           position: "top-center",
           autoClose: 1000,
         });

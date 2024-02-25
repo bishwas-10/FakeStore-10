@@ -89,7 +89,7 @@ const LoginPage = () => {
     }
   }, []);
   return (
-    <div className="flex  items-center justify-center w-full h-max py-10">
+    <div className="flex  items-center justify-center w-full min-h-screen py-10">
       <div className="flex flex-col w-3/4 md:w-2/5">
         <Link
           to="/"
