@@ -91,6 +91,7 @@ export const signUp = async (
         zipcode:req.body.address.zipcode
       },
       phone: req.body.phone,
+      roles:[2001]
     });
     
     await customer.save();
@@ -130,7 +131,7 @@ export const logIn = async (req: Request, res: Response) => {
       {
         UserInfo: {
           username: foundUser.username,
-          roles: roles,
+          roles: foundUser.roles,
           userId:foundUser._id
         },
       },
@@ -138,7 +139,7 @@ export const logIn = async (req: Request, res: Response) => {
       { expiresIn: "10m" }
     );
     const newRefreshToken = jwt.sign(
-      { username: foundUser.username, roles: roles,
+      { username: foundUser.username, roles: foundUser.roles,
         userId:foundUser._id },
       process.env.REFRESH_TOKEN_KEY as string,
       { expiresIn: "2h" }

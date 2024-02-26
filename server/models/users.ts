@@ -16,10 +16,7 @@ export interface UserProps extends Document{
         zipcode?: string;
       };
       phone: string;
-    roles:{
-        customer:number,
-        admin: number
-    };
+    roles:number[];
     refreshToken:string[];
 
 }
@@ -61,14 +58,7 @@ const userSchema = new Schema<UserProps>({
         type: String,
         required: true,
       },
-    roles:{
-        customer: {
-            type: Number,
-            default: 2001
-        },
-        
-        admin: Number
-    },
+    roles:[],
     refreshToken:[String]
 
 },

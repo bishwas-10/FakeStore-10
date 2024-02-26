@@ -68,7 +68,7 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
 
         // Refresh token was still valid
         const roles = Object.values(foundUser.roles);
-   
+ 
         const accessToken = jwt.sign(
           {
             UserInfo: {
