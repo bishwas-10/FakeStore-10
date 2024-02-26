@@ -114,9 +114,7 @@ function App() {
                 element={<EachCategoryProduct />}
               />
               <Route element={<PersistLogin />}>
-                <Route
-                  element={<RequireAuth allowedRoles={[ROLES_LIST.customer]} />}
-                >
+               
                   {" "}
                   <Route path="carts/:userId">
                     <Route index element={<CartPage />} />
@@ -129,7 +127,7 @@ function App() {
                       <Route index element={<CheckOutPage />} />
                       <Route path="stripe" element={<StripeCheckOut />} />
                     </Route>
-                  </Route>
+                
                 </Route>
               </Route>
             </Route>

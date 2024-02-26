@@ -68,10 +68,12 @@ const fetchCartByUserId = async (
       url: `/carts/${userId}`,
       method: "GET",
     });
+    console.log(response)
     dispatch(fetchAllCarts(response.data.cart));
     return response.data.cart;
-  } catch (error) {
-    throw new Error("Failed to fetch cart data");
+  } catch (error:any) {
+    
+    throw new Error(error?.response?.data?.message);
   }
 };
 

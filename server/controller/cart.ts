@@ -31,16 +31,21 @@ export const getCartByCustomerId = async (req: Request, res: Response) => {
   try {
     const cart = await Cart.find({
       customer: id,
+    });
+ 
+     if (cart.length === 0) {
+   
+      return res
+        .status(203)
+        .send({ success: false, message: "couldn't find any cart",cart:[] });
+    }
+    const populatedCart = await Cart.find({  customer: id,
     }).populate([{ path: "product", model: Product }]);
 
-    if (cart.length === 0) {
-      return res
-        .status(404)
-        .send({ success: false, message: "couldn't find any cart" });
-    }
+   
     return res
       .status(200)
-      .send({ success: true, message: "cart found", cart: cart });
+      .send({ success: true, message: "cart found", cart: populatedCart });
   } catch (error) {
     return res
       .status(500)
