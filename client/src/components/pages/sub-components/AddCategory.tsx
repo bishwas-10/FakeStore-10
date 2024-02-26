@@ -168,7 +168,7 @@ const AddCategory = () => {
               label="description"
               variant="outlined"
               multiline
-              maxRows={4}
+              rows={8}
               error={!!errors.description} 
               helperText={errors.description ? errors.description.message : ""} 
               {...register("description", { required: true })}

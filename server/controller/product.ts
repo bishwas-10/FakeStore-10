@@ -3,11 +3,13 @@ import { productSchema } from "../utils/types";
 import Product from "../models/product";
 
 export const getAllProducts = async(req: Request, res: Response) => {
+  
   try {
     const product = await Product.find();
     if(!product){
       return res.status(404).send({success:false,message:"products not found",products:null})
     }
+    
     return res.status(200).send({success:true,message:"product found",products:product})
   } catch (error) {
     return res.status(500).send({success:false,message:"internal server error",product:null});

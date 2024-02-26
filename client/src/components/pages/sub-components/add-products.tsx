@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { UploadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { addProduct, removeProduct } from "../../../store/productSlice";
+import { addProduct } from "../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Link } from "react-router-dom";
@@ -186,9 +186,7 @@ const AddProducts = () => {
   };
   useEffect(() => {
     categoryCall();
-    return ()=>{
-      dispatch(removeProduct())
-    };
+   
   }, []);
   // const editProduct = async (data: TProductSchema) => {
   //   console.log(data);
@@ -384,7 +382,7 @@ const AddProducts = () => {
                 label="description"
                 variant="outlined"
                 multiline
-                maxRows={4}
+                rows={8}
                 error={!!errors.description}
                 helperText={
                   errors.description ? errors.description.message : ""

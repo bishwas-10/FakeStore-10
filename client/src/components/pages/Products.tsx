@@ -21,6 +21,7 @@ import { RootState } from "../../store/store";
 import {
   addProduct,
   fetchAllProducts,
+  removeProduct,
 } from "../../store/productSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { instance } from "../../../api/instance";
@@ -82,6 +83,9 @@ const Products = () => {
     queryKey: ["product call"],
     queryFn: productCall,
   });
+  useEffect(()=>{
+    dispatch(removeProduct());
+  },[])
   const filteredProducts = data
     ?.filter((item) => (category? category==="All" ?item : item.category === category : item))
     ?.filter((item) => price[0] <= item.price && item.price <= price[1])

@@ -68,11 +68,12 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
 
         // Refresh token was still valid
         const roles = Object.values(foundUser.roles);
+   
         const accessToken = jwt.sign(
           {
             UserInfo: {
               username: decoded?.payload.username,
-              roles: roles,
+              roles: foundUser.roles,
               userId: decoded?.payload.userId,
             },
           },
