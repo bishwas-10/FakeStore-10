@@ -53,7 +53,7 @@ const SignUpPage = () => {
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
-
+  let redirectTimeout;
   const {
     register,
     handleSubmit,
@@ -94,14 +94,16 @@ const SignUpPage = () => {
           autoClose: 1000,
         })
         reset();
-       setTimeout(()=> navigate("/login"),1000);
+        redirectTimeout = setTimeout(() => navigate("/login"), 1000);
       }
     } catch (error: any) {
       console.log(error)
       setErrMsg(error.response.data.message);
     }
   };
-
+if(redirectTimeout){
+  clearTimeout(redirectTimeout);
+}
   useEffect(() => {
     if (auth.token) {
       navigate(from, { replace: true });

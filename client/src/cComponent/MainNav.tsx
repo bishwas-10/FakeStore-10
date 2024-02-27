@@ -238,7 +238,10 @@ const MainNav = () => {
             </SearchIconWrapper>
             <StyledInputBase
               onFocus={() => setShowSearchBox(true)}
-              onBlur={()=>setTimeout(()=>setShowSearchBox(false),200)}
+              onBlur={()=>{
+               const id= setTimeout(()=>setShowSearchBox(false),200);
+                clearTimeout(id);
+              }}
               placeholder="Search…"
               onChange={handleSearchInputChange}
               inputProps={{ "aria-label": "search" }}

@@ -84,6 +84,7 @@ export const addProduct = async (req: Request, res: Response) => {
       category: req.body.category,
       description: req.body.description,
       image: req.body.image,
+      topPicks:req.body.topPicks,
       rating:{
         rate:req.body.rating.rate,
         count:req.body.rating.count

@@ -37,6 +37,7 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
         }).exec();
 
         if (hackedUser) {
+          console.log(hackedUser);
           hackedUser.refreshToken = [];
           const result = await hackedUser.save();
           

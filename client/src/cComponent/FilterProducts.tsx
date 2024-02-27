@@ -127,7 +127,7 @@ const FilterProducts = ({
           onChange={handlePriceRangeChange}
           valueLabelDisplay="auto"
           getAriaValueText={valuetext}
-          min={50}
+          min={0}
           max={6000}
           step={50}
           disableSwap

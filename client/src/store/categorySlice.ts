@@ -35,6 +35,9 @@ const categorySlice = createSlice({
     addCategory(state, action) {
      state.newlyAddedCategory=action.payload;
     },
+    removeCategory(state) {
+      state.newlyAddedCategory=addedCategory;
+     },
     removeCategories(state) {
       state.category = [];
       state.status = "idle";
@@ -43,6 +46,6 @@ const categorySlice = createSlice({
   
 });
 
-export const { addCategory, removeCategories,fetchAllCategories } = categorySlice.actions;
+export const { addCategory, removeCategories,fetchAllCategories,removeCategory } = categorySlice.actions;
 
 export default categorySlice.reducer;

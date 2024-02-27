@@ -47,7 +47,7 @@ export const productSchema = z.object({
     // Check if the base64 data starts with 'data:image'
     return base64Data && base64Data.startsWith("data:image");
   }, "Only image files in base64 format are supported."),
-  topPicks: z.boolean().default(false),
+  topPicks: z.boolean(),
   rating: z.object({
     rate: z
       .string()
@@ -143,6 +143,7 @@ const AddProducts = () => {
     convert2base64(file);
   };
   const onSubmit = async (data: TProductSchema) => {
+    console.log(data)
     try {
       
       const response = await axiosPrivate({

@@ -27,6 +27,7 @@ import { TCategorySchema } from "./sub-components/AddCategory";
 import {
   addCategory,
   fetchAllCategories,
+  removeCategory,
 
 } from "../../store/categorySlice";
 import { useQuery } from "@tanstack/react-query";
@@ -78,7 +79,9 @@ const Categories = () => {
     queryKey: ["all categories"],
     queryFn: categoryCall,
   });
-
+useEffect(()=>{
+dispatch(removeCategory());
+},[])
   const deleteCategory = async (id: string) => {
     try {
       const response = await axiosPrivate({
