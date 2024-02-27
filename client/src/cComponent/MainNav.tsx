@@ -132,6 +132,10 @@ const MainNav = () => {
       : product.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
   console.log(error);
+  let timeoutId;
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
   const drawer = (
     <Box
       className="flex flex-row gap-2 justify-center py-4 h-max"
@@ -177,8 +181,9 @@ const MainNav = () => {
       {searchProducts?.length !== 0 ? (
         searchProducts?.slice(0, 4)?.map((item, index) => {
           return (
-            <span
-            onClick={()=>navigate(`/product/${item.id}`)}
+            <Box
+           
+              onClick={() => navigate(`/product/${item.id}`)}
               key={index}
               className="flex flex-row gap-3 cursor-pointer  border-2 border-gray-400 p-2"
             >
@@ -190,7 +195,7 @@ const MainNav = () => {
               <Typography className="line-clamp-2 md:text-sm text-xs">
                 {item.title}
               </Typography>
-            </span>
+            </Box>
           );
         })
       ) : (
@@ -238,9 +243,8 @@ const MainNav = () => {
             </SearchIconWrapper>
             <StyledInputBase
               onFocus={() => setShowSearchBox(true)}
-              onBlur={()=>{
-               const id= setTimeout(()=>setShowSearchBox(false),200);
-                clearTimeout(id);
+              onBlur={() => {
+                timeoutId = setTimeout(() => setShowSearchBox(false), 200);
               }}
               placeholder="Search…"
               onChange={handleSearchInputChange}
@@ -249,7 +253,7 @@ const MainNav = () => {
           </Search>
           {showSearchBox && (
             <Box
-              sx={{ bgcolor: "background.main", color: "text.primary" }}
+              sx={{ bgcolor: "background.main", color: "text.primary", }}
               className="absolute flex flex-col gap-2   top-12  md:-left-20 z-10 w-[200px] sm:w-[250px] md:w-[600px] h-max"
             >
               {searchBox}
@@ -322,7 +326,7 @@ const MainNav = () => {
               onMouseLeave={() => setShowDiv(false)}
               className="z-10 w-[20%] h-max flex flex-col absolute top-[60px] right-20 bg-white dark:bg-gray-700  shadow-md p-4"
             >
-              <div className="w-full flex flex-col items-center gap-2 font-sans tracking-normal">
+              <Box  className="hover:bg w-full flex flex-col items-center gap-2 font-sans tracking-normal">
                 <Button
                   onClick={() =>
                     navigate("/login", {
@@ -345,7 +349,7 @@ const MainNav = () => {
                     </Link>
                   </span>
                 )}
-              </div>
+              </Box>
               <div className="w-full flex flex-col items-start mt-2">
                 <h1 className="text-center text-lg font-bold w-full">
                   Your Account
@@ -364,13 +368,15 @@ const MainNav = () => {
                     </React.Fragment>
                   );
                 })}
-                {auth.token && <Button
-                  variant="contained"
-                  onClick={() => signOut()}
-                  className="my-1 text-xs font-medium"
-                >
-                  sign out
-                </Button>}
+                {auth.token && (
+                  <Button
+                    variant="contained"
+                    onClick={() => signOut()}
+                    className="my-1 text-xs font-medium"
+                  >
+                    sign out
+                  </Button>
+                )}
               </div>
             </div>
           )}
