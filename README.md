@@ -6,9 +6,16 @@ This is an eCommerce web application built using the MERN stack. It allows users
 
 OFFICIAL SITE :<a href="https://fakestore-10.vercel.app/" target="_blank">https://fakestore-10.vercel.app/</a>
 
+YOUTUBE : [![LANDING_PAGE](https://img.youtube.com/vi/dTN_m-XzMO8/0.jpg)](https://www.youtube.com/watch?v=dTN_m-XzMO8)
+
 ## SCREENSHOTS
 
 ![Landing Page Screenshot](/client/image/1.jpg)
+
+
+### To use Admin Panel
+email: fakestore11@gmail.com
+password: F@kestore12
 
 ## Table of Contents
 
