@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.ts",
-    "build": "npm i"
+    "dev":"nodemon server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc"
   },
   "author": "bishwas",
   "license": "ISC",
