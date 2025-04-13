@@ -6,7 +6,10 @@ This is an eCommerce web application built using the MERN stack. It allows users
 
 OFFICIAL SITE :<a href="https://fakestore-10.vercel.app/" target="_blank">https://fakestore-10.vercel.app/</a>
 
-YOUTUBE : [![LANDING_PAGE](https://img.youtube.com/vi/dTN_m-XzMO8/0.jpg)](https://www.youtube.com/watch?v=dTN_m-XzMO8)
+[![LANDING_PAGE](https://img.youtube.com/vi/dTN_m-XzMO8/0.jpg)](https://www.youtube.com/watch?v=dTN_m-XzMO8)
+
+
+YOUTUBE INTRO VIDEO:<a href="https://www.youtube.com/watch?v=dTN_m-XzMO8" target="_blank">https://www.youtube.com/watch?v=dTN_m-XzMO8</a>
 
 ## SCREENSHOTS
 
